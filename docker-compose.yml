@@ -5,6 +5,7 @@ services:
       MARIADB_ROOT_PASSWORD: example
     volumes:
         - db:/var/lib/mysql
+
   phpmyadmin:
     image: phpmyadmin:5.2.1-apache
     restart: always
@@ -16,6 +17,13 @@ services:
       - PMA_ARBITRARY:1
     depends_on:
       - db
+
+  etl:
+    build:
+      context: .
+      dockerfile: Dockerfile-etl
+    command: sleep infinity
+
   api:
     build:
       context: .
