@@ -22,6 +22,9 @@ export class ReportCase {
     localizationId: number
 
     @Column()
+    diseaseId: number
+
+    @Column()
     date: Date
 
     @AfterInsert()

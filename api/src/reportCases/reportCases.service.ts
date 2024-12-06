@@ -50,7 +50,10 @@ export class ReportCaseService {
             "CONTINENT": "continent"
         };
 
-        let sql = "SELECT * FROM report_case INNER JOIN localization ON localization.id = report_case.localizationId WHERE ";
+        let sql = "SELECT * FROM report_case ";
+        sql += "INNER JOIN localization ON localization.id = report_case.localizationId ";
+        sql += "INNER JOIN disease ON disease.id = report_case.diseaseId  ";
+        sql += "WHERE ";
 
         Object.entries(replacements).forEach(([key, value]) => {
             sort = sort.replaceAll(key, value);
