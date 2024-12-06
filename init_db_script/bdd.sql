@@ -22,6 +22,13 @@ CREATE TABLE ReportCase(
     totalDeath INT(10) NOT NULL,
     totalActive INT(10) NOT NULL,
     localizationId INT(5) NOT NULL,
+    dieaseId INT(5) NOT NULL,
     date DATE,
-    FOREIGN KEY (localizationId) REFERENCES Localization(id)
+    FOREIGN KEY (localizationId) REFERENCES Localization(id),
+    FOREIGN KEY (dieaseId) REFERENCES Diease(id)
+);
+
+CREATE TABLE Diease(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
 );

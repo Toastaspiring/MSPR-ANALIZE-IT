@@ -3,7 +3,11 @@ USER root
 RUN apt update
 RUN apt-get install -y git
 WORKDIR /
-RUN git clone https://github.com/Toastaspiring/MSPR-ANALIZE-IT.git
+RUN mkdir files
+COPY ./files/countries_and_continents.csv /files
+COPY ./owid_monkeypox_data.csv /files
+COPY ./worldometer_coronavirus_daily_data.csv /files
+RUN git clone https://rico517:Ericrico15@github.com/Toastaspiring/MSPR-ANALIZE-IT.git
 WORKDIR /MSPR-ANALIZE-IT
 RUN git checkout ETL
 RUN pip install --upgrade pip
