@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { ReportCase } from './reportCases.entitiy';
 
 @Injectable()
-export class CaseService {
+export class ReportCaseService {
     constructor(@InjectRepository(ReportCase) private repo: Repository<ReportCase>){}
 
     async createCase(totalConfirmed:number, totalDeath:number, totalRecoveries: number, totalActive: number, localizationId: number, date: Date){
@@ -21,19 +21,32 @@ export class CaseService {
         this.repo.save(newCase) 
     }
 
-    findOne(id: number) {
-        const reportCase = this.repo.findOneBy({ id })
-        if(!reportCase){
-            throw new Error('case not found with id: ' + id)
-        }
-        return reportCase
-    }
+    getSortedReportCases(sort: string) {
+        const replacements: Record<string, string> = {
+            "&": " AND ",
+            "|": " OR ",
+            "[": "'",
+            "]": "'",
+            "{": "(",
+            "}": ")",
+            "CONFIRMED": "totalConfirmed",
+            "DEATH": "totalDeath",
+            "RECOVERIES": "totalRecoveries",
+            "ACTIVE": "totalActive",
+            "DATE": "date",
+            "COUNTRY": "country",
+            "CONTINENT": "continent"
+        };
 
-    findAll() {
-        const reportCases = this.repo.find({take:100})
-        if(!reportCases){
-            throw new Error('No cases found')
-        }
-        return reportCases
+        let sql = "SELECT * FROM report_case INNER JOIN localization ON localization.id = report_case.localizationId WHERE ";
+
+        Object.entries(replacements).forEach(([key, value]) => {
+            sort = sort.replaceAll(key, value);
+        });
+
+        sql += sort;
+
+        console.log("request : " + sql);
+        return this.repo.query(sql);
     }
 }

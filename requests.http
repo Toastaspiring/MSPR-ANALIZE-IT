@@ -1,0 +1,8 @@
+# ### GET DATA
+GET http://localhost:3000/case/get
+Content-Type: application/json
+
+{
+    "sort" : "{(CONTINENT=[Europe]|(CONTINENT=[Asia]))&(COUNTRY=[France]|(COUNTRY=[Germany]))&(DATE>[2023-01-01]&(DATE<[2024-01-01]))|(CONFIRMED>[100000]&(ACTIVE<[50000]))&(DEATH>[500]|(RECOVERIES>[20000]))}"
+}
+
