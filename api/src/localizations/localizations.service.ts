@@ -17,11 +17,23 @@ export class LocalizationService {
         this.repo.save(newLocalization) 
     }
 
-    findOne(id: number) {
-        const gettedLocalization = this.repo.findOneBy({ id })
-        if(!gettedLocalization){
-            throw new Error('localization not found with id: ' + id)
+    async findOne(id: number) {
+        const localization = await this.repo.findOneBy({ id })
+        if(!localization){
+            throw new Error('Localization not found with id: ' + id)
         }
-        return gettedLocalization
+        return localization
+    }
+
+    async findAll(){
+        return await this.repo.find()
+    }
+
+    async removeLocalization(id : number){
+        const result = await this.repo.delete({ id })
+        if(!result){
+            throw new Error('Localization not found with id: ' + id)
+        }
+        return result
     }
 }

@@ -21,7 +21,19 @@ export class ReportCaseService {
         this.repo.save(newCase) 
     }
 
-    getSortedReportCases(sort: string) {
+    async findOne(id : number){
+        const reportCase = await this.repo.findOneBy({ id })
+        if(!reportCase){
+            throw new Error('Report Case not found with id: ' + id)
+        }
+        return reportCase
+    }
+
+    async findAll(){
+        return await this.repo.find()
+    }
+
+    async getSortedReportCases(sort: string) {
         const replacements: Record<string, string> = {
             "&": " AND ",
             "|": " OR ",
@@ -47,6 +59,14 @@ export class ReportCaseService {
         sql += sort;
 
         console.log("request : " + sql);
-        return this.repo.query(sql);
+        return await this.repo.query(sql);
+    }
+
+    async removeReportCase(id : number){
+        const result = await this.repo.delete({ id })
+        if(!result){
+            throw new Error('Report Case not found with id: ' + id)
+        }
+        return result
     }
 }
