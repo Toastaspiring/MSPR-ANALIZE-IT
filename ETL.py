@@ -7,9 +7,9 @@ import pymysql
 # MySQL database connection details
 db_config = {
     "host": "localhost",
-    "user": "root",
-    "password": "your_password",
-    "database": "your_database"
+    "user": "mspr_user",
+    "password": "mspr_user",
+    "database": "mspr_database"
 }
 
 # Define the file table (list of file paths)
