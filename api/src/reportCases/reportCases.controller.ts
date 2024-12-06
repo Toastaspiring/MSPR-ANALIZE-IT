@@ -8,7 +8,8 @@ export class ReportCaseController {
     ){}
 
     @Get('/get')
-    async createBook(@Body() body){
-        console.log(body);
+    async createReportCase(@Body() body){
+        console.log(body.sort);
+        // TODO : deconstruire parametre du body pour creer une requete sql de bz
     }
 }
