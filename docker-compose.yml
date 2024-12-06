@@ -1,12 +1,14 @@
 services:
   db:
+    container_name: db_mspr
     image: mariadb:11.6.1-noble-rc
     environment:
-      MARIADB_ROOT_PASSWORD: example
+      MARIADB_ROOT_PASSWORD: P@ssw3rdR00t
     volumes:
-        - db:/var/lib/mysql
+      - ./init_db_script:/docker-entrypoint-initdb.d/
 
   phpmyadmin:
+    container_name: phpmyadmin_mspr
     image: phpmyadmin:5.2.1-apache
     restart: always
     ports:
@@ -19,12 +21,14 @@ services:
       - db
 
   etl:
+    container_name: etl_mspr
     build:
       context: .
       dockerfile: Dockerfile-etl
     command: sleep infinity
 
   api:
+    container_name: api_mspr
     build:
       context: .
       dockerfile: Dockerfile-api
@@ -32,11 +36,9 @@ services:
     
     
   front:
+    container_name: front_mspr
     build:
       context: .
       dockerfile: Dockerfile-front
     command: sleep infinity
     
-
-volumes:
-  db:
