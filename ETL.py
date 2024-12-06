@@ -12,7 +12,7 @@ db_config = {
     "database": "mspr_database"
 }
 
-# Define the file table (list of file paths)
+# Define the file table (list of file paths) and smth
 fileTable = [
     {"filePath": "/files/worldometer_coronavirus_daily_data.csv", "disease": "covid"},
     {"filePath": "/files/owid-monkeypox-data.json", "disease": "monkeypox"},
