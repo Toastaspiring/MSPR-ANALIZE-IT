@@ -16,7 +16,7 @@ db_config = {
 # Define the file table (list of file paths) and smth
 fileTable = [
     {"filePath": "/files/worldometer_coronavirus_daily_data.csv", "disease": "covid"},
-    {"filePath": "/files/owid-monkeypox-data.json", "disease": "monkeypox"},
+    {"filePath": "/files/owid-monkeypox-data.csv", "disease": "monkeypox"},
 ]
 
 CountryToContinent = "/files/countries_and_continents.csv"
