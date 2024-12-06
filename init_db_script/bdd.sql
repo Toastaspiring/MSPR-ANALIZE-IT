@@ -7,7 +7,10 @@ DROP USER IF EXISTS mspr_user;
 CREATE USER 'mspr_user'@'%' IDENTIFIED BY 'mspr_user';
 GRANT ALL PRIVILEGES ON mspr_database.* TO 'mspr_user'@'%';
 
-
+CREATE TABLE Disease(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
 
 CREATE TABLE Localization(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
@@ -22,13 +25,8 @@ CREATE TABLE ReportCase(
     totalDeath INT(10) NOT NULL,
     totalActive INT(10) NOT NULL,
     localizationId INT(5) NOT NULL,
-    dieaseId INT(5) NOT NULL,
+    diseaseId INT(5) NOT NULL,
     date DATE,
     FOREIGN KEY (localizationId) REFERENCES Localization(id),
-    FOREIGN KEY (dieaseId) REFERENCES Diease(id)
-);
-
-CREATE TABLE Diease(
-    id INT(5) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
+    FOREIGN KEY (diseaseId) REFERENCES Disease(id)
 );
