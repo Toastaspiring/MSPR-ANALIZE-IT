@@ -6,7 +6,8 @@ import pymysql
 
 # MySQL database connection details
 db_config = {
-    "host": "localhost",
+    "host": "host.docker.internal",
+    "port": 3306,
     "user": "mspr_user",
     "password": "mspr_user",
     "database": "mspr_database"
