@@ -1,8 +1,8 @@
 import { Body, Controller, Get } from '@nestjs/common';
-import { CaseService } from './cases.service';
+import { CaseService } from './reportCases.service';
 
 @Controller('case')
-export class CaseController {
+export class ReportCaseController {
     constructor(
         private caseService: CaseService,
     ){}

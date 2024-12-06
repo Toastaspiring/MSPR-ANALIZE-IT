@@ -1,7 +1,7 @@
 import { AfterInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
-export class Case {
+export class ReportCase {
 
     @PrimaryGeneratedColumn()
     id: number
