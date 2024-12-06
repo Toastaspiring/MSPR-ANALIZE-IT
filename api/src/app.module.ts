@@ -12,13 +12,20 @@ import { Disease } from './diseases/disease.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'mspr_user',
+      password: 'mspr_user',
+      database: 'mspr_database',
       entities: [Localization,ReportCase,Disease],
       synchronize: true
     }),
-    ReportCaseModule, LocalizationModule, DiseasesModule],
-    controllers: [AppController],
-    providers: [AppService],
+    ReportCaseModule, 
+    LocalizationModule, 
+    DiseasesModule
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
