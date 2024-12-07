@@ -1,129 +1,82 @@
-import os
-import pyspark
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import lit, col
-import pymysql
+import pandas as pd
+import mysql.connector
+from sqlalchemy import create_engines
 
-# MySQL database connection details
+# Load datasets
+coronavirus_data = pd.read_csv('files/worldometer_coronavirus_daily_data.csv')
+countries_continents = pd.read_csv('files/countries_and_continents.csv')
+monkeypox_data = pd.read_csv('files/owid-monkeypox-data.csv')
+
+# Create Disease Table
+diseases = pd.DataFrame({'id': [1, 2], 'name': ['Coronavirus', 'Monkeypox']})
+
+# Create Localization Table
+countries_continents['id'] = range(1, len(countries_continents) + 1)
+localization = countries_continents.rename(columns={'country': 'country', 'continent': 'continent'})
+
+# Merge Coronavirus Data with Localization
+coronavirus_data = coronavirus_data.merge(countries_continents, how='left', left_on='country', right_on='country')
+
+# Prepare ReportCase Data for Coronavirus
+coronavirus_data['diseaseId'] = 1  # Coronavirus ID
+coronavirus_report_cases = coronavirus_data.rename(columns={
+    'cumulative_total_cases': 'totalconfirmed',
+    'cumulative_total_deaths': 'totalDeath',
+    'active_cases': 'totalActive',
+    'date': 'date',
+    'id': 'localizationId'
+})[['totalconfirmed', 'totalDeath', 'totalActive', 'localizationId', 'date', 'diseaseId']]
+
+# Prepare ReportCase Data for Monkeypox
+monkeypox_data = monkeypox_data.rename(columns={
+    'total_cases': 'totalconfirmed',
+    'total_deaths': 'totalDeath',
+    'location': 'country',
+    'date': 'date'
+})
+monkeypox_data = monkeypox_data.merge(countries_continents, how='left', on='country')
+monkeypox_data['diseaseId'] = 2  # Monkeypox ID
+monkeypox_report_cases = monkeypox_data.rename(columns={
+    'id': 'localizationId'
+})[['totalconfirmed', 'totalDeath', 'localizationId', 'date', 'diseaseId']]
+
+# Combine ReportCase Data
+report_cases = pd.concat([coronavirus_report_cases, monkeypox_report_cases], ignore_index=True)
+
+# MySQL Database connection parameters
 db_config = {
-    "host": "host.docker.internal",
-    "port": 3306,
-    "user": "mspr_user",
-    "password": "mspr_user",
-    "database": "mspr_database"
+    'host': 'host.docker.internal',  # Your MySQL host
+    'port': '3306',
+    'user': 'mspr_user',  # Your MySQL username
+    'password': 'mspr_user',  # Your MySQL password
+    'database': 'mspr_database'  # Your MySQL database name
 }
 
-# Define the file table (list of file paths) and smth
-fileTable = [
-    {"filePath": "/files/worldometer_coronavirus_daily_data.csv", "disease": "covid"},
-    {"filePath": "/files/owid_monkeypox_data.csv", "disease": "monkeypox"},
-]
+# Establish connection
+connection = mysql.connector.connect(**db_config)
+cursor = connection.cursor()
 
-CountryToContinent = "/files/countries_and_continents.csv"
+# Insert into Disease Table
+for index, row in diseases.iterrows():
+    cursor.execute("INSERT INTO Disease (id, name) VALUES (%s, %s)", (row['id'], row['name']))
 
-# Define schemas for each table
-schemas = {
-    "Localization": ["country", "continent"],
-    "ReportCase": ["totalConfirmed", "totalDeath", "totalRecoveries", "totalActive", "localizationId", "date", "diseaseId"],
-    "Disease": ["name"]
-}
+# Insert into Localization Table
+for index, row in localization.iterrows():
+    cursor.execute("INSERT INTO Localization (id, country, continent) VALUES (%s, %s, %s)",
+                   (row['id'], row['country'], row['continent']))
 
-# Spark session
-spark = SparkSession.builder.appName("DiseaseETL").getOrCreate()
+# Insert into ReportCase Table
+for index, row in report_cases.iterrows():
+    cursor.execute("""
+        INSERT INTO ReportCase (totalconfirmed, totalDeath, totalActive, localizationId, date, diseaseId) 
+        VALUES (%s, %s, %s, %s, %s, %s)""",
+        (row['totalconfirmed'], row['totalDeath'], row['totalActive'], row['localizationId'], row['date'], row['diseaseId']))
 
-# Function to process a CSV file
-def processCSV(filepath, schema):
-    df = spark.read.csv(filepath, header=True, inferSchema=True)
-    return df.select([col for col in df.columns if col in schema])
+# Commit changes
+connection.commit()
 
-# Function to process a JSON file
-def processJson(filepath, schema):
-    df = spark.read.json(filepath)
-    return df.select([col for col in df.columns if col in schema])
+# Close connection
+cursor.close()
+connection.close()
 
-# Function to insert data into MySQL table
-def insert_into_mysql(df, table_name, schema):
-    connection = pymysql.connect(**db_config)
-    cursor = connection.cursor()
-    try:
-        for row in df.collect():
-            values = ", ".join(
-                [f"'{v}'" if isinstance(v, str) or v is None else str(v) for v in row]
-            )
-            sql = f"INSERT INTO {table_name} ({', '.join(schema)}) VALUES ({values});"
-            cursor.execute(sql)
-        connection.commit()
-        print(f"Data inserted successfully into {table_name}!")
-    except Exception as e:
-        print(f"Error inserting data into {table_name}: {e}")
-    finally:
-        cursor.close()
-        connection.close()
-
-# Load and populate the Localization table
-def load_localization():
-    loc_df = processCSV(CountryToContinent, schemas["Localization"])
-    loc_df = loc_df.dropDuplicates()
-    insert_into_mysql(loc_df, "Localization", schemas["Localization"])
-
-# Load and populate the Disease table
-def load_disease_table():
-    disease_names = list(set([file_info["disease"] for file_info in fileTable]))
-    disease_df = spark.createDataFrame([(name,) for name in disease_names], schemas["Disease"])
-    insert_into_mysql(disease_df, "Disease", schemas["Disease"])
-
-# Fetch the diseaseId for a given disease
-def fetch_disease_id(disease_name):
-    connection = pymysql.connect(**db_config)
-    cursor = connection.cursor()
-    try:
-        cursor.execute(f"SELECT id FROM Disease WHERE name = '{disease_name}'")
-        result = cursor.fetchone()
-        return result[0] if result else None
-    except Exception as e:
-        print(f"Error fetching diseaseId for {disease_name}: {e}")
-    finally:
-        cursor.close()
-        connection.close()
-
-# Main ETL process for ReportCase
-def process_files():
-    for file_info in fileTable:
-        file_path = file_info["filePath"]
-        disease = file_info["disease"]
-        disease_id = fetch_disease_id(disease)
-
-        if disease_id is None:
-            print(f"Skipping file: {file_path} (Disease {disease} not found in database)")
-            continue
-
-        # Determine file type and process accordingly
-        file_extension = os.path.splitext(file_path)[1].lower()
-        if file_extension == ".csv":
-            df = processCSV(file_path, schemas["ReportCase"])
-        elif file_extension == ".json":
-            df = processJson(file_path, schemas["ReportCase"])
-        else:
-            print(f"Unsupported file format: {file_path}")
-            continue
-
-        # Add diseaseId column
-        df = df.withColumn("diseaseId", lit(disease_id))
-
-        # Insert data into ReportCase table
-        insert_into_mysql(df, "ReportCase", schemas["ReportCase"])
-
-# Main function
-def main():
-    print("Loading Localization data...")
-    load_localization()
-
-    print("Loading Disease data...")
-    load_disease_table()
-
-    print("Processing ReportCase files...")
-    process_files()
-
-# Run the main function
-if __name__ == "__main__":
-    main()
+print("Data has been successfully inserted into the MySQL database.")
