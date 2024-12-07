@@ -1,6 +1,6 @@
 import pandas as pd
 import mysql.connector
-from sqlalchemy import create_engines
+from sqlalchemy import create_engine
 
 # Load datasets
 coronavirus_data = pd.read_csv('files/worldometer_coronavirus_daily_data.csv')
