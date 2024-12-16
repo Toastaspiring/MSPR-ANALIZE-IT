@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import mysql.connector
 
@@ -5,6 +6,7 @@ import mysql.connector
 coronavirus_data = pd.read_csv('files/worldometer_coronavirus_daily_data.csv')
 countries_continents = pd.read_csv('files/countries_and_continents.csv')
 monkeypox_data = pd.read_csv('files/owid-monkeypox-data.csv')
+monkeypox_data = monkeypox_data[~monkeypox_data['iso_code'].str.contains("OWID", na=False)]
 
 # Create Disease Table
 diseases = pd.DataFrame({'id': [1, 2], 'name': ['Coronavirus', 'Monkeypox']})
@@ -67,6 +69,8 @@ for index, row in localization.iterrows():
 
 # Insert into ReportCase Table
 for index, row in report_cases.iterrows():
+    os.system('clear')
+    print("nb ligne traité : "+ index)
     cursor.execute("""
         INSERT INTO ReportCase (totalconfirmed, totalDeath, totalActive, localizationId, date, diseaseId) 
         VALUES (%s, %s, %s, %s, %s, %s)""",
