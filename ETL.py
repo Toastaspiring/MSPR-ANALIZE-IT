@@ -72,7 +72,7 @@ for index, row in localization.iterrows():
 # Insert into ReportCase Table
 for index, row in report_cases.iterrows():
     os.system('clear')
-    print("nb ligne traité : "+ index)
+    print("nb ligne traité : "+ str(index))
     cursor.execute("""
         INSERT INTO ReportCase (totalconfirmed, totalDeath, totalActive, localizationId, date, diseaseId) 
         VALUES (%s, %s, %s, %s, %s, %s)""",
