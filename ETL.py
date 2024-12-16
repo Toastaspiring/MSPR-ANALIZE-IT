@@ -1,7 +1,9 @@
 import os
+import time
 import pandas as pd
 import mysql.connector
 
+start_time=time.time()
 # Load datasets
 coronavirus_data = pd.read_csv('files/worldometer_coronavirus_daily_data.csv')
 countries_continents = pd.read_csv('files/countries_and_continents.csv')
@@ -82,5 +84,6 @@ connection.commit()
 # Close connection
 cursor.close()
 connection.close()
-
+end_time = time.time()
 print("Data has been successfully inserted into the MySQL database.")
+print(f"Temps d'exécution : {end_time - start_time:.6f} secondes")
