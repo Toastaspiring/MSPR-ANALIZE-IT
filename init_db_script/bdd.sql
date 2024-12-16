@@ -14,7 +14,7 @@ CREATE TABLE Disease(
 
 CREATE TABLE Localization(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
-    country VARCHAR(30) UNIQUE NOT NULL,
+    country VARCHAR(50) UNIQUE NOT NULL,
     continent varchar(20) NOT NULL
 );
 
