@@ -48,7 +48,8 @@ db_config = {
     'port': '3306',
     'user': 'mspr_user',  # Your MySQL username
     'password': 'mspr_user',  # Your MySQL password
-    'database': 'mspr_database'  # Your MySQL database name
+    'database': 'mspr_database',  # Your MySQL database name
+    'collation': "utf8mb4_general_ci"
 }
 
 # Establish connection
