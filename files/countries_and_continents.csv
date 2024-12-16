@@ -2,6 +2,7 @@ country,continent
 Albania,Europe
 Antarctica,Antarctica
 Algeria,Africa
+Samoa,Oceania
 Andorra,Europe
 Angola,Africa
 Antigua and Barbuda,North America
@@ -15,46 +16,40 @@ Bangladesh,Asia
 Armenia,Asia
 Barbados,North America
 Belgium,Europe
-Bermuda,North Americas
+Bermuda,North America
 Bhutan,Asia
 Bolivia,South America
 Bosnia and Herzegovina,Europe
 Botswana,Africa
-Bouvet Island,Unknown
 Brazil,South America
 Belize,North America
-British Indian Ocean Territory,Unknown
 Solomon Islands,Oceania
-British Virgin Islands,Unknown
-Brunei Darussalam,Unknown
+British Virgin Islands,Oceania
+Brunei Darussalam,Asia
 Bulgaria,Europe
-Myanmar,Unknown
+Myanmar,Asia
 Burundi,Africa
 Belarus,Europe
 Cambodia,Asia
 Cameroon,Africa
 Canada,North America
-Cape Verde,Unknown
-Cayman Islands,Unknown
-Central African,Unknown
+Cayman Islands,North America
+Central African,Africa
 Sri Lanka,Asia
 Chad,Africa
 Chile,South America
 China,Asia
-Taiwan,Unknown
-Christmas Island,Unknown
-Cocos (Keeling) Islands,Unknown
+Taiwan,Asia
 Colombia,South America
 Comoros,Africa
-Mayotte,Unknown
-Republic of the Congo,Unknown
-The Democratic Republic Of The Congo,Unknown
-Cook Islands,Unknown
+Congo,Africa
+Democratic Republic Of The Congo,Africa
+Cook Islands,Oceania
 Costa Rica,North America
 Croatia,Europe
 Cuba,North America
 Cyprus,Asia
-Czech Republic,Unknown
+Czech Republic,Europe
 Benin,Africa
 Denmark,Europe
 Dominica,North America
@@ -65,81 +60,68 @@ Equatorial Guinea,Africa
 Ethiopia,Africa
 Eritrea,Africa
 Estonia,Europe
-Faroe Islands,Unknown
-Falkland Islands,Unknown
-South Georgia and the South Sandwich Islands,Unknown
+Falkland Islands,South America
 Fiji,Oceania
 Finland,Europe
-Åland Islands,Unknown
 France,Europe
-French Guiana,Unknown
-French Polynesia,Unknown
-French Southern Territories,Unknown
 Djibouti,Africa
 Gabon,Africa
 Georgia,Asia
 Gambia,Africa
-Occupied Palestinian Territory,Unknown
 Germany,Europe
 Ghana,Africa
-Gibraltar,Unknown
+Gibraltar,Europe
 Kiribati,Oceania
 Greece,Europe
-Greenland,Unknown
+Greenland,Europe
 Grenada,North America
-Guadeloupe,Unknown
-Guam,Unknown
 Guatemala,North America
 Guinea,Africa
 Guyana,South America
 Haiti,North America
-Heard Island and McDonald Islands,Unknown
-Vatican City State,Unknown
 Honduras,North America
-Hong Kong,Unknown
+Hong Kong,Asia
 Hungary,Europe
 Iceland,Europe
 India,Asia
 Indonesia,Asia
-Islamic Republic of Iran,Unknown
+Iran,Asia
 Iraq,Asia
 Ireland,Europe
 Israel,Asia
 Italy,Europe
-Côte d'Ivoire,Unknown
+Cote D Ivoire,Africa
 Jamaica,North America
 Japan,Asia
 Kazakhstan,Asia
 Jordan,Asia
 Kenya,Africa
-Democratic People's Republic of Korea,Unknown
-Republic of Korea,Unknown
+South Korea,Asia
 Kuwait,Asia
 Kyrgyzstan,Asia
-Lao People's Democratic Republic,Unknown
+Laos,Asia
 Lebanon,Asia
 Lesotho,Africa
 Latvia,Europe
 Liberia,Africa
-Libyan Arab Jamahiriya,Unknown
+Libya,Africa
 Liechtenstein,Europe
 Lithuania,Europe
 Luxembourg,Europe
-Macao,Unknown
+China Macao Sar,Asia
 Madagascar,Africa
 Malawi,Africa
 Malaysia,Asia
 Maldives,Asia
 Mali,Africa
 Malta,Europe
-Martinique,Unknown
 Mauritania,Africa
 Mauritius,Africa
 Mexico,North America
 Monaco,Europe
 Mongolia,Asia
-Republic of Moldova,Unknown
-Montserrat,Unknown
+Moldova,Europe
+Montserrat,North America
 Morocco,Africa
 Mozambique,Africa
 Oman,Asia
@@ -147,20 +129,15 @@ Namibia,Africa
 Nauru,Oceania
 Nepal,Asia
 Netherlands,Europe
-Netherlands Antilles,Unknown
-Aruba,Unknown
-New Caledonia,Unknown
+Aruba,North America
 Vanuatu,Oceania
 New Zealand,Oceania
 Nicaragua,North America
 Niger,Africa
 Nigeria,Africa
 Niue,Unknown
-Norfolk Island,Unknown
 Norway,Europe
-Northern Mariana Islands,Unknown
-United States Minor Outlying Islands,Unknown
-Federated States of Micronesia,Unknown
+Micronesia,Oceania
 Marshall Islands,Oceania
 Palau,Oceania
 Pakistan,Asia
@@ -169,18 +146,15 @@ Papua New Guinea,Oceania
 Paraguay,South America
 Peru,South America
 Philippines,Asia
-Pitcairn,Unknown
 Poland,Europe
 Portugal,Europe
 Guinea-Bissau,Africa
 Timor-Leste,Asia
-Puerto Rico,Unknown
 Qatar,Asia
-Réunion,Unknown
 Romania,Europe
-Russian Federation,Unknown
+Russia,Europe
 Rwanda,Africa
-Saint Helena,Unknown
+Saint Helena,Africa
 Saint Kitts and Nevis,North America
 Anguilla,North America
 Saint Lucia,North America
@@ -202,36 +176,33 @@ Spain,Europe
 Western Sahara,Africa
 Sudan,Africa
 Suriname,South America
-Swaziland,Unknown
+Swaziland,Africa
 Sweden,Europe
 Switzerland,Europe
-Syrian Arab Republic,Unknown
+Syria,Asia
 Tajikistan,Asia
 Thailand,Asia
 Togo,Africa
-Tokelau,Unknown
 Tonga,Oceania
 Trinidad and Tobago,North America
 United Arab Emirates,Asia
 Tunisia,Africa
 Turkey,Asia
 Turkmenistan,Asia
-Turks and Caicos Islands,Unknown
+Turks and Caicos Islands,North America
 Tuvalu,Oceania
 Uganda,Africa
 Ukraine,Europe
 Macedonia,Europe
 Egypt,Africa
 United Kingdom,Europe
-Isle of Man,Unknown
-United Republic Of Tanzania,Unknown
-United States,Unknown
-U.S. Virgin Islands,Unknown
+Isle of Man,Europe
+Tanzania,Africa
+usa,North America
 Burkina Faso,Africa
 Uruguay,South America
 Uzbekistan,Asia
 Venezuela,South America
-Wallis and Futuna,Unknown
 Samoa,Oceania
 Yemen,Asia
 Serbia,Europe
