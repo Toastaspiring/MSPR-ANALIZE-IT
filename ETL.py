@@ -44,7 +44,8 @@ report_cases = pd.concat([coronavirus_report_cases, monkeypox_report_cases], ign
 
 # MySQL Database connection parameters
 db_config = {
-    'host': 'localhost',  # Your MySQL host
+    'host': 'host.docker.internal',  # Your MySQL host
+    'port': '3306',  # Your MySQL port
     'user': 'mspr_user',  # Your MySQL username
     'password': 'mspr_user',  # Your MySQL password
     'database': 'mspr_database',  # Your MySQL database name
