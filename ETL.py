@@ -5,9 +5,9 @@ import mysql.connector
 
 start_time=time.time()
 # Load datasets
-coronavirus_data = pd.read_csv('files/worldometer_coronavirus_daily_data.csv')
-countries_continents = pd.read_csv('files/countries_and_continents.csv')
-monkeypox_data = pd.read_csv('files/owid-monkeypox-data.csv')
+coronavirus_data = pd.read_csv('/files/worldometer_coronavirus_daily_data.csv')
+countries_continents = pd.read_csv('/files/countries_and_continents.csv')
+monkeypox_data = pd.read_csv('/files/owid-monkeypox-data.csv')
 monkeypox_data = monkeypox_data[~monkeypox_data['iso_code'].str.contains("OWID", na=False)]
 
 # Create Disease Table
