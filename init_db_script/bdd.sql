@@ -21,7 +21,7 @@ CREATE TABLE Localization(
 CREATE TABLE ReportCase(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     totalConfirmed INT(10) NOT NULL,
-    totalRecoveries INT(10) NOT NULL,
+    totalRecoveries INT(10),
     totalDeath INT(10) NOT NULL,
     totalActive INT(10) NOT NULL,
     localizationId INT(5) NOT NULL,
