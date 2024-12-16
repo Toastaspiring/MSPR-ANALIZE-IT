@@ -24,10 +24,26 @@ services:
 
   etl:
     container_name: etl_mspr
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: Dockerfile-etl
-    command: sleep infinity
+    command: >
+      /bin/sh -c "
+      sleep 30;
+      if [ -f /my_file.txt ]; then
+        echo 'Le fichier existe déjà, aucune commande exécutée.';
+        sleep infinity;
+      else
+        echo 'Création du fichier et exécution de la commande...';
+        python /MSPR-ANALIZE-IT/ETL.py;
+        touch /my_file.txt;
+        sleep infinity;
+      fi"
+    
+
+    
 
   api:
     container_name: api_mspr

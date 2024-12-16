@@ -10,4 +10,3 @@ WORKDIR /MSPR-ANALIZE-IT
 RUN git checkout ETL-dev
 RUN pip install --upgrade pip
 RUN pip install -r ./requirement.txt
-RUN python ./ETL.py
