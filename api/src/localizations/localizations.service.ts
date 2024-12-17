@@ -25,8 +25,12 @@ export class LocalizationService {
         return localization
     }
 
-    async findAll(){
-        return await this.repo.find()
+    async findAll(count = 100){
+        const localizations =  await this.repo.find({take : count})
+        if(localizations.length == 0){
+            throw new Error('No localizations found')
+        }
+        return localizations
     }
 
     async removeLocalization(id : number){

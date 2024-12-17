@@ -7,12 +7,11 @@ import { ReportCase } from './reportCases.entitiy';
 export class ReportCaseService {
     constructor(@InjectRepository(ReportCase) private repo: Repository<ReportCase>){}
 
-    async createCase(totalConfirmed:number, totalDeath:number, totalRecoveries: number, totalActive: number, localizationId: number, date: Date){
+    async createCase(totalConfirmed:number, totalDeath:number, totalActive: number, localizationId: number, date: Date){
         const newCase = this.repo.create(
             {
                 totalConfirmed: totalConfirmed,
                 totalDeath: totalDeath,
-                totalRecoveries: totalRecoveries,
                 totalActive: totalActive,
                 localizationId: localizationId,
                 date: date
@@ -29,11 +28,16 @@ export class ReportCaseService {
         return reportCase
     }
 
-    async findAll(){
-        return await this.repo.find()
+    async findAll(count = 100){
+        const cases = await this.repo.find({ take: count })
+        if(cases.length == 0){
+            throw new Error('No report cases found')
+        }
+        return cases
     }
 
-    async getSortedReportCases(sort: string) {
+    async getSortedReportCases(sort: string, count = 100) {
+        // Characters to replace to build a solid SQL query
         const replacements: Record<string, string> = {
             "&": " AND ",
             "|": " OR ",
@@ -43,26 +47,26 @@ export class ReportCaseService {
             "}": ")",
             "CONFIRMED": "totalConfirmed",
             "DEATH": "totalDeath",
-            "RECOVERIES": "totalRecoveries",
             "ACTIVE": "totalActive",
             "DATE": "date",
             "COUNTRY": "country",
             "CONTINENT": "continent"
         };
 
-        let sql = "SELECT * FROM report_case ";
-        sql += "INNER JOIN localization ON localization.id = report_case.localizationId ";
-        sql += "INNER JOIN disease ON disease.id = report_case.diseaseId  ";
-        sql += "WHERE ";
-
         Object.entries(replacements).forEach(([key, value]) => {
             sort = sort.replaceAll(key, value);
         });
 
-        sql += sort;
+        // Build the query joining all tables together
+        const queryBuilder = this.repo.createQueryBuilder('ReportCase')
+            .leftJoinAndSelect('ReportCase.localization', 'localization')
+            .leftJoinAndSelect('ReportCase.disease', 'disease')
+            .where(sort)
+            .limit(count);
 
-        console.log("request : " + sql);
-        return await this.repo.query(sql);
+        console.log("Generated SQL Query: ", queryBuilder.getSql());
+
+        return await queryBuilder.getMany();
     }
 
     async removeReportCase(id : number){

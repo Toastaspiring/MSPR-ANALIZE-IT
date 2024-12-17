@@ -7,15 +7,19 @@ export class ReportCaseController {
         private caseService: ReportCaseService,
     ){}
 
-    @Get('/get')
-    async getReportCases(@Body() body){
-        if(body == null || !body.sort){
-            console.log('No sort parameter provided');
-            return null;
-        }
+    @Get('/get/sorted')
+    async getSortedReportCases(@Body() body){
+        const count = body.count ? body.count : 1000
+        const sort = body.sort ? body.sort : ""
 
-        const reportCases = this.caseService.getSortedReportCases(body.sort);
+        const reportCases = await this.caseService.getSortedReportCases(sort,count);
         return reportCases
     }
 
+    @Get('/get/all')
+    async getAllReportCases(@Body() body){
+        const count = body.count ? body.count : 1000
+        const reportCases = await this.caseService.findAll(count);
+        return reportCases
+    }
 }

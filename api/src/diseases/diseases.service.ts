@@ -24,8 +24,12 @@ export class DiseasesService {
         return disease
     }
 
-    async findAll(){
-        return await this.repo.find()
+    async findAll(count = 100){
+        const diseases = await this.repo.find({ take: count })
+        if(diseases.length == 0){
+            throw new Error('No diseases found')
+        }
+        return diseases
     }
 
     async removeDisease(id: number) {

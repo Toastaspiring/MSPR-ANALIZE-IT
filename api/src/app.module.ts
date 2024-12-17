@@ -19,7 +19,6 @@ import { Disease } from './diseases/disease.entity';
       password: 'mspr_user',
       database: 'mspr_database',
       entities: [Localization,ReportCase,Disease],
-      synchronize: true
     }),
     ReportCaseModule, 
     LocalizationModule, 

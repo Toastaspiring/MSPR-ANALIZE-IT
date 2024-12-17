@@ -1,6 +1,7 @@
-import { AfterInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { ReportCase } from "src/reportCases/reportCases.entitiy";
+import { AfterInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
-@Entity()
+@Entity('Localization')
 export class Localization {
 
     @PrimaryGeneratedColumn()
@@ -11,6 +12,9 @@ export class Localization {
 
     @Column()
     continent: string
+
+    @OneToMany(() => ReportCase, (reportCase) => reportCase.localization)
+    reportCases: ReportCase[];
 
     @AfterInsert()
     logInsert() {

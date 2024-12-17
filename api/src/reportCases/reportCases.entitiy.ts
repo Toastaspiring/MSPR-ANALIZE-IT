@@ -1,6 +1,8 @@
-import { AfterInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Disease } from "src/diseases/disease.entity"
+import { Localization } from "src/localizations/localization.entity";
+import { AfterInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
-@Entity()
+@Entity('ReportCase')
 export class ReportCase {
 
     @PrimaryGeneratedColumn()
@@ -13,9 +15,6 @@ export class ReportCase {
     totalDeath: number
 
     @Column()
-    totalRecoveries: number
-
-    @Column()
     totalActive: number
 
     @Column()
@@ -26,6 +25,14 @@ export class ReportCase {
 
     @Column()
     date: Date
+
+    @ManyToOne(() => Localization, (localization) => localization.reportCases, { eager: true })
+    @JoinColumn({ name: 'localizationId' })
+    localization: Localization;
+
+    @ManyToOne(() => Disease, (disease) => disease.reportCases, { eager: true })
+    @JoinColumn({ name: 'diseaseId' })
+    disease: Disease;
 
     @AfterInsert()
     logInsert() {
