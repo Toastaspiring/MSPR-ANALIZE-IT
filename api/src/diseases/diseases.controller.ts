@@ -6,10 +6,4 @@ export class DiseasesController {
     constructor(
         private diseasesService: DiseasesService,
     ){}
-
-    @Get('/get/all')
-    async getAllDiseases(){
-        const reportCases = await this.diseasesService.findAll();
-        return reportCases
-    }
 }

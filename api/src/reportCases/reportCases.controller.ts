@@ -15,11 +15,4 @@ export class ReportCaseController {
         const reportCases = await this.caseService.getSortedReportCases(sort,count);
         return reportCases
     }
-
-    @Get('/get/all')
-    async getAllReportCases(@Body() body){
-        const count = body.count ? body.count : 1000
-        const reportCases = await this.caseService.findAll(count);
-        return reportCases
-    }
 }
