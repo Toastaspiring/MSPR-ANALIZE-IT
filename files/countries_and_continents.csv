@@ -2,10 +2,9 @@ country,continent
 Albania,Europe
 Antarctica,Antarctica
 Algeria,Africa
-Samoa,Oceania
 Andorra,Europe
 Angola,Africa
-Antigua and Barbuda,North America
+Antigua And Barbuda,North America
 Azerbaijan,Asia
 Argentina,South America
 Australia,Oceania
@@ -19,7 +18,7 @@ Belgium,Europe
 Bermuda,North America
 Bhutan,Asia
 Bolivia,South America
-Bosnia and Herzegovina,Europe
+Bosnia And Herzegovina,Europe
 Botswana,Africa
 Brazil,South America
 Belize,North America
@@ -148,33 +147,32 @@ Peru,South America
 Philippines,Asia
 Poland,Europe
 Portugal,Europe
-Guinea-Bissau,Africa
-Timor-Leste,Asia
+Guinea Bissau,Africa
 Qatar,Asia
 Romania,Europe
 Russia,Europe
 Rwanda,Africa
 Saint Helena,Africa
-Saint Kitts and Nevis,North America
+Saint Kitts And Nevis,North America
 Anguilla,North America
 Saint Lucia,North America
-Saint Vincent and the Grenadines,North America
+Saint Vincent And The Grenadines,North America
 San Marino,Europe
-Sao Tome and Principe,Africa
+Sao Tome And Principe,Africa
 Saudi Arabia,Asia
 Senegal,Africa
 Seychelles,Africa
 Sierra Leone,Africa
 Singapore,Asia
 Slovakia,Europe
-Vietnam,Asia
+Viet Nam,Asia
 Slovenia,Europe
 Somalia,Africa
 South Africa,Africa
 Zimbabwe,Africa
 Spain,Europe
 Western Sahara,Africa
-Sudan,Africa
+South Sudan,Africa
 Suriname,South America
 Swaziland,Africa
 Sweden,Europe
@@ -184,21 +182,21 @@ Tajikistan,Asia
 Thailand,Asia
 Togo,Africa
 Tonga,Oceania
-Trinidad and Tobago,North America
+Trinidad And Tobago,North America
 United Arab Emirates,Asia
 Tunisia,Africa
 Turkey,Asia
 Turkmenistan,Asia
-Turks and Caicos Islands,North America
+Turks And Caicos Islands,North America
 Tuvalu,Oceania
 Uganda,Africa
 Ukraine,Europe
 Macedonia,Europe
 Egypt,Africa
-United Kingdom,Europe
-Isle of Man,Europe
+UK,Europe
+Isle Of Man,Europe
 Tanzania,Africa
-usa,North America
+USA,North America
 Burkina Faso,Africa
 Uruguay,South America
 Uzbekistan,Asia
@@ -208,3 +206,37 @@ Yemen,Asia
 Serbia,Europe
 Montenegro,Europe
 Zambia,Africa
+Wallis And Futuna Islands,Oceania
+Timor Leste,Asia
+State Of Palestine,Asia
+Saint Pierre And Miquelon,North America
+Saint Martin,Europe
+New Caledonia,Oceania
+Mayotte,Africa
+Martinique,North America
+Holy See,Europe
+Guadeloupe,North America
+French Polynesia,Oceania
+French Guiana,South America
+Faeroe Islands,Europe
+Curacao,North America
+China Hong Kong Sar,Asia
+Channel Islands,North America
+Central African Republic,Africa
+Caribbean Netherlands,North America
+Afghanistan,Asia
+Cabo Verde,Africa
+Sudan,Africa
+Sint Maarten,Europe
+Falkland Islands Malvinas,South America
+Reunion,Africa
+Saint Barthelemy,North America
+United States,North America
+United Kingdom,Europe
+Saint Martin (French part),Europe
+Puerto Rico,North America
+Bosnia and Herzegovina,Europe
+Vietnam,Asia
+Democratic Republic of Congo,Africa
+Czechia,Europe
+Guam,Asia
