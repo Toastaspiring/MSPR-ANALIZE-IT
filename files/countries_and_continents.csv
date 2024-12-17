@@ -4,7 +4,7 @@ Antarctica,Antarctica
 Algeria,Africa
 Andorra,Europe
 Angola,Africa
-Antigua and Barbuda,North America
+Antigua And Barbuda,North America
 Azerbaijan,Asia
 Argentina,South America
 Australia,Oceania
@@ -18,7 +18,7 @@ Belgium,Europe
 Bermuda,North America
 Bhutan,Asia
 Bolivia,South America
-Bosnia and Herzegovina,Europe
+Bosnia And Herzegovina,Europe
 Botswana,Africa
 Brazil,South America
 Belize,North America
@@ -148,25 +148,24 @@ Philippines,Asia
 Poland,Europe
 Portugal,Europe
 Guinea Bissau,Africa
-Timor-Leste,Asia
 Qatar,Asia
 Romania,Europe
 Russia,Europe
 Rwanda,Africa
 Saint Helena,Africa
-Saint Kitts and Nevis,North America
+Saint Kitts And Nevis,North America
 Anguilla,North America
 Saint Lucia,North America
-Saint Vincent and the Grenadines,North America
+Saint Vincent And The Grenadines,North America
 San Marino,Europe
-Sao Tome and Principe,Africa
+Sao Tome And Principe,Africa
 Saudi Arabia,Asia
 Senegal,Africa
 Seychelles,Africa
 Sierra Leone,Africa
 Singapore,Asia
 Slovakia,Europe
-Viet nam,Asia
+Viet Nam,Asia
 Slovenia,Europe
 Somalia,Africa
 South Africa,Africa
@@ -183,21 +182,21 @@ Tajikistan,Asia
 Thailand,Asia
 Togo,Africa
 Tonga,Oceania
-Trinidad and Tobago,North America
+Trinidad And Tobago,North America
 United Arab Emirates,Asia
 Tunisia,Africa
 Turkey,Asia
 Turkmenistan,Asia
-Turks and Caicos Islands,North America
+Turks And Caicos Islands,North America
 Tuvalu,Oceania
 Uganda,Africa
 Ukraine,Europe
 Macedonia,Europe
 Egypt,Africa
 UK,Europe
-Isle of Man,Europe
+Isle Of Man,Europe
 Tanzania,Africa
-usa,North America
+USA,North America
 Burkina Faso,Africa
 Uruguay,South America
 Uzbekistan,Asia
@@ -225,3 +224,10 @@ China Hong Kong Sar,Asia
 Channel Islands,North America
 Central African Republic,Africa
 Caribbean Netherlands,North America
+Afghanistan,Asia
+Cabo Verde,Africa
+Sudan,Africa
+Sint Maarten,Europe
+Falkland Islands Malvinas,South America
+Reunion,Africa
+Saint Barthelemy,North America
