@@ -10,6 +10,18 @@ countries_continents = pd.read_csv('files/countries_and_continents.csv')
 monkeypox_data = pd.read_csv('files/owid-monkeypox-data.csv')
 monkeypox_data = monkeypox_data[~monkeypox_data['iso_code'].str.contains("OWID", na=False)]
 
+# ajustement donnees
+
+def rename_country(country_name):
+    if 'Bosnia and Herzegovina' in country_name:  return 'Bosnia And Herzegovina'
+    elif 'Vietnam' in country_name: return 'Viet Nam'
+    elif 'Czechia' in country_name: return 'Czech Republic'
+    elif 'Democratic Republic of Congo' in country_name: return 'Democratic Republic Of The Congo'
+    else:
+        return country_name  # Sinon, conserver la valeur d'origine
+
+monkeypox_data['location'] = monkeypox_data['location'].apply(rename_country)
+
 # Create Disease Table
 diseases = pd.DataFrame({'id': [1, 2], 'name': ['Coronavirus', 'Monkeypox']})
 
