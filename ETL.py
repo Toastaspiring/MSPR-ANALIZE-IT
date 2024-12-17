@@ -19,9 +19,6 @@ def rename_country(country_name):
     elif 'Democratic Republic of Congo' in country_name: return 'Democratic Republic Of The Congo'
     elif 'United Kingdom' in country_name: return 'UK'
     elif 'United States' in country_name: return 'USA'
-    elif 'Central African Republic' in country_name: return 'Central African'
-    elif 'Falkland Islands Malvinas' in country_name: return 'Falkland Islands'
-    elif 'China Hong Kong Sar' in country_name: return 'Hong Kong'
     else:
         return country_name  # Sinon, conserver la valeur d'origine
 
