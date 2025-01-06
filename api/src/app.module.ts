@@ -13,7 +13,7 @@ import { Disease } from './diseases/disease.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'host.docker.internal',
       port: 3306,
       username: 'mspr_user',
       password: 'mspr_user',
