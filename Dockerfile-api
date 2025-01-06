@@ -4,4 +4,6 @@ RUN apk add --no-cache git
 
 RUN git clone https://github.com/Toastaspiring/MSPR-ANALIZE-IT.git
 WORKDIR /MSPR-ANALIZE-IT
-RUN git checkout back
+RUN git checkout back-dev
+WORKDIR /MSPR-ANALIZE-IT/api
+RUN npm i

@@ -50,7 +50,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-api
-    command: sleep infinity
+    command: npm run start
     ports:
       - 3000:3000
     
@@ -60,7 +60,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-front
-    command: sleep infinity
+    command: npm run dev
     ports:
       - 5173:5173
     
