@@ -9,6 +9,23 @@ import { ReportCase } from './reportCases/reportCases.entitiy';
 import { DiseasesModule } from './diseases/diseases.module';
 import { Disease } from './diseases/disease.entity';
 
+const sqliteParam = {
+  type: 'sqlite',
+  entities: [Localization, ReportCase, Disease],
+  database: 'database.sqlite',
+  synchronize: true,
+}
+
+const mysqlParam = {
+  type: 'mysql',
+  host: 'host.docker.internal',
+  port: 3306,
+  username: 'mspr_user',
+  password: 'mspr_user',
+  database: 'mspr_database',
+  entities: [Localization,ReportCase,Disease],
+}
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({

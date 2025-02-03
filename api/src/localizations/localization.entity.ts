@@ -13,8 +13,8 @@ export class Localization {
     @Column()
     continent: string
 
-    @OneToMany(() => ReportCase, (reportCase) => reportCase.localization)
-    reportCases: ReportCase[];
+    // @OneToMany(() => ReportCase, (reportCase) => reportCase.localization)
+    // reportCases: ReportCase[];
 
     @AfterInsert()
     logInsert() {

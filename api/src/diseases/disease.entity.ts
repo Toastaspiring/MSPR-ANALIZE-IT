@@ -1,3 +1,4 @@
+
 import { ReportCase } from "src/reportCases/reportCases.entitiy";
 import { AfterInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
@@ -10,8 +11,8 @@ export class Disease {
     @Column()
     name: string
 
-    @OneToMany(() => ReportCase, (reportCase) => reportCase.disease)
-    reportCases: ReportCase[];
+    // @OneToMany(() => ReportCase, (reportCase) => reportCase.disease)
+    // reportCases: ReportCase[];
 
     @AfterInsert()
     logInsert() {

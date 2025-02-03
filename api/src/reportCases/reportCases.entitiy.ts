@@ -26,13 +26,13 @@ export class ReportCase {
     @Column()
     date: Date
 
-    @ManyToOne(() => Localization, (localization) => localization.reportCases, { eager: true })
-    @JoinColumn({ name: 'localizationId' })
-    localization: Localization;
+    // @ManyToOne(() => Localization, (localization) => localization.reportCases, { eager: true })
+    // @JoinColumn({ name: 'localizationId' })
+    // localization: Localization;
 
-    @ManyToOne(() => Disease, (disease) => disease.reportCases, { eager: true })
-    @JoinColumn({ name: 'diseaseId' })
-    disease: Disease;
+    // @ManyToOne(() => Disease, (disease) => disease.reportCases, { eager: true })
+    // @JoinColumn({ name: 'diseaseId' })
+    // disease: Disease;
 
     @AfterInsert()
     logInsert() {
