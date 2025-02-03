@@ -10,9 +10,14 @@ async function bootstrap() {
     .setTitle('MSPR')
     .setDescription('Manage datasets')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
+  
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup(
+    'api',
+    app, documentFactory
+  );
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,            // Delete unknown fields

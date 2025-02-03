@@ -1,30 +1,26 @@
-
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/users/dto/CreateUserDto.dto';
+import { Public } from './decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+  ) { }
 
-  @HttpCode(HttpStatus.OK)
+  // TODO doc
+
+  @Public()
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({ status: 201, description: 'User logged in successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid body parameters.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 500, description: 'Internal server error occurred while logging in.' })
+  async signIn(@Body() createUserDto: CreateUserDto) {
+    return await this.authService.signIn(createUserDto);
   }
 }
