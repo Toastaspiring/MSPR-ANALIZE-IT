@@ -1,5 +1,5 @@
 {CONTINENT=[Oceania]&(COUNTRY=[Fiji])}
 
-{CONTINENT=[Africa]&(COUNTRY=[Nigeria])&(Disease.name=[Monkeypox])}
+{CONTINENT=[Africa]&(COUNTRY=[Nigeria])&(DISEASE=[Monkeypox])}
 
-{CONTINENT=[Africa]&(COUNTRY=[Nigeria])&(name=[Monkeypox])}|{CONTINENT=[Oceania]&(COUNTRY=[Fiji])&(name=[Coronavirus])}
+{CONTINENT=[Africa]&(COUNTRY=[Nigeria])&(DISEASE=[Monkeypox])}|{CONTINENT=[Oceania]&(COUNTRY=[Fiji])&(DISEASE=[Coronavirus])}

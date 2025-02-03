@@ -98,6 +98,9 @@ export class ReportCaseService {
     }
 
     async getFilteredReportCases(filter: string, count: number) {
+        // TODO : regex to test if the query sent is ok
+        const queryRegex = "^$"
+
         if (!filter) {
             filter = "";
         }

@@ -3,6 +3,7 @@ import { ReportCaseService } from './reportCases.service';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { CreateReportCaseDto } from './dto/CreateReportCase.dto';
 import { UpdateReportCaseDto } from './dto/UpdateReportCase.dto';
+import { Public } from 'src/auth/auth.module';
 
 @Controller('case')
 export class ReportCaseController {
@@ -10,6 +11,7 @@ export class ReportCaseController {
         private caseService: ReportCaseService,
     ) { }
 
+    @Public()
     @Post('create')
     @ApiOperation({ summary: 'Create a new report case' })
     @ApiBody({ type: CreateReportCaseDto })
@@ -20,6 +22,7 @@ export class ReportCaseController {
         return await this.caseService.create(createReportCaseDto);
     }
 
+    @Public()
     @Patch(':id')
     @ApiOperation({ summary: 'Update an existing report case' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the case to update', example: 1 })
@@ -32,6 +35,7 @@ export class ReportCaseController {
         return await this.caseService.update(id, updateReportCaseDto);
     }
 
+    @Public()
     @Delete(':id')
     @ApiOperation({ summary: 'Delete a report case by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of case to delete', example: 1 })
@@ -43,6 +47,7 @@ export class ReportCaseController {
         return await this.caseService.delete(id);
     }
 
+    @Public()
     @Get('filtered')
     @ApiOperation({ summary: 'Retrieve filtered report cases' })
     @ApiQuery({ name: 'filter', required: false, type: String, description: 'The filter to retrieve specific data' })
@@ -54,6 +59,7 @@ export class ReportCaseController {
         return await this.caseService.getFilteredReportCases(filter,parsedCount);
     }
 
+    @Public()
     @Get()
     @ApiOperation({ summary: 'Retrieve all cases with a limit' })
     @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
@@ -64,6 +70,7 @@ export class ReportCaseController {
         return await this.caseService.getAll(parsedCount);
     }
 
+    @Public()
     @Get(':id')
     @ApiOperation({ summary: 'Retrieve a case by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted case', example: 1 })

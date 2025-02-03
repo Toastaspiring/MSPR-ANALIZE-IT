@@ -8,6 +8,8 @@ import { Localization } from './localizations/localization.entity';
 import { ReportCase } from './reportCases/reportCases.entitiy';
 import { DiseasesModule } from './diseases/diseases.module';
 import { Disease } from './diseases/disease.entity';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 const sqliteParam = {
   type: 'sqlite',
@@ -30,7 +32,7 @@ const mysqlParam = {
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'host.docker.internal',
+      host: 'localhost',
       port: 3306,
       username: 'mspr_user',
       password: 'mspr_user',
@@ -39,7 +41,7 @@ const mysqlParam = {
     }),
     ReportCaseModule, 
     LocalizationModule, 
-    DiseasesModule
+    DiseasesModule, AuthModule, UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

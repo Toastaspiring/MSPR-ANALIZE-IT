@@ -11,8 +11,8 @@ export class Disease {
     @Column()
     name: string
 
-    // @OneToMany(() => ReportCase, (reportCase) => reportCase.disease)
-    // reportCases: ReportCase[];
+    @OneToMany(() => ReportCase, (reportCase) => reportCase.disease)
+    reportCases: ReportCase[];
 
     @AfterInsert()
     logInsert() {

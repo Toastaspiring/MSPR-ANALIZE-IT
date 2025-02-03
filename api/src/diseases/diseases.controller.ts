@@ -3,6 +3,7 @@ import { DiseasesService } from './diseases.service';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CreateDiseaseDto } from './dto/CreateDiseaseDto.dto';
 import { UpdateDiseaseDto } from './dto/UpdateDiseaseDto.dto';
+import { Public } from 'src/auth/auth.module';
 
 @Controller('disease')
 export class DiseasesController {
@@ -10,6 +11,7 @@ export class DiseasesController {
         private diseasesService: DiseasesService,
     ) { }
     
+    @Public()
     @Post('create')
     @ApiOperation({ summary: 'Create a new disease' })
     @ApiBody({ type: CreateDiseaseDto })
@@ -20,6 +22,7 @@ export class DiseasesController {
         return await this.diseasesService.create(createDiseaseDto);
     }
 
+    @Public()
     @Patch(':id')
     @ApiOperation({ summary: 'Update an existing disease' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the disease to update', example: 1 })
@@ -32,6 +35,7 @@ export class DiseasesController {
         return await this.diseasesService.update(id, updateDiseaseDto);
     }
 
+    @Public()
     @Delete(':id')
     @ApiOperation({ summary: 'Delete a disease by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of disease to delete', example: 1 })
@@ -43,6 +47,7 @@ export class DiseasesController {
         return await this.diseasesService.delete(id);
     }
 
+    @Public()
     @Get('id/:id')
     @ApiOperation({ summary: 'Retrieve a disease by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted disease', example: 1 })
@@ -53,6 +58,7 @@ export class DiseasesController {
         return await this.diseasesService.getById(id);
     }
 
+    @Public()
     @Get('name/:name')
     @ApiOperation({ summary: 'Retrieve a disease by name' })
     @ApiParam({ name: 'name', required: true, type: String, description: 'The name of the wanted disease', example: "Covid19" })
@@ -63,6 +69,7 @@ export class DiseasesController {
         return await this.diseasesService.getByName(name);
     }
 
+    @Public()
     @Get()
     @ApiOperation({ summary: 'Retrieve all diseases' })
     @ApiResponse({ status: 200, description: 'The list of sorted diseases has been retrieved successfully.' })
