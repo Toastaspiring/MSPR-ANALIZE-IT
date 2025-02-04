@@ -4,6 +4,11 @@ import { Injectable } from '@nestjs/common';
 // This should be a real class/interface representing a user entity
 export type User = any;
 
+export enum UserRole {
+  ADMIN = 0,
+  USER = 1,
+}
+
 @Injectable()
 export class UsersService {
   private readonly users = [
@@ -11,11 +16,13 @@ export class UsersService {
       userId: 1,
       username: 'admin',
       password: 'admin',
+      roleId: UserRole.ADMIN
     },
     {
       userId: 2,
       username: 'user',
       password: 'user',
+      roleId: UserRole.USER
     },
   ];
 

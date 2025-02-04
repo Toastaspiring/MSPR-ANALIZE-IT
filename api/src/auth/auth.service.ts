@@ -2,8 +2,8 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/users/dto/CreateUserDto.dto';
 import { isEmpty, IsEmpty } from 'class-validator';
+import { UserLoginDto } from 'src/users/dto/UserLoginDto.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService
   ) { }
 
-  async signIn(createUserDto: CreateUserDto): Promise<{ access_token: string }> {
+  async signIn(createUserDto: UserLoginDto): Promise<{ access_token: string }> {
     if (!createUserDto || isEmpty(createUserDto)) {
       throw new BadRequestException('Invalid data: DTO is required.');
     }
@@ -29,7 +29,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    const payload = { sub: user.userId, username: user.username };
+    const payload = { sub: user.userId, username: user.username, role: user.roleId };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
