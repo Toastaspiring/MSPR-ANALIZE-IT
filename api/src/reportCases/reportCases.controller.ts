@@ -3,10 +3,10 @@ import { ReportCaseService } from './reportCases.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { CreateReportCaseDto } from './dto/CreateReportCase.dto';
 import { UpdateReportCaseDto } from './dto/UpdateReportCase.dto';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/decorator';
-import { UserRole } from 'src/users/users.service';
-import { CommonApiResponses } from 'src/common/api-response.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorator';
+import { UserRole } from '../users/users.service';
+import { CommonApiResponses } from '../common/api-response.decorator';
 
 @Controller('case')
 @UseGuards(RolesGuard)

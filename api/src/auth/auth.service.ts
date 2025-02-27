@@ -3,7 +3,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { isEmpty, IsEmpty } from 'class-validator';
-import { UserLoginDto } from 'src/users/dto/UserLoginDto.dto';
+import { UserLoginDto } from '../users/dto/UserLoginDto.dto';
 
 @Injectable()
 export class AuthService {

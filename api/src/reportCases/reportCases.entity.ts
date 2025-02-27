@@ -1,5 +1,5 @@
-import { Disease } from "src/diseases/disease.entity"
-import { Localization } from "src/localizations/localization.entity";
+import { Disease } from "../diseases/disease.entity";
+import { Localization } from "../localizations/localization.entity";
 import { AfterInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('ReportCase')

@@ -3,10 +3,10 @@ import { DiseasesService } from './diseases.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CreateDiseaseDto } from './dto/CreateDiseaseDto.dto';
 import { UpdateDiseaseDto } from './dto/UpdateDiseaseDto.dto';
-import { UserRole } from 'src/users/users.service';
-import { Roles } from 'src/auth/decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { CommonApiResponses } from 'src/common/api-response.decorator';
+import { UserRole } from '../users/users.service';
+import { Roles } from '../auth/decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { CommonApiResponses } from '../common/api-response.decorator';
 
 @Controller('disease')
 @UseGuards(RolesGuard)

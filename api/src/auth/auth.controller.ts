@@ -3,7 +3,7 @@ import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from './decorator';
-import { UserLoginDto } from 'src/users/dto/UserLoginDto.dto';
+import { UserLoginDto } from '../users/dto/UserLoginDto.dto';
 
 @Controller('auth')
 export class AuthController {

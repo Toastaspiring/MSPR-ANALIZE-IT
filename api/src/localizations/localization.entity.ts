@@ -1,4 +1,4 @@
-import { ReportCase } from "src/reportCases/reportCases.entitiy";
+import { ReportCase } from "../reportCases/reportCases.entity";
 import { AfterInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('Localization')

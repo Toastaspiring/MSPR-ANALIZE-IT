@@ -5,7 +5,7 @@ import { LocalizationModule } from './localizations/localizations.module';
 import { ReportCaseModule } from './reportCases/reportCases.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Localization } from './localizations/localization.entity';
-import { ReportCase } from './reportCases/reportCases.entitiy';
+import { ReportCase } from './reportCases/reportCases.entity';
 import { DiseasesModule } from './diseases/diseases.module';
 import { Disease } from './diseases/disease.entity';
 import { AuthModule } from './auth/auth.module';
@@ -25,7 +25,7 @@ const mysqlParam = {
   username: 'mspr_user',
   password: 'mspr_user',
   database: 'mspr_database',
-  entities: [Localization,ReportCase,Disease],
+  entities: [Localization, ReportCase, Disease],
 }
 
 @Module({
@@ -37,13 +37,13 @@ const mysqlParam = {
       username: 'mspr_user',
       password: 'mspr_user',
       database: 'mspr_database',
-      entities: [Localization,ReportCase,Disease],
+      entities: [Localization, ReportCase, Disease],
     }),
-    ReportCaseModule, 
-    LocalizationModule, 
+    ReportCaseModule,
+    LocalizationModule,
     DiseasesModule, AuthModule, UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

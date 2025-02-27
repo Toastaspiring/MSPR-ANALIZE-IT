@@ -1,20 +1,20 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ReportCase } from './reportCases.entitiy';
+import { ReportCase } from './reportCases.entity';
 import { CreateReportCaseDto } from './dto/CreateReportCase.dto';
 import { UpdateReportCaseDto } from './dto/UpdateReportCase.dto';
 import { isEmpty } from 'lodash';
 
 @Injectable()
 export class ReportCaseService {
-    constructor(@InjectRepository(ReportCase) private repo: Repository<ReportCase>){}
+    constructor(@InjectRepository(ReportCase) private repo: Repository<ReportCase>) { }
 
     async create(createReportCaseDto: CreateReportCaseDto) {
         if (!createReportCaseDto || isEmpty(createReportCaseDto)) {
             throw new BadRequestException('Invalid data: DTO is required.');
         }
-        
+
         try {
             const newCase = this.repo.create(
                 {
@@ -22,7 +22,7 @@ export class ReportCaseService {
                     date: new Date(createReportCaseDto.date)
                 }
             )
-            return await this.repo.save(newCase) 
+            return await this.repo.save(newCase)
         }
         catch (error) {
             console.error('Error creating report case:', error);
@@ -139,13 +139,13 @@ export class ReportCaseService {
                 .limit(count);
 
             console.log("Generated SQL Query: ", queryBuilder.getSql());
-            
+
             return await queryBuilder.getMany();
         }
         catch (error) {
             console.error('Error fetching filtered report cases:', error);
             throw new InternalServerErrorException('Failed to fetch filtered report cases.');
         }
-        
+
     }
 }
