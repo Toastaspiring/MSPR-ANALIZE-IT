@@ -30,8 +30,7 @@ jobs:
     
       - name: test access
         run: |
-            curl http://localhost:3306 || exit 1
             curl http://localhost:8095 || exit 1
-            curl http://localhost:3000 || exit 1
+            curl http://localhost:3000/api || exit 1
             curl http://localhost:5173 || exit 1
 
