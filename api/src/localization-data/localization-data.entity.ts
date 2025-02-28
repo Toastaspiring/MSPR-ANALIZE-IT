@@ -2,9 +2,8 @@ import { Localization } from "../localizations/localization.entity";
 import { ReportCase } from "../reportCases/reportCases.entity";
 import { AfterInsert, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
-@Entity('Localization')
+@Entity('LocalizationData')
 export class LocalizationData {
-
     @PrimaryGeneratedColumn()
     id: number
 

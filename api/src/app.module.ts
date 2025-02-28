@@ -15,7 +15,7 @@ import { LocalizationData } from './localization-data/localization-data.entity';
 
 const sqliteParam = {
   type: 'sqlite',
-  entities: [Localization, ReportCase, Disease],
+  entities: [Localization, ReportCase, Disease, LocalizationData],
   database: 'database.sqlite',
   synchronize: true,
 }
@@ -27,7 +27,7 @@ const mysqlParam = {
   username: 'mspr_user',
   password: 'mspr_user',
   database: 'mspr_database',
-  entities: [Localization, ReportCase, Disease],
+  entities: [Localization, ReportCase, Disease, LocalizationData],
 }
 
 @Module({
