@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: regle de firewall
-        run: sudo ufw allow 8095/tcp && sudo ufw allow 3000/tcp && sudo ufw allow 5173/tcp && sudo ufw allow 3000/tcp
+        run: sudo ufw allow 8095/tcp && sudo ufw allow 3000/tcp && sudo ufw allow 5173/tcp && sudo ufw allow 3306/tcp
 
       # Runs a single command using the runners shell
       - name: run docker compose 
