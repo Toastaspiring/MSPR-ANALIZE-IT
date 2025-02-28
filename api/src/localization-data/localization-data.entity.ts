@@ -1,0 +1,30 @@
+import { Localization } from "../localizations/localization.entity";
+import { ReportCase } from "../reportCases/reportCases.entity";
+import { AfterInsert, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+
+@Entity('LocalizationData')
+export class LocalizationData {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    localizationId: number
+
+    @Column()
+    inhabitantsNumber: number
+
+    @Column()
+    populationConcentration: number
+
+    @Column()
+    vaccinationRate: number
+
+    @ManyToOne(() => Localization, (localization) => localization.localizationData, { eager: true })
+    @JoinColumn({ name: 'localizationId' })
+    localization: Localization;
+
+    @AfterInsert()
+    logInsert() {
+        console.log('Localization data created with id ' + this.id)
+    }
+}
