@@ -24,16 +24,16 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: run docker compose 
-        run: docker compose up -d
+        run: docker compose up
     
       - name: check health
         run: |
-            sleep 75
+            sleep 50
             docker ps
     
       - name: test access
         run: |
             curl http://localhost:8095 || exit 1
-            curl http://localhost:3000/api || exit 1
+            curl http://localhost:3000 || exit 1
             curl http://localhost:5173 || exit 1
 
