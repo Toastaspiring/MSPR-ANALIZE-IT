@@ -18,6 +18,16 @@ CREATE TABLE Localization(
     continent varchar(20) NOT NULL
 );
 
+CREATE TABLE LocalizationData(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    localizationId INT(5) NOT NULL,
+    inhabitantsNumber FLOAT(10) NOT NULL,
+    populationConcentration FLOAT(10) NOT NULL,
+    vaccinationRate FLOAT(10) NOT NULL,
+    date Date,
+    FOREIGN KEY (localizationId) REFERENCES Localization(id)
+);
+
 CREATE TABLE ReportCase(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     totalConfirmed INT(10) NOT NULL,
@@ -28,4 +38,17 @@ CREATE TABLE ReportCase(
     date DATE,
     FOREIGN KEY (localizationId) REFERENCES Localization(id),
     FOREIGN KEY (diseaseId) REFERENCES Disease(id)
+);
+
+CREATE TABLE Role(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    roleName VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE User(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    roleId INT(5) NOT NULL,
+    FOREIGN KEY (roleId) REFERENCES Role(id)
 );
