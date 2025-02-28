@@ -1,34 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import data from '../assets/data.json'
 import TableHeader from './TableHeader';
+import { FilterState } from '../enums/filterStates.enum';
+import { Column } from '../types/column';
 
 function Table() {
-    enum FilterState {
-        AZ = "az",
-        ZA = "za",
-        NONE = "none",
-      }
 
     type Record = {
-        "N°": number;
-        Continent: string;
-        Pays: string;
-        Date: string;
-        Confirmés: number;
-        Actifs: number;
-        Décès: number;
-        Guéris: number;
-      };
+      "N°": number;
+      Continent: string;
+      Pays: string;
+      Date: string;
+      Confirmés: number;
+      Actifs: number;
+      Décès: number;
+      Guéris: number;
+    };
       
       // Afficher toutes les données
       const dataRows:Record[] = [];
       const [rows,setRows] = useState<Record[]>(fetchData);
-      const [sortedColumn, setSortedColumn] = useState<string | null>(null);
-      const [filterState, setFilterState] = useState<FilterState>(FilterState.NONE);
+      const [sortedColumn, setSortedColumn] = useState<Column | null>(null);
+      const [columns, setColumns] = useState<Column[]>([
+        {name: 'N°', state: FilterState.NONE},
+        {name: 'Continent', state: FilterState.NONE},
+        {name: 'Pays', state: FilterState.NONE},
+        {name: 'Date', state: FilterState.NONE},
+        {name: 'Confirmés', state: FilterState.NONE},
+        {name: 'Actifs', state: FilterState.NONE},
+        {name: 'Décès', state: FilterState.NONE},
+        {name: 'Guéris', state: FilterState.NONE}
+      ]);
 
-      function handleSortedColumn(name:string | null, filterState: FilterState) {
-        setSortedColumn(name);
-        setFilterState(filterState)
+
+      useEffect(()=>{
+        handleSortColumn();
+      },[sortedColumn])
+
+      useEffect(()=>{
+      },[columns])
+
+      const handleSortColumn = () => {
+        var newColumns: Column[] = [];
+        if(sortedColumn != null){
+          columns.map((column)=>{
+            if(column.name == sortedColumn.name){
+              newColumns.push({
+                name:column.name, 
+                state:sortedColumn.state
+              });
+            }else{
+              newColumns.push({
+                name:column.name, 
+                state:FilterState.NONE
+              });
+            }
+          })
+          setColumns(newColumns);
+        }
       }
 
       function fetchData(){ // la passer en async et en fléchée plus tard
@@ -51,31 +80,26 @@ function Table() {
       <div className="m-8">
         <table className="w-full border-collapse shadow-gray-100 shadow-[0px_0px_0px_1px] rounded-xl overflow-hidden">
           <thead>
-            <tr className="bg-gray-100"> 
-              <TableHeader name={'N°'} filterState={FilterState.NONE} onClick={handleSortedColumn}/>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Continent</th>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Pays</th>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Date</th>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Confirmés</th>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Actifs</th>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Décès</th>
-              <th className="border-[1px] border-gray-200 p-4 text-center">Guéris</th>
+            <tr className="bg-gray-100">
+              {columns.map((column, index) => (
+                <TableHeader 
+                  key={index} 
+                  name={column.name}
+                  filterState={column.state}
+                  setSortedColumn={setSortedColumn} 
+                />
+              ))}
             </tr>
           </thead>
           <tbody>
             {rows.map((entry, key) =>  {
-                return (        
-                    <tr key={key+1}>
-                        <th className="border-[1px] border-gray-200 text-center">{entry['N°']}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Continent}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Pays}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Date}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Confirmés}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Actifs}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Décès}</th>
-                        <th className="border-[1px] border-gray-200 text-center">{entry.Guéris}</th>
-                    </tr>
-                )}
+              return (        
+                <tr key={key+1}>
+                  {Object.keys(entry).map((key) => (
+                    <th key={key} className="border-[1px] border-gray-200 text-center">{entry[key as keyof typeof entry]}</th>
+                  ))}
+                </tr>
+              )}
             )}
           </tbody>
         </table>
