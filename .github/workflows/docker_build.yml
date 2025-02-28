@@ -19,6 +19,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: regle de firewall
+        run: sudo ufw allow 8095/tcp && sudo ufw allow 3000/tcp && sudo ufw allow 5173/tcp
+
       # Runs a single command using the runners shell
       - name: run docker compose 
         run: docker compose up -d
