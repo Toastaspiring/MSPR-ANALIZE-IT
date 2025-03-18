@@ -57,3 +57,73 @@ INSERT INTO Role(roleName) VALUES('superadmin');
 INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
 INSERT INTO User(username, password, roleId) VALUES(AES_ENCRYPT('admin',256), sha2('admin',256), 1);
+
+DROP DATABASE IF EXISTS mspr_database_archive;
+CREATE DATABASE mspr_database_archive;
+
+GRANT ALL PRIVILEGES ON mspr_database_archive.* TO 'mspr_user'@'%';
+
+USE mspr_database_archive;
+
+CREATE TABLE millions_population_country (
+    id INT(10) AUTO_INCREMENT PRIMARY KEY,
+    country VARCHAR(255),
+    year_2018 DECIMAL(10, 3),
+    year_2019 DECIMAL(10, 3),
+    year_2020 DECIMAL(10, 3),
+    year_2021 DECIMAL(10, 3),
+    year_2022 DECIMAL(10, 3)
+);
+
+CREATE TABLE country_and_continent (
+    id INT(10) AUTO_INCREMENT PRIMARY KEY,
+    country VARCHAR(255),
+    continent VARCHAR(255)
+);
+
+CREATE TABLE owid_monkeypox_data(
+    id INT(10) AUTO_INCREMENT PRIMARY KEY,
+    location varchar(255),
+    iso_code varchar(255),
+    date date,
+    total_cases decimal(255,5),
+    total_deaths decimal(255,5),
+    new_cases decimal(255,5),
+    new_deaths decimal(255,5),
+    new_cases_smoothed decimal(255,5),
+    new_deaths_smoothed decimal(255,5),
+    new_cases_per_million,total_cases_per_million decimal(255,5),
+    new_cases_smoothed_per_million,new_deaths_per_million decimal(255,5),
+    total_deaths_per_million,new_deaths_smoothed_per_million decimal(255,5)
+);
+
+CREATE TABLE vaccinations(
+    id INT(10) AUTO_INCREMENT PRIMARY KEY,
+    location varchar(255),
+    iso_code varchar(255),
+    date date,
+    total_vaccinations int(255),
+    people_vaccinated int(255),
+    people_fully_vaccinated int(255),
+    total_boosters int(255),
+    daily_vaccinations_raw int(255),
+    daily_vaccinations int(255),
+    total_vaccinations_per_hundred decimal(255,5),
+    people_vaccinated_per_hundred decimal(255,5),
+    people_fully_vaccinated_per_hundred decimal(255,5),
+    total_boosters_per_hundred  decimal(255,5),
+    daily_vaccinations_per_million decimal(255,5)
+    daily_people_vaccinated int(255),
+    daily_people_vaccinated_per_hundred decimal(255,5),
+);
+
+CREATE TABLE worldometer_coronavirus_daily_data(
+    id INT(10) AUTO_INCREMENT PRIMARY KEY,
+    date date,
+    country varchar(255),
+    cumulative_total_cases int(255),
+    daily_new_cases int(255),
+    active_cases int(255),
+    cumulative_total_deaths int(255),
+    daily_new_deaths int(255),
+);
