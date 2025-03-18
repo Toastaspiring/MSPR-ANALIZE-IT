@@ -15,24 +15,24 @@ export class UsersController {
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN, UserRole.USER)
     @ApiOperation({ summary: 'Create a new user' })
-    @ApiBody({ schema: { properties: { login: { example: 'username' }, password: { example: 'password' } } } })
+    @ApiBody({ schema: { properties: { username: { example: 'username' }, password: { example: 'password' } } } })
     @ApiResponse({ status: 201, description: 'The user has been created successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid input data.' })
     @CommonApiResponses()
-    async create(@Body() body: { login: string, password: string }) {
-        return await this.usersService.create(body.login, body.password);
+    async create(@Body() body: { username: string, password: string }) {
+        return await this.usersService.create(body.username, body.password);
     }
 
     @Patch('password')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Update a user\'s password' })
-    @ApiBody({ schema: { properties: { login: { example: 'username' }, newPassword: { example: 'newPassword' } } } })
+    @ApiBody({ schema: { properties: { username: { example: 'username' }, newPassword: { example: 'newPassword' } } } })
     @ApiResponse({ status: 200, description: 'The user\'s password has been updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid input data.' })
     @CommonApiResponses()
-    async updatePassword(@Body() body: { login: string, newPassword: string }) {
-        return await this.usersService.updatePassword(body.login, body.newPassword);
+    async updatePassword(@Body() body: { username: string, newPassword: string }) {
+        return await this.usersService.updatePassword(body.username, body.newPassword);
     }
 
     @Patch('username/:id')

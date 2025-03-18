@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { UserRole } from '../roles/userRole.enum';
+import Utils from '../utils';
 
 @Injectable()
 export class UsersService {
@@ -12,16 +13,20 @@ export class UsersService {
     @InjectRepository(Role) private roleRepo: Repository<Role>,
   ) { }
 
-  // TODO - Verification valid password with regex
-  // TODO - Hash password
-
-  async create(login: string, password: string) {
-    if (!login || !password) {
-      throw new BadRequestException('Invalid login or password.');
+  async create(username: string, password: string) {
+    if (!username || !Utils.isValidUsername(username)) {
+      throw new BadRequestException('Invalid username.');
     }
 
-    if (await this.repo.findOneBy({ username: login })) {
-      throw new BadRequestException('Login already exists.');
+    if (!password || !Utils.isValidPassword(password)) {
+      throw new BadRequestException('Invalid password.');
+    }
+
+    const cryptedUsername = await Utils.encryptToAES(username);
+    const hashedPassword = Utils.hashToSha256(password);
+
+    if (await this.repo.findOneBy({ username: cryptedUsername })) {
+      throw new BadRequestException('Username already exists.');
     }
 
     try {
@@ -31,7 +36,7 @@ export class UsersService {
         throw new NotFoundException('Role not found.');
       }
 
-      const newUser = this.repo.create({ username: login, password: password, role: role });
+      const newUser = this.repo.create({ username: cryptedUsername, password: hashedPassword, role: role });
       return await this.repo.save(newUser);
     }
     catch (error) {
@@ -40,18 +45,28 @@ export class UsersService {
     }
   }
 
-  async updatePassword(login: string, newPassword: string) {
-    if (!login || !newPassword) {
-      throw new BadRequestException('Invalid login or password.');
+  async updatePassword(username: string, newPassword: string) {
+    if (!username || !newPassword) {
+      throw new BadRequestException('Invalid username or password.');
     }
 
-    const user = await this.repo.findOneBy({ username: login });
+    if (!Utils.isValidPassword(newPassword)) {
+      throw new BadRequestException('Invalid password.');
+    }
+
+    const user = await this.repo.findOneBy({ username: username });
     if (!user) {
-      throw new NotFoundException(`User not found with login: ${login}`);
+      throw new NotFoundException(`User not found with username: ${username}`);
+    }
+
+    const hashedPassword = Utils.hashToSha256(newPassword);
+
+    if (user.password === hashedPassword) {
+      throw new BadRequestException('New password is the same as the old one.');
     }
 
     try {
-      user.password = newPassword;
+      user.password = hashedPassword;
       return await this.repo.save(user);
     } catch (error) {
       console.error('Error updating password:', error);
@@ -73,16 +88,18 @@ export class UsersService {
       throw new NotFoundException(`User not found with id: ${id}`);
     }
 
-    if (user.username === newUsername) {
+    const cryptedUsername = await Utils.encryptToAES(newUsername);
+
+    if (user.username === cryptedUsername) {
       throw new BadRequestException('New username is the same as the old one.');
     }
 
-    if (await this.repo.findOneBy({ username: newUsername })) {
+    if (await this.repo.findOneBy({ username: cryptedUsername })) {
       throw new BadRequestException('Username already exists.');
     }
 
     try {
-      await this.repo.update(user.id, { username: newUsername });
+      await this.repo.update(user.id, { username: cryptedUsername });
       return await this.repo.findOneBy({ id });
     } catch (error) {
       console.error('Error updating username:', error);
@@ -148,12 +165,15 @@ export class UsersService {
     return await this.repo.findOneBy({ id });
   }
 
-  async findByLogin(username: string, passwordHash: string) {
-    if (!username || !passwordHash) {
+  async findByLogin(username: string, password: string) {
+    if (!username || !password) {
       throw new BadRequestException('Invalid username or password.');
     }
 
-    return await this.repo.findOneBy({ username: username, password: passwordHash });
+    const hashedPassword = Utils.hashToSha256(password);
+    const cryptedUsername = await Utils.encryptToAES(username);
+
+    return await this.repo.findOneBy({ username: cryptedUsername, password: hashedPassword });
   }
 
   async getAll() {
