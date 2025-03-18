@@ -1,7 +1,7 @@
 services:
   db:
     container_name: db_mspr
-    image: mariadb:11.6.1-noble-rc
+    image: mariadb:11.7-ubi9
     ports:
       - 3306:3306
     environment:

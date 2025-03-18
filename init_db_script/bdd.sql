@@ -47,8 +47,13 @@ CREATE TABLE Role(
 
 CREATE TABLE User(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    username varbinary(50) UNIQUE NOT NULL,
+    password VARCHAR(500) NOT NULL,
     roleId INT(5) NOT NULL,
     FOREIGN KEY (roleId) REFERENCES Role(id)
 );
+
+INSERT INTO Role(roleName) VALUES('superadmin');
+INSERT INTO Role(roleName) VALUES('admin');
+INSERT INTO Role(roleName) VALUES('user');
+INSERT INTO User(username, password, roleId) VALUES(AES_ENCRYPT('admin',256), sha2('admin',256), 1);
