@@ -5,8 +5,8 @@ import { CreateReportCaseDto } from './dto/CreateReportCase.dto';
 import { UpdateReportCaseDto } from './dto/UpdateReportCase.dto';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorator';
-import { UserRole } from '../users/users.service';
 import { CommonApiResponses } from '../common/api-response.decorator';
+import { UserRole } from '../roles/userRole.enum';
 
 @Controller('case')
 @UseGuards(RolesGuard)
@@ -17,7 +17,7 @@ export class ReportCaseController {
 
     @Post('create')
     @ApiBearerAuth()
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Create a new report case' })
     @ApiBody({ type: CreateReportCaseDto })
     @ApiResponse({ status: 201, description: 'The report case have been created successfully.' })
@@ -29,7 +29,7 @@ export class ReportCaseController {
 
     @Patch(':id')
     @ApiBearerAuth()
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Update an existing report case' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the case to update', example: 1 })
     @ApiBody({ type: UpdateReportCaseDto })
@@ -43,7 +43,7 @@ export class ReportCaseController {
 
     @Delete(':id')
     @ApiBearerAuth()
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Delete a report case by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of case to delete', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted report case have been deleted successfully.' })
@@ -56,7 +56,7 @@ export class ReportCaseController {
 
     @Get('filtered')
     @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.USER)
+    @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve filtered report cases' })
     @ApiQuery({ name: 'filter', required: false, type: String, description: 'The filter to retrieve specific data' })
     @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
@@ -69,7 +69,7 @@ export class ReportCaseController {
 
     @Get()
     @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.USER)
+    @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve all cases with a limit' })
     @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
     @ApiResponse({ status: 200, description: 'The list of report cases has been retrieved successfully.' })
@@ -81,7 +81,7 @@ export class ReportCaseController {
 
     @Get(':id')
     @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.USER)
+    @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a case by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted case', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted report case have been retrieved successfully.' })

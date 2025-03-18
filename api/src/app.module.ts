@@ -12,10 +12,13 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { LocalizationDataModule } from './localization-data/localization-data.module';
 import { LocalizationData } from './localization-data/localization-data.entity';
+import { Role } from './roles/role.entity';
+import { RolesModule } from './roles/roles.module';
+import { User } from './users/user.entity';
 
 const sqliteParam = {
   type: 'sqlite',
-  entities: [Localization, ReportCase, Disease, LocalizationData],
+  entities: [Localization, ReportCase, Disease, LocalizationData, User, Role],
   database: 'database.sqlite',
   synchronize: true,
 }
@@ -27,7 +30,7 @@ const mysqlParam = {
   username: 'mspr_user',
   password: 'mspr_user',
   database: 'mspr_database',
-  entities: [Localization, ReportCase, Disease, LocalizationData],
+  entities: [Localization, ReportCase, Disease, LocalizationData, User, Role],
 }
 
 @Module({
@@ -39,10 +42,11 @@ const mysqlParam = {
       username: 'mspr_user',
       password: 'mspr_user',
       database: 'mspr_database',
-      entities: [Localization, LocalizationData, ReportCase, Disease],
+      entities: [Localization, LocalizationData, ReportCase, Disease, User, Role],
     }),
     AuthModule,
     UsersModule,
+    RolesModule,
     ReportCaseModule,
     LocalizationModule,
     LocalizationDataModule,

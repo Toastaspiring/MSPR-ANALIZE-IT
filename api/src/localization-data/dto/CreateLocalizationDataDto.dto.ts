@@ -14,11 +14,6 @@ export class CreateLocalizationDataDto {
 
     @IsNotEmpty()
     @IsNumber()
-    @ApiProperty({ example: 60, description: 'Population concentration' })
-    populationConcentration: number;
-
-    @IsNotEmpty()
-    @IsNumber()
     @ApiProperty({ example: 75, description: 'Vaccination rate' })
     vaccinationRate: number;
 }

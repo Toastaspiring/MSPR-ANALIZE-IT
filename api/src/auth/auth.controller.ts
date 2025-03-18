@@ -11,8 +11,6 @@ export class AuthController {
     private authService: AuthService,
   ) { }
 
-  // TODO doc
-
   @Public()
   @Post('login')
   @ApiBody({ type: UserLoginDto })

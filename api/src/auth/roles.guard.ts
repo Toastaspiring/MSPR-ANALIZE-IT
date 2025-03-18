@@ -1,15 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../users/users.service';
 import { Request } from 'express';
-import { UserRole } from '../users/users.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-    constructor(private reflector: Reflector, private jwtService: JwtService) { }
+    constructor(
+        private reflector: Reflector,
+        private jwtService: JwtService,
+        private usersService: UsersService,
+    ) { }
 
-    canActivate(context: ExecutionContext): boolean {
-        const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>('roles', [
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const requiredRoles = this.reflector.getAllAndOverride<number[]>('roles', [
             context.getHandler(),
             context.getClass(),
         ]);
@@ -29,7 +33,8 @@ export class RolesGuard implements CanActivate {
             const token = authHeader.split(' ')[1];
             const decoded = this.jwtService.verify(token);
 
-            if (!requiredRoles.includes(decoded.role)) {
+            const user = await this.usersService.getById(decoded.sub);
+            if (!user || !requiredRoles.includes(user.role.id)) {
                 throw new ForbiddenException('Access denied: Insufficient permissions');
             }
 

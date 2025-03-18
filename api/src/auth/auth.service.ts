@@ -24,12 +24,12 @@ export class AuthService {
       throw new BadRequestException('Invalid username or password.');
     }
 
-    const user = await this.usersService.findOne(username, password);
+    const user = await this.usersService.findByLogin(username, password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    const payload = { sub: user.userId, username: user.username, role: user.roleId };
+    const payload = { sub: user.id, username: user.username, role: user.role.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

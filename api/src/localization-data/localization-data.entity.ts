@@ -14,9 +14,6 @@ export class LocalizationData {
     inhabitantsNumber: number
 
     @Column()
-    populationConcentration: number
-
-    @Column()
     vaccinationRate: number
 
     @ManyToOne(() => Localization, (localization) => localization.localizationData, { eager: true })

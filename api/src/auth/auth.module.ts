@@ -15,7 +15,7 @@ import { SetMetadata } from '@nestjs/common';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '120s' },
     }),
   ],
   providers: [
@@ -28,4 +28,4 @@ import { SetMetadata } from '@nestjs/common';
   controllers: [AuthController],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }
