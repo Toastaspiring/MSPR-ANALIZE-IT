@@ -86,15 +86,18 @@ CREATE TABLE owid_monkeypox_data(
     location varchar(255),
     iso_code varchar(255),
     date date,
-    total_cases decimal(255,5),
-    total_deaths decimal(255,5),
-    new_cases decimal(255,5),
-    new_deaths decimal(255,5),
-    new_cases_smoothed decimal(255,5),
-    new_deaths_smoothed decimal(255,5),
-    new_cases_per_million,total_cases_per_million decimal(255,5),
-    new_cases_smoothed_per_million,new_deaths_per_million decimal(255,5),
-    total_deaths_per_million,new_deaths_smoothed_per_million decimal(255,5)
+    total_cases decimal(50,5),
+    total_deaths decimal(50,5),
+    new_cases decimal(50,5),
+    new_deaths decimal(50,5),
+    new_cases_smoothed decimal(50,5),
+    new_deaths_smoothed decimal(50,5),
+    new_cases_per_million decimal(50,5),
+    total_cases_per_million decimal(50,5),
+    new_cases_smoothed_per_million decimal(50,5),
+    new_deaths_per_million decimal(50,5),
+    total_deaths_per_million decimal(50,5),
+    new_deaths_smoothed_per_million decimal(50,5)
 );
 
 CREATE TABLE vaccinations(
@@ -108,13 +111,13 @@ CREATE TABLE vaccinations(
     total_boosters int(255),
     daily_vaccinations_raw int(255),
     daily_vaccinations int(255),
-    total_vaccinations_per_hundred decimal(255,5),
-    people_vaccinated_per_hundred decimal(255,5),
-    people_fully_vaccinated_per_hundred decimal(255,5),
-    total_boosters_per_hundred  decimal(255,5),
-    daily_vaccinations_per_million decimal(255,5)
+    total_vaccinations_per_hundred decimal(50,5),
+    people_vaccinated_per_hundred decimal(50,5),
+    people_fully_vaccinated_per_hundred decimal(50,5),
+    total_boosters_per_hundred  decimal(50,5),
+    daily_vaccinations_per_million decimal(50,5),
     daily_people_vaccinated int(255),
-    daily_people_vaccinated_per_hundred decimal(255,5),
+    daily_people_vaccinated_per_hundred decimal(50,5)
 );
 
 CREATE TABLE worldometer_coronavirus_daily_data(
@@ -125,5 +128,5 @@ CREATE TABLE worldometer_coronavirus_daily_data(
     daily_new_cases int(255),
     active_cases int(255),
     cumulative_total_deaths int(255),
-    daily_new_deaths int(255),
+    daily_new_deaths int(255)
 );
