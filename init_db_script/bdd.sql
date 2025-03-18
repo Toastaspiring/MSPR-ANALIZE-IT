@@ -56,7 +56,7 @@ CREATE TABLE User(
 INSERT INTO Role(roleName) VALUES('superadmin');
 INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
-INSERT INTO User(username, password, roleId) VALUES(AES_ENCRYPT('admin',256), sha2('admin',256), 1);
+INSERT INTO User(username, password, roleId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1);
 
 DROP DATABASE IF EXISTS mspr_database_archive;
 CREATE DATABASE mspr_database_archive;
