@@ -43,7 +43,7 @@ def parse_database_schema(sql_file):
     return schema
 
 
-db_schema = parse_database_schema("/files/bdd.sql")
+db_schema = parse_database_schema("./files/bdd.sql")
 
 
 def rename_country(country_name):
@@ -105,7 +105,7 @@ def backup_and_insert_data(file_path, table_name):
 
 
 def main():
-    data_dir = "/files/"  # Directory containing CSV files
+    data_dir = "./files/"  # Directory containing CSV files
     files = [
         "countries_and_continents.csv",
         "millions_population_country.csv",
