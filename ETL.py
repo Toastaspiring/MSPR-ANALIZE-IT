@@ -69,7 +69,7 @@ def rename_country(country_name):
     elif 'United States' in country_name:
         return 'USA'
     else:
-        return country_name  # Otherwise, keep the original value
+        return country_name  # Otherwise, keep the original values
 
 
 def backup_and_insert_data(file_path, table_name):
