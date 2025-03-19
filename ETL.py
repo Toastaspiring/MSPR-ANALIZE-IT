@@ -102,6 +102,12 @@ def backup_data(file_path, table_name):
             print(f"Skipping {file_path}: No valid columns match database schema.")
             return
 
+        # Convert year columns to numeric, replacing errors with NaN
+        for col in valid_columns:
+            if col.startswith("year_"):
+                df[col] = pd.to_numeric(df[col], errors='coerce')  # Convert invalid values to NaN
+                df[col].fillna(0, inplace=True)  # Replace NaN with 0 (or use None for NULL in MySQL)
+
         df = df[valid_columns]
         columns = ", ".join(valid_columns)
         values = ", ".join(["%s"] * len(valid_columns))
