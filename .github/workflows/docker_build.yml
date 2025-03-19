@@ -31,9 +31,13 @@ jobs:
             sleep 50
             docker ps
     
-      - name: test access
+      - name: test access phpmyadmin
         run: |
             curl http://localhost:8095 || exit 1
+      - name: test access API
+        run: |      
             curl http://localhost:3000 || exit 1
+      - name: test access Front
+        run: |      
             curl http://localhost:5173 || exit 1
 
