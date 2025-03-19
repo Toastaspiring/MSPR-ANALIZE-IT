@@ -12,22 +12,12 @@ db_config = {
     'port': '3306',
     'user': 'mspr_user',
     'password': 'mspr_user',
-    'database': 'mspr_database',
+    'database': 'mspr_database_archive',
     'collation': "utf8mb4_general_ci"
 }
 
 # Establish connection
-connection_main = mysql.connector.connect(**db_config)
-cursor_main = connection_main.cursor()
-
-connection_archive = mysql.connector.connect(
-    host=db_config['host'],
-    port=db_config['port'],
-    user=db_config['user'],
-    password=db_config['password'],
-    database="mspr_database_archive",
-    collation=db_config['collation']
-)
+connection_archive = mysql.connector.connect(**db_config)
 cursor_archive = connection_archive.cursor()
 
 
@@ -75,7 +65,20 @@ def rename_country(country_name):
     return replacements.get(country_name, country_name)
 
 
-def backup_and_insert_data(file_path, table_name):
+def check_table_exists(table_name):
+    cursor_archive.execute("SHOW TABLES LIKE %s", (table_name,))
+    return cursor_archive.fetchone() is not None
+
+
+def backup_data(file_path, table_name):
+    if not os.path.exists(file_path):
+        print(f"Skipping {file_path}: File does not exist.")
+        return
+
+    if not check_table_exists(table_name):
+        print(f"Warning: Table {table_name} does not exist in the archive database. Skipping.")
+        return
+
     try:
         df = pd.read_csv(file_path).fillna(0)
 
@@ -95,6 +98,10 @@ def backup_and_insert_data(file_path, table_name):
         df.rename(columns=column_mapping, inplace=True)
 
         valid_columns = [col for col in df.columns if col in db_schema[table_name]]
+        if not valid_columns:
+            print(f"Skipping {file_path}: No valid columns match database schema.")
+            return
+
         df = df[valid_columns]
         columns = ", ".join(valid_columns)
         values = ", ".join(["%s"] * len(valid_columns))
@@ -105,10 +112,10 @@ def backup_and_insert_data(file_path, table_name):
         for index, row in df.iterrows():
             os.system('clear')
             print(f"nb ligne traité : {index}")
-            cursor_main.execute(insert_query, tuple(row))
+            cursor_archive.execute(insert_query, tuple(row))
 
-        connection_main.commit()
-        print(f"Successfully processed {file_path}")
+        connection_archive.commit()
+        print(f"Successfully backed up {file_path}")
     except Exception as e:
         print(f"Error processing {file_path}: {e}")
 
@@ -126,13 +133,11 @@ def main():
     for file_name in files:
         file_path = os.path.join(data_dir, file_name)
         table_name = os.path.splitext(file_name)[0]
-        backup_and_insert_data(file_path, table_name)
+        backup_data(file_path, table_name)
 
-    cursor_main.close()
-    connection_main.close()
     cursor_archive.close()
     connection_archive.close()
-    print("ETL process completed.")
+    print("Backup process completed.")
 
     end_time = time.time()
     print(f"Temps d'exécution : {end_time - start_time:.6f} secondes")
