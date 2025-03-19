@@ -51,7 +51,7 @@ services:
       context: .
       dockerfile: Dockerfile-api
     command: >
-      /bin/sh -c "git pull; sleep 30; npm run start"
+      /bin/sh -c "git pull;npm i; sleep 30; npm run start"
     ports:
       - 3000:3000
     
@@ -62,7 +62,7 @@ services:
       context: .
       dockerfile: Dockerfile-front
     command: >
-      /bin/sh - c "git pull; npm run dev"
+      /bin/sh -c "git pull;npm i; npm run dev"
     ports:
       - 5173:5173
     
