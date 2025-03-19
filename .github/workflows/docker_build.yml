@@ -34,10 +34,11 @@ jobs:
       - name: test access phpmyadmin
         run: |
             curl http://localhost:8095 || exit 1
-      - name: test access API
-        run: |      
-            ping -c 5 http://localhost:3000/api || exit 1
       - name: test access Front
         run: |      
             curl http://localhost:5173 || exit 1
+      - name: test access API
+        run: |    
+                sleep 15  
+                curl http://localhost:3000/api || exit 1
 
