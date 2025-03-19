@@ -124,14 +124,3 @@ nouvelles_donnees = pd.DataFrame({
 prediction = modele.predict(nouvelles_donnees)
 print(f"Prédiction du nombre de cas actifs : {int(prediction[0])}")
 ```
-
-Citations:
-[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/57872049/39191479-514f-48ad-b532-2fdacad9fbc5/countries_and_continents.csv
-[2] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/57872049/085ae9ab-59a8-48b6-9f42-303d65c22b31/millions_population_country.csv
-[3] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/57872049/577673be-bf47-476a-9616-cc0fefe7449f/owid-monkeypox-data.csv
-[4] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/57872049/7a651de6-e744-4599-ad97-4b4083b2bfd0/worldometer_coronavirus_daily_data.csv
-[5] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/57872049/4a06a83a-0809-46c4-a1aa-023eb5a77c58/vaccinations.csv
-[6] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/57872049/e4cec91b-8879-4e68-ac7f-c03b368f0e91/bdd.sql
-
----
-Answer from Perplexity: pplx.ai/share
