@@ -33,7 +33,7 @@ Cambodia,Asia
 Cameroon,Africa
 Canada,North America
 Cayman Islands,North America
-Central African Republic,Africa
+Central African,Africa
 Sri Lanka,Asia
 Chad,Africa
 Chile,South America
@@ -59,7 +59,7 @@ Equatorial Guinea,Africa
 Ethiopia,Africa
 Eritrea,Africa
 Estonia,Europe
-Falkland Islands Malvinas,South America
+Falkland Islands,South America
 Fiji,Oceania
 Finland,Europe
 France,Europe
@@ -79,7 +79,7 @@ Guinea,Africa
 Guyana,South America
 Haiti,North America
 Honduras,North America
-China Hong Kong Sar,Asia
+Hong Kong,Asia
 Hungary,Europe
 Iceland,Europe
 India,Asia
@@ -220,14 +220,25 @@ French Polynesia,Oceania
 French Guiana,South America
 Faeroe Islands,Europe
 Curacao,North America
+China Hong Kong Sar,Asia
 Channel Islands,North America
+Central African Republic,Africa
 Caribbean Netherlands,North America
 Afghanistan,Asia
 Cabo Verde,Africa
 Sudan,Africa
-Sint Maarten,Oceania
+Sint Maarten,Europe
+Falkland Islands Malvinas,South America
 Reunion,Africa
 Saint Barthelemy,North America
+United States,North America
+United Kingdom,Europe
 Saint Martin (French part),Europe
 Puerto Rico,North America
+Bosnia and Herzegovina,Europe
+Vietnam,Asia
+Democratic Republic of Congo,Africa
+Czechia,Europe
 Guam,Asia
+Eswatini,Africa
+Kosovo,Europe
