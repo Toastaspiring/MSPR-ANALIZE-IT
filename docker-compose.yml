@@ -30,6 +30,7 @@ services:
       dockerfile: Dockerfile-etl
     command: >
       /bin/sh -c "
+      git pull;
       sleep 30;
       if [ -f /my_file.txt ]; then
         echo 'Le fichier existe déjà, aucune commande exécutée.';
@@ -50,7 +51,7 @@ services:
       context: .
       dockerfile: Dockerfile-api
     command: >
-      /bin/sh -c " sleep 30; npm run start"
+      /bin/sh -c "git pull; sleep 30; npm run start"
     ports:
       - 3000:3000
     
@@ -60,7 +61,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-front
-    command: npm run dev
+    command: >
+      /bin/sh - c "git pull; npm run dev"
     ports:
       - 5173:5173
     
