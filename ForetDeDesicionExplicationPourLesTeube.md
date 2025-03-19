@@ -15,9 +15,9 @@ La formule générale de prédiction dans une forêt de décision pour la régre
 $$ \hat{y} = \frac{1}{N} \sum_{i=1}^{N} h_i(x) $$
 
 où :
-- $$ \hat{y} $$ est la valeur prédite,
-- $$ N $$ est le nombre total d'arbres dans la forêt,
-- $$ h_i(x) $$ est la prédiction de l'arbre $$ i $$ pour une entrée $$ x $$.
+- $$ \hat{y} \text{ est la valeur prédite,} $$
+- $$ N \text{ est le nombre total d'arbres dans la forêt,} $$
+- $$ h_i(x) \text{ est la prédiction de l'arbre } i \text{ pour une entrée } x. $$
 
 ## 2. Étapes du processus
 
