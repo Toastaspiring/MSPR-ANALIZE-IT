@@ -19,13 +19,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: regle de firewall
-        run: sudo ufw allow from 172.17.0.0/16
-
       # Runs a single command using the runners shell
       - name: run docker compose 
         run: docker compose up -d
-    
+      
+      - name: regle de firewall
+        run: docker exec api_mspr "sudo ufw allow from 172.17.0.0/16"
       - name: check health
         run: |
             sleep 50
