@@ -36,10 +36,19 @@ def parse_database_schema(sql_file):
     schema = {}
     with open(sql_file, 'r', encoding='utf-8') as f:
         content = f.read()
-        tables = re.findall(r'CREATE TABLE `(.*?)` \((.*?)\);', content, re.DOTALL)
+
+        # Match CREATE TABLE statements, allowing for optional backticks around table names
+        tables = re.findall(r'CREATE TABLE\s+[`]?(\w+)[`]?\s*\((.*?)\);', content, re.DOTALL)
+
         for table, cols in tables:
-            columns = [re.search(r'`(.*?)`', col).group(1) for col in cols.split("\n") if "`" in col]
+            columns = []
+            for col in cols.split("\n"):
+                col_match = re.match(r'\s*[`]?(\w+)[`]?\s+', col)
+                if col_match:
+                    columns.append(col_match.group(1))  # Extract column name without backticks
+
             schema[table] = columns
+
     return schema
 
 
