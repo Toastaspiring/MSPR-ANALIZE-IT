@@ -102,11 +102,17 @@ def backup_data(file_path, table_name):
             print(f"Skipping {file_path}: No valid columns match database schema.")
             return
 
-        # Convert year columns to numeric, replacing errors with NaN
+        # Convert year and large numerical columns to numeric, replacing errors with NaN
         for col in valid_columns:
-            if col.startswith("year_"):
+            if col.startswith("year_") or "total_vaccinations" in col:
                 df[col] = pd.to_numeric(df[col], errors='coerce')  # Convert invalid values to NaN
-                df[col].fillna(0, inplace=True)  # Replace NaN with 0 (or use None for NULL in MySQL)
+                df[col].fillna(0, inplace=True)  # Replace NaN with 0
+
+                # Check for out-of-range values
+                max_int_value = 2147483647  # Max INT(11) in MySQL
+                if df[col].max() > max_int_value:
+                    print(
+                        f"Warning: Some values in column {col} exceed INT limit. Consider changing column type to BIGINT.")
 
         df = df[valid_columns]
         columns = ", ".join(valid_columns)
