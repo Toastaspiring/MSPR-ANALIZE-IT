@@ -10,13 +10,14 @@ Les forêts de décision améliorent cette approche en combinant plusieurs arbre
 
 La formule générale de prédiction dans une forêt de décision pour la régression est donnée par :
 
+$$
 \[ \hat{y} = \frac{1}{N} \sum_{i=1}^{N} h_i(x) \]
 
 où :
 - \( \hat{y} \) est la valeur prédite,
 - \( N \) est le nombre total d'arbres dans la forêt,
 - \( h_i(x) \) est la prédiction de l'arbre \( i \) pour une entrée \( x \).
-
+$$
 ---
 
 ## 2. Étapes du processus
