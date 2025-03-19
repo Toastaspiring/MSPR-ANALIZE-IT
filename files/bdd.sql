@@ -75,7 +75,7 @@ CREATE TABLE millions_population_country (
     year_2022 DECIMAL(10, 3)
 );
 
-CREATE TABLE country_and_continent (
+CREATE TABLE countries_and_continents (
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     country VARCHAR(255),
     continent VARCHAR(255)

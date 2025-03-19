@@ -91,7 +91,7 @@ def backup_and_insert_data(file_path, table_name):
         values = ", ".join(["%s"] * len(valid_columns))
 
         # Backup data
-        backup_table = f"{table_name}_archive"
+        backup_table = f"{table_name}"
         backup_query = f"INSERT INTO {backup_table} ({columns}) VALUES ({values})"
 
         for _, row in df.iterrows():
