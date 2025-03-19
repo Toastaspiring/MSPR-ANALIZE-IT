@@ -118,7 +118,7 @@ def main():
     files = [
         "countries_and_continents.csv",
         "millions_population_country.csv",
-        "owid-monkeypox-data.csv",
+        "owid_monkeypox_data.csv",
         "vaccinations.csv",
         "worldometer_coronavirus_daily_data.csv"
     ]
