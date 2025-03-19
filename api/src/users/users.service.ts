@@ -74,7 +74,7 @@ export class UsersService {
     }
   }
 
-  async updateUserName(id: number, newUsername: string) {
+  async updateUsername(id: number, newUsername: string) {
     if (!id || id <= 0) {
       throw new BadRequestException('Invalid id.');
     }

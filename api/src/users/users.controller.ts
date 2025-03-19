@@ -45,7 +45,7 @@ export class UsersController {
     @ApiResponse({ status: 400, description: 'Invalid input data.' })
     @CommonApiResponses()
     async updateUsername(@Param('id', ParseIntPipe) id: number, @Body() body: { newUsername: string }) {
-        return await this.usersService.updateUserName(id, body.newUsername);
+        return await this.usersService.updateUsername(id, body.newUsername);
     }
 
     @Patch('role/:id')
