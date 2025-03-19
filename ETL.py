@@ -36,20 +36,28 @@ def parse_database_schema(sql_file):
     with open(sql_file, 'r', encoding='utf-8') as f:
         content = f.read()
 
-        # Match CREATE TABLE statements, allowing for optional backticks around table names
-        tables = re.findall(r'CREATE TABLE\s+[`]?(\w+)[`]?\s*\((.*?)\);', content, re.DOTALL)
+        # Match CREATE TABLE statements more flexibly
+        tables = re.findall(r'CREATE TABLE\s+[`]?(\w+)[`]?\s*\((.*?)(\)\s*;)', content, re.DOTALL)
 
-        for _, table, cols in tables:
+        for match in tables:
+            if len(match) < 2:
+                continue  # Skip malformed matches
+
+            table = match[0]
+            cols = match[1]
             columns = []
+
             for col in cols.split("\n"):
                 col = col.strip()
                 if col.upper().startswith(("PRIMARY KEY", "FOREIGN KEY", "CONSTRAINT", "UNIQUE", "CHECK", "KEY")):
-                    continue
+                    continue  # Skip constraints
                 col_match = re.match(r'[`]?(\w+)[`]?\s+', col)
                 if col_match:
                     columns.append(col_match.group(1))
+
             schema[table] = columns
     return schema
+
 
 db_schema = parse_database_schema("./files/bdd.sql")
 print(db_schema)
