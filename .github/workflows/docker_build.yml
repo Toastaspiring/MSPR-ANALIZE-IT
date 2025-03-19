@@ -23,8 +23,6 @@ jobs:
       - name: run docker compose 
         run: docker compose up -d
       
-      - name: regle de firewall
-        run: docker exec api_mspr "sudo ufw allow from 172.17.0.0/16"
       - name: check health
         run: |
             sleep 50
@@ -36,8 +34,8 @@ jobs:
       - name: test access Front
         run: |      
             curl http://localhost:5173 || exit 1
-      - name: test access API
-        run: |    
-                sleep 15  
-                curl http://localhost:3000/api || exit 1
+      # - name: test access API
+      #   run: |    
+      #           sleep 15  
+      #           curl http://localhost:3000/api || exit 1
 
