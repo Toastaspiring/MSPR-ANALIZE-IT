@@ -44,7 +44,7 @@ def parse_database_schema(sql_file):
 
 
 db_schema = parse_database_schema("./files/bdd.sql")
-
+print(db_schema)
 
 def rename_country(country_name):
     if 'Bosnia and Herzegovina' in country_name:
