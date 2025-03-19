@@ -68,11 +68,11 @@ USE mspr_database_archive;
 CREATE TABLE millions_population_country (
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     country VARCHAR(255),
-    year_2018 DECIMAL(10, 3),
-    year_2019 DECIMAL(10, 3),
-    year_2020 DECIMAL(10, 3),
-    year_2021 DECIMAL(10, 3),
-    year_2022 DECIMAL(10, 3)
+    2018 DECIMAL(10, 3),
+    2019 DECIMAL(10, 3),
+    2020 DECIMAL(10, 3),
+    2021 DECIMAL(10, 3),
+    2022 DECIMAL(10, 3)
 );
 
 CREATE TABLE countries_and_continents (
