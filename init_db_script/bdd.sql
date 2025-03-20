@@ -22,7 +22,6 @@ CREATE TABLE LocalizationData(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     localizationId INT(5) NOT NULL,
     inhabitantsNumber FLOAT(10) NOT NULL,
-    populationConcentration FLOAT(10) NOT NULL,
     vaccinationRate FLOAT(10) NOT NULL,
     date Date,
     FOREIGN KEY (localizationId) REFERENCES Localization(id)
@@ -106,17 +105,17 @@ CREATE TABLE vaccinations(
     iso_code varchar(255),
     date date,
     total_vaccinations BIGINT,
-    people_vaccinated int(255),
-    people_fully_vaccinated int(255),
-    total_boosters int(255),
-    daily_vaccinations_raw int(255),
-    daily_vaccinations int(255),
+    people_vaccinated BIGINT,
+    people_fully_vaccinated BIGINT,
+    total_boosters BIGINT,
+    daily_vaccinations_raw BIGINT,
+    daily_vaccinations BIGINT,
     total_vaccinations_per_hundred decimal(50,5),
     people_vaccinated_per_hundred decimal(50,5),
     people_fully_vaccinated_per_hundred decimal(50,5),
     total_boosters_per_hundred  decimal(50,5),
     daily_vaccinations_per_million decimal(50,5),
-    daily_people_vaccinated int(255),
+    daily_people_vaccinated BIGINT,
     daily_people_vaccinated_per_hundred decimal(50,5)
 );
 
