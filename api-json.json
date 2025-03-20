@@ -1,0 +1,1763 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "operationId": "AuthController_signIn",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLoginDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User logged in successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "500": {
+                        "description": "Internal server error occurred while logging in."
+                    }
+                },
+                "tags": [
+                    "Auth"
+                ]
+            }
+        },
+        "/users": {
+            "post": {
+                "operationId": "UsersController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "example": "username"
+                                    },
+                                    "password": {
+                                        "example": "password"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The user has been created successfully."
+                    },
+                    "400": {
+                        "description": "Invalid input data."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Create a new user",
+                "tags": [
+                    "Users"
+                ]
+            },
+            "get": {
+                "operationId": "UsersController_getAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The list of users has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve all users",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/users/password": {
+            "patch": {
+                "operationId": "UsersController_updatePassword",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "example": "username"
+                                    },
+                                    "newPassword": {
+                                        "example": "newPassword"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The user's password has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid input data."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update a user's password",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/users/username/{id}": {
+            "patch": {
+                "operationId": "UsersController_updateUsername",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the user",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "newUsername": {
+                                        "example": "newUsername"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The user's username has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid input data."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update a user's username",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/users/role/{id}": {
+            "patch": {
+                "operationId": "UsersController_updateRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the user",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "roleId": {
+                                        "example": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The user's role has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid input data."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update a user's role",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/users/{id}": {
+            "delete": {
+                "operationId": "UsersController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of user to delete",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted user has been deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Delete a user by id",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/users/id/{id}": {
+            "get": {
+                "operationId": "UsersController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the wanted user",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted user has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a user by id",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/roles/create": {
+            "post": {
+                "operationId": "RolesController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRoleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The role has been created successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Create a new role",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/roles/{id}": {
+            "patch": {
+                "operationId": "RolesController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the role to update",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRoleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The role has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "404": {
+                        "description": "Role not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update an existing role",
+                "tags": [
+                    "Roles"
+                ]
+            },
+            "delete": {
+                "operationId": "RolesController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the role to delete",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The role has been deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Delete a role by id",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/roles/id/{id}": {
+            "get": {
+                "operationId": "RolesController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the wanted role",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The role has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a role by id",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/roles": {
+            "get": {
+                "operationId": "RolesController_getAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The list of roles has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve all roles",
+                "tags": [
+                    "Roles"
+                ]
+            }
+        },
+        "/case/create": {
+            "post": {
+                "operationId": "ReportCaseController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportCaseDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The report case have been created successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Create a new report case",
+                "tags": [
+                    "ReportCase"
+                ]
+            }
+        },
+        "/case/{id}": {
+            "patch": {
+                "operationId": "ReportCaseController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the case to update",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateReportCaseDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The report case has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "404": {
+                        "description": "Report case not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update an existing report case",
+                "tags": [
+                    "ReportCase"
+                ]
+            },
+            "delete": {
+                "operationId": "ReportCaseController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of case to delete",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted report case have been deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "404": {
+                        "description": "Report case not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Delete a report case by id",
+                "tags": [
+                    "ReportCase"
+                ]
+            },
+            "get": {
+                "operationId": "ReportCaseController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the wanted case",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted report case have been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a case by id",
+                "tags": [
+                    "ReportCase"
+                ]
+            }
+        },
+        "/case/filtered": {
+            "get": {
+                "operationId": "ReportCaseController_getFilteredReportCases",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "required": false,
+                        "in": "query",
+                        "description": "The filter to retrieve specific data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "required": false,
+                        "in": "query",
+                        "description": "The number of cases to retrieve",
+                        "schema": {
+                            "example": 1000,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of filtered report cases has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve filtered report cases",
+                "tags": [
+                    "ReportCase"
+                ]
+            }
+        },
+        "/case": {
+            "get": {
+                "operationId": "ReportCaseController_getAll",
+                "parameters": [
+                    {
+                        "name": "count",
+                        "required": false,
+                        "in": "query",
+                        "description": "The number of cases to retrieve",
+                        "schema": {
+                            "example": 1000,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of report cases has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve all cases with a limit",
+                "tags": [
+                    "ReportCase"
+                ]
+            }
+        },
+        "/localization/create": {
+            "post": {
+                "operationId": "LocalizationController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateLocalizationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The localization has been created successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Create a new localization",
+                "tags": [
+                    "Localization"
+                ]
+            }
+        },
+        "/localization/{id}": {
+            "patch": {
+                "operationId": "LocalizationController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the localization to update",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateLocalizationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The localization has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "404": {
+                        "description": "Localization not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update an existing localization",
+                "tags": [
+                    "Localization"
+                ]
+            },
+            "delete": {
+                "operationId": "LocalizationController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of localization to delete",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted localization has been deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Delete a localization by id",
+                "tags": [
+                    "Localization"
+                ]
+            }
+        },
+        "/localization/id/{id}": {
+            "get": {
+                "operationId": "LocalizationController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the wanted localization",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted localization has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a localization by id",
+                "tags": [
+                    "Localization"
+                ]
+            }
+        },
+        "/localization": {
+            "get": {
+                "operationId": "LocalizationController_getAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The list of sorted localizations has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve all localizations",
+                "tags": [
+                    "Localization"
+                ]
+            }
+        },
+        "/localization-data/create": {
+            "post": {
+                "operationId": "LocalizationDataController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateLocalizationDataDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The localization data has been created successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Create a new localization data",
+                "tags": [
+                    "LocalizationData"
+                ]
+            }
+        },
+        "/localization-data/{id}": {
+            "patch": {
+                "operationId": "LocalizationDataController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the localization data to update",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateLocalizationDataDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The localization data has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "404": {
+                        "description": "Localization data not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update an existing localization data",
+                "tags": [
+                    "LocalizationData"
+                ]
+            },
+            "delete": {
+                "operationId": "LocalizationDataController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of localization data to delete",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted localization data has been deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Delete a localization data by id",
+                "tags": [
+                    "LocalizationData"
+                ]
+            }
+        },
+        "/localization-data/id/{id}": {
+            "get": {
+                "operationId": "LocalizationDataController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the wanted localization data",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted localization data has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a localization data by id",
+                "tags": [
+                    "LocalizationData"
+                ]
+            }
+        },
+        "/localization-data": {
+            "get": {
+                "operationId": "LocalizationDataController_getAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The list of sorted localization data has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve all localization data",
+                "tags": [
+                    "LocalizationData"
+                ]
+            }
+        },
+        "/disease/create": {
+            "post": {
+                "operationId": "DiseasesController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDiseaseDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The disease have been created successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Create a new disease",
+                "tags": [
+                    "Diseases"
+                ]
+            }
+        },
+        "/disease/{id}": {
+            "patch": {
+                "operationId": "DiseasesController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the disease to update",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDiseaseDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The disease has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Invalid body parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "404": {
+                        "description": "Disease not found."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Update an existing disease",
+                "tags": [
+                    "Diseases"
+                ]
+            },
+            "delete": {
+                "operationId": "DiseasesController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of disease to delete",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted disease have been deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Delete a disease by id",
+                "tags": [
+                    "Diseases"
+                ]
+            }
+        },
+        "/disease/id/{id}": {
+            "get": {
+                "operationId": "DiseasesController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "The id of the wanted disease",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted disease have been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a disease by id",
+                "tags": [
+                    "Diseases"
+                ]
+            }
+        },
+        "/disease/name/{name}": {
+            "get": {
+                "operationId": "DiseasesController_getByName",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "required": true,
+                        "in": "path",
+                        "description": "The name of the wanted disease",
+                        "schema": {
+                            "example": "Covid19",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted disease have been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve a disease by name",
+                "tags": [
+                    "Diseases"
+                ]
+            }
+        },
+        "/disease": {
+            "get": {
+                "operationId": "DiseasesController_getAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The list of sorted diseases has been retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Invalid token."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "summary": "Retrieve all diseases",
+                "tags": [
+                    "Diseases"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "MSPR",
+        "description": "Manage datasets",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http"
+            }
+        },
+        "schemas": {
+            "UserLoginDto": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "user",
+                        "description": "User name"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password",
+                        "description": "User's password"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
+            },
+            "CreateRoleDto": {
+                "type": "object",
+                "properties": {
+                    "roleName": {
+                        "type": "string",
+                        "example": "Admin",
+                        "description": "Name of the role"
+                    }
+                },
+                "required": [
+                    "roleName"
+                ]
+            },
+            "UpdateRoleDto": {
+                "type": "object",
+                "properties": {
+                    "roleName": {
+                        "type": "string",
+                        "example": "Admin",
+                        "description": "Name of the role"
+                    }
+                }
+            },
+            "CreateReportCaseDto": {
+                "type": "object",
+                "properties": {
+                    "totalConfirmed": {
+                        "type": "number",
+                        "example": 100,
+                        "description": "Total confirmed cases"
+                    },
+                    "totalDeath": {
+                        "type": "number",
+                        "example": 100,
+                        "description": "Total deaths"
+                    },
+                    "totalActive": {
+                        "type": "number",
+                        "example": 100,
+                        "description": "Total active cases"
+                    },
+                    "localizationId": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Localization id"
+                    },
+                    "diseaseId": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Disease id"
+                    },
+                    "date": {
+                        "type": "number",
+                        "example": "1738405852298",
+                        "description": "Report date in timestamp (milliseconds)"
+                    }
+                },
+                "required": [
+                    "totalConfirmed",
+                    "totalDeath",
+                    "totalActive",
+                    "localizationId",
+                    "diseaseId",
+                    "date"
+                ]
+            },
+            "UpdateReportCaseDto": {
+                "type": "object",
+                "properties": {
+                    "totalConfirmed": {
+                        "type": "number",
+                        "example": 100,
+                        "description": "Total confirmed cases"
+                    },
+                    "totalDeath": {
+                        "type": "number",
+                        "example": 100,
+                        "description": "Total deaths"
+                    },
+                    "totalActive": {
+                        "type": "number",
+                        "example": 100,
+                        "description": "Total active cases"
+                    },
+                    "localizationId": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Localization id"
+                    },
+                    "diseaseId": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Disease id"
+                    },
+                    "date": {
+                        "type": "number",
+                        "example": "1738405852298",
+                        "description": "Report date in timestamp (milliseconds)"
+                    }
+                }
+            },
+            "CreateLocalizationDto": {
+                "type": "object",
+                "properties": {
+                    "country": {
+                        "type": "string",
+                        "example": "France",
+                        "description": "Name of the country"
+                    },
+                    "continent": {
+                        "type": "string",
+                        "example": "Europe",
+                        "description": "Name of the continent"
+                    }
+                },
+                "required": [
+                    "country",
+                    "continent"
+                ]
+            },
+            "UpdateLocalizationDto": {
+                "type": "object",
+                "properties": {
+                    "country": {
+                        "type": "string",
+                        "example": "France",
+                        "description": "Name of the country"
+                    },
+                    "continent": {
+                        "type": "string",
+                        "example": "Europe",
+                        "description": "Name of the continent"
+                    }
+                }
+            },
+            "CreateLocalizationDataDto": {
+                "type": "object",
+                "properties": {
+                    "localizationId": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "ID of the localization"
+                    },
+                    "inhabitantsNumber": {
+                        "type": "number",
+                        "example": 1000000,
+                        "description": "Number of inhabitants"
+                    },
+                    "vaccinationRate": {
+                        "type": "number",
+                        "example": 75,
+                        "description": "Vaccination rate"
+                    }
+                },
+                "required": [
+                    "localizationId",
+                    "inhabitantsNumber",
+                    "vaccinationRate"
+                ]
+            },
+            "UpdateLocalizationDataDto": {
+                "type": "object",
+                "properties": {
+                    "localizationId": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "ID of the localization"
+                    },
+                    "inhabitantsNumber": {
+                        "type": "number",
+                        "example": 1000000,
+                        "description": "Number of inhabitants"
+                    },
+                    "vaccinationRate": {
+                        "type": "number",
+                        "example": 75,
+                        "description": "Vaccination rate"
+                    }
+                }
+            },
+            "CreateDiseaseDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Covid19",
+                        "description": "Name of the disease"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "UpdateDiseaseDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Covid19",
+                        "description": "Name of the disease"
+                    }
+                }
+            }
+        }
+    }
+}
