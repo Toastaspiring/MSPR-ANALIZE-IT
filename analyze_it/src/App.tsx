@@ -1,13 +1,9 @@
 // import Table from './components/Table'
 
-import Compare from "./components/Filters/classes/Compare.class"
-import {fields} from "./components/Filters/classes/Field.class"
-import Logic from "./components/Filters/classes/Logic.class"
-import LogicOperator from "./components/Filters/components/LogicOperator"
-import { compareConditionEnum } from "./components/Filters/enums/compareConditionEnum"
-import { logicEnum } from "./components/Filters/enums/logicEnum"
 import SubGroup from "./components/Filters/classes/SubGroup.class"
+import SubGroupOperator from "./components/Filters/components/SubGroupOperator";
 import { subGroupEnum } from "./components/Filters/enums/subGroupEnum"
+import { useState } from "react"
 
 // function App() {
 //   return (<Table/>)
@@ -18,20 +14,29 @@ import { subGroupEnum } from "./components/Filters/enums/subGroupEnum"
 // function App(){
 //   return <WhiteBoard/>
 
-
-const compare2 = new Compare(fields[5], compareConditionEnum.EQUAL, 40);
-const logic2 = new Logic([compare2], logicEnum.NOT);
-const subGroup1 = new SubGroup([logic2], subGroupEnum.WHERE)
-const logic1 = new Logic([logic2,subGroup1], logicEnum.OR);
+const defaultSubGroup = new SubGroup([], subGroupEnum.WHERE)
 
 function App(){
+  const [thisSubGroup, setThisSubGroup] = useState<SubGroup>(defaultSubGroup);
 
-  const handleRacineChange = (index: number, logic: Logic) => {
-    console.log("Racine change :",index,logic)
-  }
+  const handleSubGroupChange = (idx: number,  subGroup?: SubGroup) => {
+      const tempProps = [...thisSubGroup.prop]; // Copie le tableau
+  
+      if (!subGroup) {
+          tempProps.splice(idx, 1); // Supprime l'élément à l'index idx
+      } else {
+          tempProps[idx] = new SubGroup(subGroup.prop, subGroup.type);
+      }
+  
+      const updatedSubGroup = new SubGroup(tempProps, thisSubGroup.type); // Crée un nouvel objet Logic
+  
+      setThisSubGroup(updatedSubGroup);
+  };
 
   return (
-      <LogicOperator logic={logic1} index={0} updateParent={handleRacineChange}/>
+      <div className="p-4">
+        <SubGroupOperator subGroup={defaultSubGroup} updateParent={handleSubGroupChange}/>
+      </div>
   )
 }
 

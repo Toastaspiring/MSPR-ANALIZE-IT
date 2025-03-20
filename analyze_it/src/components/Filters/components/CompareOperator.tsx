@@ -1,13 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import {fields} from "../classes/Field.class"
 import Compare from "../classes/Compare.class"
 import { compareConditionEnum } from "../enums/compareConditionEnum"
-
-// const defaultCompare: Compare = {
-//     field: fields[0],
-//     condition: compareConditionEnum.LIKE,
-//     value: ""
-// }
 
 interface CompareOperatorProps {
     compare: Compare
@@ -20,22 +14,39 @@ const CompareOperator: React.FC<CompareOperatorProps> = ({ compare, index, updat
     const [thisCompare,setThisCompare] = useState<Compare>(compare);
     
     
-    const handleCompareChange = (value: compareConditionEnum) => {
-        setThisCompare(prev => ({ ...prev, condition: value }))
-    }
+    const handleCompareChange = useCallback((value: compareConditionEnum) => {
+        setThisCompare(prev => {
+            const updatedCompare = { ...prev, condition: value };
+            if (updateParent && index !== undefined) {
+                updateParent(index, updatedCompare);
+            }
+            return updatedCompare;
+        });
+    }, [updateParent, index]);
     
-    
-    const handleFieldChange = (value: string) => {
-        const field = fields.find(field => field.label === value); // Trouve l'objet field correspondant
+    const handleFieldChange = useCallback((value: string) => {
+        const field = fields.find(field => field.label === value);
         
         if (field) {
-            setThisCompare(prev => ({ ...prev, field:field })); // Met à jour compare.field
+            setThisCompare(prev => {
+                const updatedCompare = { ...prev, field: field };
+                if (updateParent && index !== undefined) {
+                    updateParent(index, updatedCompare);
+                }
+                return updatedCompare;
+            });
         }
-    }
-
-    const handleValueChange =(value:string) => {
-        setThisCompare(prev => ({ ...prev, value:value }))
-    }
+    }, [fields, updateParent, index]);
+    
+    const handleValueChange = useCallback((value: string) => {
+        setThisCompare(prev => {
+            const updatedCompare = { ...prev, value: value };
+            if (updateParent && index !== undefined) {
+                updateParent(index, updatedCompare);
+            }
+            return updatedCompare;
+        });
+    }, [updateParent, index]);
     
     // permet d'afficher le bon type d'input en fonction du champs selectionne
     const inputType = () => {
@@ -73,11 +84,6 @@ const CompareOperator: React.FC<CompareOperatorProps> = ({ compare, index, updat
             </select>
         );
     };
-    
-    // Lorsque compare est modifie on met a jour le parent
-    useEffect(()=>{
-        updateParent(index, thisCompare)
-    },[thisCompare])
     
     
     return (

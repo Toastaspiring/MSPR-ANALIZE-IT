@@ -10,7 +10,6 @@ interface LogicOperatorProps {
     logic: Logic
     index: number
     updateParent: (index: number, logic?: Logic) => void
-    
 }
 
 const LogicOperator: React.FC<LogicOperatorProps> = ({ logic, index, updateParent }) => {
@@ -18,75 +17,55 @@ const LogicOperator: React.FC<LogicOperatorProps> = ({ logic, index, updateParen
 
 
     const logicTypeChange = (type: logicEnum) => {
-        const tempThisLogic = thisLogic;
-        tempThisLogic.type = type;
-        setThisLogic(tempThisLogic);
-        if (updateParent !== undefined && index !== undefined) { // Mets à jour le parent si il existe
-            updateParent(index, tempThisLogic); 
-        }
-    }
+        setThisLogic(prevLogic => {
+            const updatedLogic = new Logic(prevLogic.prop, type); // Crée un nouvel objet Logic avec le nouveau type
+            if (updateParent && index !== undefined) {
+                updateParent(index, updatedLogic);
+            }
+            return updatedLogic;
+        });
+    };
 
+    const handleUpdate = (idx: number, item?: Logic | Compare | SubGroup) => {
+        const tempProps = [...thisLogic.prop];
+        
+        if (!item) {
+            tempProps.splice(idx, 1); // Supprime l'élément à l'index idx
+        } else {
+            if (item instanceof Logic) {
+                tempProps[idx] = new Logic(item.prop, item.type);
+            } else if (item instanceof Compare) {
+                tempProps[idx] = new Compare(item.field, item.condition, item.value);
+            } else if (item instanceof SubGroup) {
+                tempProps[idx] = new SubGroup(item.prop, item.type);
+            }
+        }
+    
+    const updatedLogic = new Logic(tempProps, thisLogic.type);
+        setThisLogic(updatedLogic);
+    
+        if (updateParent && index !== undefined) {
+            updateParent(index, updatedLogic);
+        }
+    };
 
     const handleLogicChange = (idx: number, logic?: Logic) => {
-        const tempProps = [...thisLogic.prop]; // Copie le tableau
-    
-        if (!logic) {
-            tempProps.splice(idx, 1); // Supprime l'élément à l'index idx
-        } else {
-            tempProps[idx] = new Logic(logic.prop, logic.type);
-        }
-    
-        const updatedLogic = new Logic(tempProps, thisLogic.type); // Crée un nouvel objet Logic
-    
-        setThisLogic(updatedLogic);
-    
-        if (updateParent !== undefined && index !== undefined) {
-            updateParent(index, updatedLogic);
-        }
+        handleUpdate(idx, logic);
     };
-
-
+    
     const handleCompareChange = (idx: number, compare?: Compare) => {
-        const tempProps = [...thisLogic.prop]; // Copie le tableau
-    
-        if (!compare) {
-            tempProps.splice(idx, 1); // Supprime l'élément à l'index idx
-        } else {
-            tempProps[idx] = new Compare(compare.field, compare.condition, compare.value);
-        }
-    
-        const updatedLogic = new Logic(tempProps, thisLogic.type); // Crée un nouvel objet Logic
-    
-        setThisLogic(updatedLogic);
-    
-        if (updateParent !== undefined && index !== undefined) {
-            updateParent(index, updatedLogic);
-        }
+        handleUpdate(idx, compare);
     };
-
-    const handleSubGroupChange = (idx: number,  subGroup?: SubGroup) => {
-        const tempProps = [...thisLogic.prop]; // Copie le tableau
     
-        if (!subGroup) {
-            tempProps.splice(idx, 1); // Supprime l'élément à l'index idx
-        } else {
-            tempProps[idx] = new SubGroup(subGroup.prop, subGroup.type);
-        }
-    
-        const updatedLogic = new Logic(tempProps, thisLogic.type); // Crée un nouvel objet Logic
-    
-        setThisLogic(updatedLogic);
-    
-        if (updateParent !== undefined && index !== undefined) {
-            updateParent(index, updatedLogic);
-        }
+    const handleSubGroupChange = (idx: number, subGroup?: SubGroup) => {
+        handleUpdate(idx, subGroup);
     };
 
 
     const addCompare = () => {
         setThisLogic(prevLogic => {
             const updatedLogic = new Logic([...prevLogic.prop, new Compare()], prevLogic.type);
-            if (updateParent !== undefined && index !== undefined) { 
+            if (updateParent && index !== undefined) { 
                 updateParent(index, updatedLogic); 
             }
             return updatedLogic;
@@ -96,7 +75,7 @@ const LogicOperator: React.FC<LogicOperatorProps> = ({ logic, index, updateParen
     const addLogic = () => {
         setThisLogic(prevLogic => {
             const updatedLogic = new Logic([...prevLogic.prop, new Logic()], prevLogic.type);
-            if (updateParent !== undefined && index !== undefined) { 
+            if (updateParent && index !== undefined) { 
                 updateParent(index, updatedLogic); 
             }
             return updatedLogic;
@@ -106,7 +85,7 @@ const LogicOperator: React.FC<LogicOperatorProps> = ({ logic, index, updateParen
     const addSubGroup = () => {
         setThisLogic(prevLogic => {
             const updatedLogic = new Logic([...prevLogic.prop, new SubGroup()], prevLogic.type);
-            if (updateParent !== undefined && index !== undefined) { 
+            if (updateParent && index !== undefined) { 
                 updateParent(index, updatedLogic); 
             }
             return updatedLogic;
