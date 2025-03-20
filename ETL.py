@@ -108,12 +108,6 @@ def backup_data(file_path, table_name):
                 df[col] = pd.to_numeric(df[col], errors='coerce')  # Convert invalid values to NaN
                 df[col].fillna(0, inplace=True)  # Replace NaN with 0
 
-                # Check for out-of-range values
-                max_int_value = 2147483647  # Max INT(11) in MySQL
-                if df[col].max() > max_int_value:
-                    print(
-                        f"Warning: Some values in column {col} exceed INT limit. Consider changing column type to BIGINT.")
-
         df = df[valid_columns]
         columns = ", ".join(valid_columns)
         values = ", ".join(["%s"] * len(valid_columns))
