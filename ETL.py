@@ -124,10 +124,10 @@ def process_file(file_path, table_name):
 def main():
     data_dir = "./files/"
     files = {
-        "countries_and_continents.csv": "LocalizationData",
-        "millions_population_country.csv": "Localization",
+        "countries_and_continents.csv": "Localization",
+        "millions_population_country.csv": "LocalizationData",
         "owid_monkeypox_data.csv": "ReportCase",
-        "vaccinations.csv": "Disease",
+        "vaccinations.csv": "LocalizationData",
         "worldometer_coronavirus_daily_data.csv": "ReportCase"
     }
 
