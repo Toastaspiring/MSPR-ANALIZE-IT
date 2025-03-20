@@ -105,7 +105,7 @@ CREATE TABLE vaccinations(
     location varchar(255),
     iso_code varchar(255),
     date date,
-    total_vaccinations int(255),
+    total_vaccinations BIGINT,
     people_vaccinated int(255),
     people_fully_vaccinated int(255),
     total_boosters int(255),
