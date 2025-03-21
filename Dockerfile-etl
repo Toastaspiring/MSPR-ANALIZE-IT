@@ -1,10 +1,6 @@
 FROM python:3.13.1-alpine3.20
 USER root
 RUN apk add git
-RUN mkdir /files
-COPY ./files/countries_and_continents.csv /files
-COPY ./files/owid_monkeypox_data.csv /files
-COPY ./files/worldometer_coronavirus_daily_data.csv /files
 RUN git clone https://github.com/Toastaspiring/MSPR-ANALIZE-IT.git
 WORKDIR /MSPR-ANALIZE-IT
 RUN git checkout ETL-dev
