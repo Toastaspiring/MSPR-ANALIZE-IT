@@ -40,7 +40,7 @@ def insert_archive():
         archive_conn.commit()
         print(f"✅ {table}")
 
-    load_and_insert("./files/countries_and_continents.csv", "country_and_continent")
+    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
     load_and_insert("./files/millions_population_country.csv", "millions_population_country")
     load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
     load_and_insert("./files/vaccinations.csv", "vaccinations")
