@@ -37,7 +37,12 @@ def insert_archive():
         df.fillna(0, inplace=True)
 
         if table == "millions_population_country":
-            df.columns = [f"year_{int(float(col))}" if str(col).replace('.', '', 1).isdigit() else col for col in df.columns]
+            def is_integer_str(val):
+                try:
+                    return float(val).is_integer()
+                except:
+                    return False
+            df.columns = [f"year_{int(float(col))}" if is_integer_str(col) else col for col in df.columns]
 
         columns = ", ".join(df.columns)
         values = ", ".join(["%s"] * len(df.columns))
