@@ -33,7 +33,7 @@ def insert_archive():
         df = pd.read_csv(file, dtype=str)
         df = df.applymap(lambda x: 0 if isinstance(x, str) and x.strip().lower() in ['no data', 'n/a'] else x)
         df.fillna(0, inplace=True)
-        df.replace(to_replace=["no data", "No Data", "n/a", "N/A"], value=0, inplace=True)
+        df.replace(to_replace=["no data", "No Data", "n/a", "N/A", "nodata"], value=0, inplace=True)
         df.fillna(0, inplace=True)
 
         if table == "millions_population_country":
