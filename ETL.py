@@ -31,11 +31,13 @@ def insert_archive():
 
     def load_and_insert(file, table):
         df = pd.read_csv(file)
-        df.replace("no data", 0, inplace=True)
-        df.fillna(0, inplace=True)
+        df.replace(to_replace=["no data", "No Data", "n/a", "N/A"], value=0, inplace=True)
+        df.fillna(0, inplace=True)  # Nettoyage avant renommage
+        df.replace(to_replace=["no data", "No Data", "n/a", "N/A"], value=0, inplace=True)
+                df.fillna(0, inplace=True)
 
         if table == "millions_population_country":
-            df.rename(columns={year: f"year_{year}" for year in df.columns if year.isdigit()}, inplace=True)
+            df.columns = [f"year_{col}" if col.isdigit() else col for col in df.columns]}, inplace=True)
 
         columns = ", ".join(df.columns)
         values = ", ".join(["%s"] * len(df.columns))
@@ -46,7 +48,7 @@ def insert_archive():
         archive_conn.commit()
         print(f"✅ {table}")
 
-    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
+    load_and_insert("./files/countries_and_continents.csv", "country_and_continent")
     load_and_insert("./files/millions_population_country.csv", "millions_population_country")
     load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
     load_and_insert("./files/vaccinations.csv", "vaccinations")
