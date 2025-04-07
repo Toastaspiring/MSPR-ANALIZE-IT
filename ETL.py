@@ -30,7 +30,9 @@ def insert_archive():
     print("\nInsertion brute dans la base archive...")
 
     def load_and_insert(file, table):
-        df = pd.read_csv(file).fillna(0)
+        df = pd.read_csv(file)
+        df.replace("no data", 0, inplace=True)
+        df.fillna(0, inplace=True)
 
         if table == "millions_population_country":
             df.rename(columns={year: f"year_{year}" for year in df.columns if year.isdigit()}, inplace=True)
