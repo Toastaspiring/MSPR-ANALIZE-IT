@@ -30,7 +30,9 @@ def insert_archive():
     print("\nInsertion brute dans la base archive...")
 
     def load_and_insert(file, table):
-        df = pd.read_csv(file)
+        df = pd.read_csv(file, dtype=str)
+        df = df.applymap(lambda x: 0 if isinstance(x, str) and x.strip().lower() in ['no data', 'n/a'] else x)
+        df.fillna(0, inplace=True)
         df.replace(to_replace=["no data", "No Data", "n/a", "N/A"], value=0, inplace=True)
         df.fillna(0, inplace=True)
 
@@ -46,7 +48,7 @@ def insert_archive():
         archive_conn.commit()
         print(f"✅ {table}")
 
-    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
+    load_and_insert("./files/countries_and_continents.csv", "country_and_continent")
     load_and_insert("./files/millions_population_country.csv", "millions_population_country")
     load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
     load_and_insert("./files/vaccinations.csv", "vaccinations")
