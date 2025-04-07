@@ -1,4 +1,3 @@
-
 import os
 import pandas as pd
 import mysql.connector
@@ -36,7 +35,7 @@ def insert_archive():
         df.fillna(0, inplace=True)
 
         if table == "millions_population_country":
-            df.columns = [f"year_{col}" if col.isdigit() else col for col in df.columns]
+            df.columns = [f"year_{int(float(col))}" if str(col).replace('.', '', 1).isdigit() else col for col in df.columns]
 
         columns = ", ".join(df.columns)
         values = ", ".join(["%s"] * len(df.columns))
@@ -47,7 +46,7 @@ def insert_archive():
         archive_conn.commit()
         print(f"✅ {table}")
 
-    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
+    load_and_insert("./files/countries_and_continents.csv", "country_and_continent")
     load_and_insert("./files/millions_population_country.csv", "millions_population_country")
     load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
     load_and_insert("./files/vaccinations.csv", "vaccinations")
@@ -143,7 +142,7 @@ def insert_mspr():
         'location': 'country',
         'total_cases': 'totalConfirmed',
         'total_deaths': 'totalDeath',
-        'new_cases': 'totalActive'
+        'new_cases': 'totalActive'  # Approximation faute de mieux
     })
 
     for _, row in monkeypox.iterrows():
