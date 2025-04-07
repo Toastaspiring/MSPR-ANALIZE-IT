@@ -1,70 +1,21 @@
 import os
-import time
 import pandas as pd
 import mysql.connector
-import re
+from datetime import datetime
 
-start_time = time.time()
+# Configs de connexion
+archive_conn = mysql.connector.connect(
+    host='host.docker.internal', port=3306,
+    user='mspr_user', password='mspr_user', database='mspr_database_archive')
+mspr_conn = mysql.connector.connect(
+    host='host.docker.internal', port=3306,
+    user='mspr_user', password='mspr_user', database='mspr_database')
 
-# MySQL Database connection parameters
-archive_db_config = {
-    'host': 'host.docker.internal',
-    'port': '3306',
-    'user': 'mspr_user',
-    'password': 'mspr_user',
-    'database': 'mspr_database_archive',
-    'collation': "utf8mb4_general_ci"
-}
+cursor_archive = archive_conn.cursor()
+cursor_mspr = mspr_conn.cursor()
 
-mspr_db_config = {
-    'host': 'host.docker.internal',
-    'port': '3306',
-    'user': 'mspr_user',
-    'password': 'mspr_user',
-    'database': 'mspr_database',
-    'collation': "utf8mb4_general_ci"
-}
-
-# Establish connections
-connection_archive = mysql.connector.connect(**archive_db_config)
-cursor_archive = connection_archive.cursor()
-
-connection_mspr = mysql.connector.connect(**mspr_db_config)
-cursor_mspr = connection_mspr.cursor()
-
-
-def parse_database_schema(sql_file):
-    schema = {}
-    with open(sql_file, 'r', encoding='utf-8') as f:
-        content = f.read()
-
-        tables = re.findall(r'CREATE TABLE\s+[`]?(\w+)[`]?\s*\((.*?)(\)\s*;)', content, re.DOTALL)
-
-        for match in tables:
-            if len(match) < 2:
-                continue
-            table = match[0]
-            cols = match[1]
-            columns = []
-
-            for col in cols.split("\n"):
-                col = col.strip()
-                if col.upper().startswith(("PRIMARY KEY", "FOREIGN KEY", "CONSTRAINT", "UNIQUE", "CHECK", "KEY")):
-                    continue
-                col_match = re.match(r'[`]?(\w+)[`]?\s+', col)
-                if col_match:
-                    columns.append(col_match.group(1))
-
-            schema[table] = columns
-    return schema
-
-
-db_schema = parse_database_schema("./files/bdd.sql")
-print(db_schema)
-
-
-def rename_country(country_name):
-    replacements = {
+def rename_country(name):
+    corrections = {
         'Bosnia and Herzegovina': 'Bosnia And Herzegovina',
         'Vietnam': 'Viet Nam',
         'Czechia': 'Czech Republic',
@@ -72,78 +23,139 @@ def rename_country(country_name):
         'United Kingdom': 'UK',
         'United States': 'USA'
     }
-    return replacements.get(country_name, country_name)
+    return corrections.get(name, name)
 
+### PARTIE ARCHIVE ###
+def insert_archive():
+    print("\nInsertion brute dans la base archive...")
 
-def check_table_exists(cursor, table_name):
-    cursor.execute("SHOW TABLES LIKE %s", (table_name,))
-    return cursor.fetchone() is not None
+    def load_and_insert(file, table):
+        df = pd.read_csv(file).fillna(0)
+        columns = ", ".join(df.columns)
+        values = ", ".join(["%s"] * len(df.columns))
+        insert_query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
 
+        for _, row in df.iterrows():
+            cursor_archive.execute(insert_query, tuple(row))
+        archive_conn.commit()
+        print(f"✅ {table}")
 
-def insert_data(cursor, connection, table_name, df):
-    if not check_table_exists(cursor, table_name):
-        print(f"Warning: Table {table_name} does not exist. Skipping.")
-        return
+    load_and_insert("./files/countries_and_continents.csv", "country_and_continent")
+    load_and_insert("./files/millions_population_country.csv", "millions_population_country")
+    load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
+    load_and_insert("./files/vaccinations.csv", "vaccinations")
+    load_and_insert("./files/worldometer_coronavirus_daily_data.csv", "worldometer_coronavirus_daily_data")
 
-    if table_name not in db_schema:
-        print(f"Warning: Table {table_name} not found in schema. Skipping.")
-        return
+### PARTIE MSPR ###
+def insert_mspr():
+    print("\nInsertion transformée dans la base principale...")
 
-    valid_columns = [col for col in df.columns if col in db_schema[table_name]]
-    if not valid_columns:
-        print(f"Skipping {table_name}: No valid columns match database schema.")
-        return
+    ### 1. Localization
+    loc_df = pd.read_csv("./files/countries_and_continents.csv")
+    loc_df['country'] = loc_df['country'].apply(rename_country)
+    loc_df = loc_df.drop_duplicates()
 
-    df = df[valid_columns]
-    columns = ", ".join(valid_columns)
-    values = ", ".join(["%s"] * len(valid_columns))
+    for _, row in loc_df.iterrows():
+        cursor_mspr.execute(
+            "INSERT INTO Localization (country, continent) VALUES (%s, %s)",
+            (row['country'], row['continent'])
+        )
+    mspr_conn.commit()
+    print("✅ Localization")
 
-    insert_query = f"INSERT INTO {table_name} ({columns}) VALUES ({values}) ON DUPLICATE KEY UPDATE "
-    insert_query += ", ".join([f"{col} = VALUES({col})" for col in valid_columns])
+    ### 2. LocalizationData
+    pop_df = pd.read_csv("./files/millions_population_country.csv")
+    vacc_df = pd.read_csv("./files/vaccinations.csv")
+    vacc_df = vacc_df.rename(columns={'location': 'country'})
+    vacc_df['country'] = vacc_df['country'].apply(rename_country)
 
-    for _, row in df.iterrows():
-        cursor.execute(insert_query, tuple(row))
+    vacc_df = vacc_df[['country', 'date', 'people_vaccinated']].dropna()
+    pop_df = pop_df[['country', '2022']].rename(columns={'2022': 'inhabitantsNumber'})
 
-    connection.commit()
-    print(f"Successfully inserted into {table_name}")
+    merged = vacc_df.merge(pop_df, on='country', how='left')
+    merged['vaccinationRate'] = (merged['people_vaccinated'] / (merged['inhabitantsNumber'] * 1_000_000)) * 100
+    merged['date'] = pd.to_datetime(merged['date'], errors='coerce').dt.date
 
+    cursor_mspr.execute("SELECT id, country FROM Localization")
+    country_to_id = {row[1]: row[0] for row in cursor_mspr.fetchall()}
+    merged['localizationId'] = merged['country'].map(country_to_id)
 
-def process_file(file_path, table_name):
-    if not os.path.exists(file_path):
-        print(f"Skipping {file_path}: File does not exist.")
-        return
+    for _, row in merged.iterrows():
+        if pd.isna(row['localizationId']):
+            continue
+        cursor_mspr.execute(
+            """
+            INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (int(row['localizationId']), row['inhabitantsNumber'], row['vaccinationRate'], row['date'])
+        )
+    mspr_conn.commit()
+    print("✅ LocalizationData")
 
-    df = pd.read_csv(file_path).fillna(0)
-    if 'country' in df.columns:
-        df['country'] = df['country'].apply(rename_country)
+    ### 3. Disease
+    cursor_mspr.execute("INSERT IGNORE INTO Disease (name) VALUES ('Covid-19')")
+    cursor_mspr.execute("INSERT IGNORE INTO Disease (name) VALUES ('Monkeypox')")
+    mspr_conn.commit()
+    print("✅ Disease")
 
-    insert_data(cursor_archive, connection_archive, table_name, df)
-    insert_data(cursor_mspr, connection_mspr, table_name, df)
+    ### 4. ReportCase - COVID
+    corona = pd.read_csv("./files/worldometer_coronavirus_daily_data.csv")
+    corona['country'] = corona['country'].apply(rename_country)
+    corona['date'] = pd.to_datetime(corona['date'], errors='coerce').dt.date
 
+    corona = corona.rename(columns={
+        'cumulative_total_cases': 'totalConfirmed',
+        'cumulative_total_deaths': 'totalDeath',
+        'active_cases': 'totalActive'
+    })
 
-def main():
-    data_dir = "./files/"
-    files = {
-        "countries_and_continents.csv": "Localization",
-        "millions_population_country.csv": "LocalizationData",
-        "owid_monkeypox_data.csv": "ReportCase",
-        "vaccinations.csv": "LocalizationData",
-        "worldometer_coronavirus_daily_data.csv": "ReportCase"
-    }
+    for _, row in corona.iterrows():
+        localizationId = country_to_id.get(row['country'])
+        if not localizationId or pd.isna(row['totalConfirmed']):
+            continue
+        cursor_mspr.execute(
+            """
+            INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
+            VALUES (%s, 1, %s, %s, %s, %s)
+            """,
+            (localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date'])
+        )
+    mspr_conn.commit()
+    print("✅ ReportCase (Covid-19)")
 
-    for file_name, table_name in files.items():
-        file_path = os.path.join(data_dir, file_name)
-        process_file(file_path, table_name)
+    ### 5. ReportCase - Monkeypox
+    monkeypox = pd.read_csv("./files/owid_monkeypox_data.csv")
+    monkeypox['location'] = monkeypox['location'].apply(rename_country)
+    monkeypox['date'] = pd.to_datetime(monkeypox['date'], errors='coerce').dt.date
 
-    cursor_archive.close()
-    connection_archive.close()
+    monkeypox = monkeypox.rename(columns={
+        'location': 'country',
+        'total_cases': 'totalConfirmed',
+        'total_deaths': 'totalDeath',
+        'new_cases': 'totalActive'  # Approximation faute de mieux
+    })
 
-    cursor_mspr.close()
-    connection_mspr.close()
-
-    print("Data processing completed.")
-    print(f"Execution time: {time.time() - start_time:.6f} seconds")
-
+    for _, row in monkeypox.iterrows():
+        localizationId = country_to_id.get(row['country'])
+        if not localizationId or pd.isna(row['totalConfirmed']):
+            continue
+        cursor_mspr.execute(
+            """
+            INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
+            VALUES (%s, 2, %s, %s, %s, %s)
+            """,
+            (localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date'])
+        )
+    mspr_conn.commit()
+    print("✅ ReportCase (Monkeypox)")
 
 if __name__ == "__main__":
-    main()
+    insert_archive()
+    insert_mspr()
+
+    cursor_archive.close()
+    archive_conn.close()
+    cursor_mspr.close()
+    mspr_conn.close()
+    print("\n🎉 Traitement terminé.")
