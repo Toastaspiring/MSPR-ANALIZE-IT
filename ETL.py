@@ -65,12 +65,14 @@ def insert_mspr():
 
     ### 2. LocalizationData
     pop_df = pd.read_csv("./files/millions_population_country.csv")
+    pop_df.rename(columns={year: f"year_{year}" for year in pop_df.columns if year.isdigit()}, inplace=True)
+
     vacc_df = pd.read_csv("./files/vaccinations.csv")
     vacc_df = vacc_df.rename(columns={'location': 'country'})
     vacc_df['country'] = vacc_df['country'].apply(rename_country)
 
     vacc_df = vacc_df[['country', 'date', 'people_vaccinated']].dropna()
-    pop_df = pop_df[['country', '2022']].rename(columns={'2022': 'inhabitantsNumber'})
+    pop_df = pop_df[['country', 'year_2022']].rename(columns={'year_2022': 'inhabitantsNumber'})
 
     merged = vacc_df.merge(pop_df, on='country', how='left')
     merged['vaccinationRate'] = (merged['people_vaccinated'] / (merged['inhabitantsNumber'] * 1_000_000)) * 100
