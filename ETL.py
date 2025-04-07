@@ -31,6 +31,10 @@ def insert_archive():
 
     def load_and_insert(file, table):
         df = pd.read_csv(file).fillna(0)
+
+        if table == "millions_population_country":
+            df.rename(columns={year: f"year_{year}" for year in df.columns if year.isdigit()}, inplace=True)
+
         columns = ", ".join(df.columns)
         values = ", ".join(["%s"] * len(df.columns))
         insert_query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
@@ -40,7 +44,7 @@ def insert_archive():
         archive_conn.commit()
         print(f"✅ {table}")
 
-    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
+    load_and_insert("./files/countries_and_continents.csv", "country_and_continent")
     load_and_insert("./files/millions_population_country.csv", "millions_population_country")
     load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
     load_and_insert("./files/vaccinations.csv", "vaccinations")
@@ -65,7 +69,8 @@ def insert_mspr():
 
     ### 2. LocalizationData
     pop_df = pd.read_csv("./files/millions_population_country.csv")
-    pop_df.rename(columns={year: f"year_{year}" for year in pop_df.columns if year.isdigit()}, inplace=True)
+    # pas de renommage nécessaire ici pour mspr
+    # les colonnes sont acceptées telles quelles
 
     vacc_df = pd.read_csv("./files/vaccinations.csv")
     vacc_df = vacc_df.rename(columns={'location': 'country'})
