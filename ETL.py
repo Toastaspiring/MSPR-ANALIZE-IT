@@ -26,6 +26,29 @@ def rename_country(name):
     }
     return corrections.get(name, name)
 
+def smooth_population(pop_df):
+    pop_long = pop_df.melt(id_vars="country", var_name="year", value_name="population")
+    pop_long["year"] = pop_long["year"].str.extract(r'(\d{4})').astype(int)
+    pop_long["population"] = pd.to_numeric(pop_long["population"], errors='coerce')
+    pop_long["date"] = pd.to_datetime(pop_long["year"].astype(str) + "-01-01")
+    pop_long.drop(columns=["year"], inplace=True)
+
+    # Détection dynamique de l'année maximale
+    max_year = pop_long["date"].dt.year.max()
+    full_date_range = pd.date_range(start="2000-01-01", end=f"{max_year}-12-31", freq="D")
+
+    interpolated = []
+    for country, group in pop_long.groupby("country"):
+        group = group.sort_values("date").set_index("date")
+        group = group.reindex(full_date_range)
+        group["country"] = country
+        group["population"] = group["population"].interpolate(method='linear')
+        group = group.reset_index().rename(columns={"index": "date"})
+        interpolated.append(group)
+
+    return pd.concat(interpolated, ignore_index=True)
+
+
 ### PARTIE ARCHIVE ###
 def insert_archive():
     print("\nInsertion brute dans la base archive...")
@@ -79,33 +102,35 @@ def insert_mspr():
 
     ### 2. LocalizationData
     pop_df = pd.read_csv("./files/millions_population_country.csv")
-    # pas de renommage nécessaire ici pour mspr
-    # les colonnes sont acceptées telles quelles
+    pop_df = pop_df.rename(columns=lambda col: col if col == "country" else f"year_{col}")
+    interpolated_pop = smooth_population(pop_df)
 
     vacc_df = pd.read_csv("./files/vaccinations.csv")
     vacc_df = vacc_df.rename(columns={'location': 'country'})
     vacc_df['country'] = vacc_df['country'].apply(rename_country)
-
     vacc_df = vacc_df[['country', 'date', 'people_vaccinated']].dropna()
-    pop_df = pop_df[['country', 'year_2022']].rename(columns={'year_2022': 'inhabitantsNumber'})
-
-    merged = vacc_df.merge(pop_df, on='country', how='left')
-    merged['vaccinationRate'] = (merged['people_vaccinated'] / (merged['inhabitantsNumber'] * 1_000_000)) * 100
-    merged['date'] = pd.to_datetime(merged['date'], errors='coerce').dt.date
+    vacc_df['date'] = pd.to_datetime(vacc_df['date'], errors='coerce').dt.date
 
     cursor_mspr.execute("SELECT id, country FROM Localization")
     country_to_id = {row[1]: row[0] for row in cursor_mspr.fetchall()}
-    merged['localizationId'] = merged['country'].map(country_to_id)
 
-    for _, row in merged.iterrows():
-        if pd.isna(row['localizationId']):
+    for _, row in vacc_df.iterrows():
+        localizationId = country_to_id.get(row['country'])
+        if not localizationId:
             continue
+
+        match = interpolated_pop[(interpolated_pop['country'] == row['country']) & (interpolated_pop['date'] == pd.to_datetime(row['date']))]
+        if match.empty:
+            continue
+        inhabitants = match.iloc[0]['population']
+        vaccinationRate = (row['people_vaccinated'] / (inhabitants * 1_000_000)) * 100
+
         cursor_mspr.execute(
             """
             INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
             VALUES (%s, %s, %s, %s)
             """,
-            (int(row['localizationId']), row['inhabitantsNumber'], row['vaccinationRate'], row['date'])
+            (int(localizationId), inhabitants, vaccinationRate, row['date'])
         )
     mspr_conn.commit()
     print("✅ LocalizationData")
@@ -120,7 +145,6 @@ def insert_mspr():
     corona = pd.read_csv("./files/worldometer_coronavirus_daily_data.csv")
     corona['country'] = corona['country'].apply(rename_country)
     corona['date'] = pd.to_datetime(corona['date'], errors='coerce').dt.date
-
     corona = corona.rename(columns={
         'cumulative_total_cases': 'totalConfirmed',
         'cumulative_total_deaths': 'totalDeath',
@@ -145,12 +169,11 @@ def insert_mspr():
     monkeypox = pd.read_csv("./files/owid_monkeypox_data.csv")
     monkeypox['location'] = monkeypox['location'].apply(rename_country)
     monkeypox['date'] = pd.to_datetime(monkeypox['date'], errors='coerce').dt.date
-
     monkeypox = monkeypox.rename(columns={
         'location': 'country',
         'total_cases': 'totalConfirmed',
         'total_deaths': 'totalDeath',
-        'new_cases': 'totalActive'  # Approximation faute de mieux
+        'new_cases': 'totalActive'
     })
 
     for _, row in monkeypox.iterrows():
@@ -170,7 +193,6 @@ def insert_mspr():
 if __name__ == "__main__":
     insert_archive()
     insert_mspr()
-
     cursor_archive.close()
     archive_conn.close()
     cursor_mspr.close()
