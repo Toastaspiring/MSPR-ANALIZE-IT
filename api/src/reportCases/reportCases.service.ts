@@ -5,6 +5,8 @@ import { ReportCase } from './reportCases.entity';
 import { CreateReportCaseDto } from './dto/CreateReportCase.dto';
 import { UpdateReportCaseDto } from './dto/UpdateReportCase.dto';
 import { isEmpty } from 'lodash';
+import { FilterConditionDto } from './dto/FilterCondition.dto';
+import { FilterConditionGroupDto } from './dto/FilterConditionGroup.dto';
 
 @Injectable()
 export class ReportCaseService {
@@ -97,55 +99,76 @@ export class ReportCaseService {
         return await this.repo.find({ take: count });
     }
 
-    async getFilteredReportCases(filter: string, count: number) {
-        // TODO : regex to test if the query sent is ok
-        const queryRegex = "^$"
-
-        if (!filter) {
-            filter = "";
-        }
-
+    async getFilteredReportCases(filter: FilterConditionGroupDto, count: number) {
         if (!count || count <= 0) {
             count = 1000;
         }
 
-        try {
-            // Characters to replace to build a solid SQL query
-            const replacements: Record<string, string> = {
-                "&": " AND ",
-                "|": " OR ",
-                "[": "'",
-                "]": "'",
-                "{": "(",
-                "}": ")",
-                "DISEASE": "name",
-                "CONFIRMED": "totalConfirmed",
-                "DEATH": "totalDeath",
-                "ACTIVE": "totalActive",
-                "DATE": "date",
-                "COUNTRY": "country",
-                "CONTINENT": "continent"
+        // Build the query
+        const queryBuilder = this.repo.createQueryBuilder('ReportCase')
+            .leftJoinAndSelect('ReportCase.localization', 'localization')
+            .leftJoinAndSelect('ReportCase.disease', 'disease');
+
+        if (filter && !isEmpty(filter)) {
+            // Parse the condition recursively
+            const parseConditions = (
+                conditions: (FilterConditionDto | FilterConditionGroupDto)[],
+            ): { expression: string; parameters: Record<string, any> } => {
+                const expressions: string[] = [];
+                const parameters: Record<string, any> = {};
+
+                // Iterate through the conditions
+                conditions.forEach((condition, index) => {
+                    // Check if the condition is a group or an individual condition
+                    if ('conditions' in condition && Array.isArray(condition.conditions)) {
+                        // Handle nested groups
+                        const nestedResult = parseConditions(condition.conditions);
+                        if (nestedResult.expression) {
+                            let expression = "";
+                            // Add the logic operator for the group
+                            if (index != 0) {
+                                expression += `${condition.logicOperator} `;
+                            }
+                            expression += `(${nestedResult.expression})`;
+                            expressions.push(expression);
+                            Object.assign(parameters, nestedResult.parameters);
+                        }
+                    } else if ('field' in condition) {
+                        // Handle individual conditions
+                        const paramKey = `${condition.field}_${index}`;
+                        let expression = "";
+                        // Add the logic operator for the condition
+                        if (index != 0) {
+                            expression += `${condition.logicOperator} `;
+                        }
+                        expression += `${condition.field} ${condition.comparisonOperator} :${paramKey}`;
+                        expressions.push(expression);
+                        parameters[paramKey] = condition.value;
+                    }
+                });
+
+                return {
+                    expression: expressions.join(` `),
+                    parameters,
+                };
             };
 
-            Object.entries(replacements).forEach(([key, value]) => {
-                filter = filter.replaceAll(key, value);
-            });
+            const parsedFilter = parseConditions(filter.conditions);
 
-            // Build the query joining all tables together
-            const queryBuilder = this.repo.createQueryBuilder('ReportCase')
-                .leftJoinAndSelect('ReportCase.localization', 'localization')
-                .leftJoinAndSelect('ReportCase.disease', 'disease')
-                .where(filter)
-                .limit(count);
+            console.log("Parsed Filter: ", parsedFilter.expression);
 
-            console.log("Generated SQL Query: ", queryBuilder.getSql());
+            queryBuilder.where(parsedFilter.expression, parsedFilter.parameters);
+        }
 
+        queryBuilder.limit(count);
+
+        console.log("Generated SQL Query: ", queryBuilder.getSql());
+        try {
             return await queryBuilder.getMany();
         }
         catch (error) {
             console.error('Error fetching filtered report cases:', error);
             throw new InternalServerErrorException('Failed to fetch filtered report cases.');
         }
-
     }
 }

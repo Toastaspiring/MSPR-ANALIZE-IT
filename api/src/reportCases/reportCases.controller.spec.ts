@@ -4,10 +4,40 @@ import { ReportCaseService } from './reportCases.service';
 import { RolesGuard } from '../auth/roles.guard';
 import { JwtService } from '@nestjs/jwt';
 import { BadRequestException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { FilterConditionGroupDto } from './dto/FilterConditionGroup.dto';
 
 describe('ReportCaseController', () => {
     let controller: ReportCaseController;
     let service: ReportCaseService;
+
+    const testFilter: FilterConditionGroupDto = {
+        logicOperator: 'AND',
+        conditions: [
+            {
+                logicOperator: 'AND',
+                field: 'disease.name',
+                comparisonOperator: '=',
+                value: 'Monkeypox',
+            },
+            {
+                logicOperator: 'OR',
+                conditions: [
+                    {
+                        logicOperator: 'AND',
+                        field: 'disease.name',
+                        comparisonOperator: '=',
+                        value: 'Coronavirus',
+                    },
+                    {
+                        logicOperator: 'AND',
+                        field: 'date',
+                        comparisonOperator: '>=',
+                        value: '2025-01-01',
+                    },
+                ],
+            },
+        ],
+    };
 
     const mockReportCaseService = {
         create: jest.fn(),
@@ -138,23 +168,47 @@ describe('ReportCaseController', () => {
     });
 
     it('should retrieve filtered report cases', async () => {
-        const filter = 'CONTINENT=[Africa]';
         const count = 10;
         const filteredCases = [
             { id: 1, totalConfirmed: 100, totalDeath: 10, totalActive: 90 },
         ];
         mockReportCaseService.getFilteredReportCases.mockResolvedValue(filteredCases);
 
-        const result = await controller.getFilteredReportCases(filter, count.toString());
+        const result = await controller.getFilteredReportCases(testFilter, count.toString());
         expect(result).toEqual(filteredCases);
-        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(filter, count);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(testFilter, count);
+    });
+
+    it('should throw BadRequestException when filter is invalid', async () => {
+        const invalidFilter = {
+            logicOperator: 'INVALID_OPERATOR',
+            conditions: [],
+        };
+        const count = 10;
+        mockReportCaseService.getFilteredReportCases.mockRejectedValue(new BadRequestException('Invalid filter.'));
+
+        await expect(controller.getFilteredReportCases(invalidFilter, count.toString())).rejects.toThrow(BadRequestException);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(invalidFilter, count);
     });
 
     it('should throw InternalServerErrorException on unexpected errors', async () => {
-        mockReportCaseService.create.mockRejectedValue(new InternalServerErrorException('Unexpected error.'));
+        const count = 10;
+        mockReportCaseService.getFilteredReportCases.mockRejectedValue(new InternalServerErrorException('Unexpected error.'));
 
-        const dto = { totalConfirmed: 100, totalDeath: 10, totalActive: 90, localizationId: 1, diseaseId: 1, date: 1738405852298 };
-        await expect(controller.create(dto)).rejects.toThrow(InternalServerErrorException);
-        expect(mockReportCaseService.create).toHaveBeenCalledWith(dto);
+        await expect(controller.getFilteredReportCases(testFilter, count.toString())).rejects.toThrow(InternalServerErrorException);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(testFilter, count);
+    });
+
+    it('should retrieve all cases when filter is null', async () => {
+        const count = 10;
+        const allCases = [
+            { id: 1, totalConfirmed: 100, totalDeath: 10, totalActive: 90 },
+            { id: 2, totalConfirmed: 200, totalDeath: 20, totalActive: 180 },
+        ];
+        mockReportCaseService.getFilteredReportCases.mockResolvedValue(allCases);
+
+        const result = await controller.getFilteredReportCases(null, count.toString());
+        expect(result).toEqual(allCases);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(null, count);
     });
 });

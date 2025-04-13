@@ -7,6 +7,8 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorator';
 import { CommonApiResponses } from '../common/api-response.decorator';
 import { UserRole } from '../roles/userRole.enum';
+import { FilterConditionDto } from './dto/FilterCondition.dto';
+import { FilterConditionGroupDto } from './dto/FilterConditionGroup.dto';
 
 @Controller('case')
 @UseGuards(RolesGuard)
@@ -54,15 +56,16 @@ export class ReportCaseController {
         return await this.caseService.delete(id);
     }
 
-    @Get('filtered')
+    @Post('filtered')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve filtered report cases' })
-    @ApiQuery({ name: 'filter', required: false, type: String, description: 'The filter to retrieve specific data' })
+    @ApiBody({ type: FilterConditionGroupDto, description: 'The filter as a JSON object', required: false })
     @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
-    @ApiResponse({ status: 200, description: 'The list of filtered report cases has been retrieved successfully.' })
+    @ApiResponse({ status: 201, description: 'The list of filtered report cases has been retrieved successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid query parameters.' })
     @CommonApiResponses()
-    async getFilteredReportCases(@Query('filter') filter?: string, @Query('count') count?: string) {
+    async getFilteredReportCases(@Body() filter?: FilterConditionGroupDto, @Query('count') count?: string) {
         const parsedCount = count ? parseInt(count) : undefined;
         return await this.caseService.getFilteredReportCases(filter, parsedCount);
     }
