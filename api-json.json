@@ -754,18 +754,9 @@
             }
         },
         "/case/filtered": {
-            "get": {
+            "post": {
                 "operationId": "ReportCaseController_getFilteredReportCases",
                 "parameters": [
-                    {
-                        "name": "filter",
-                        "required": false,
-                        "in": "query",
-                        "description": "The filter to retrieve specific data",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "count",
                         "required": false,
@@ -777,9 +768,23 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": false,
+                    "description": "The filter as a JSON object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterConditionGroupDto"
+                            }
+                        }
+                    }
+                },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "The list of filtered report cases has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Invalid query parameters."
                     },
                     "401": {
                         "description": "Unauthorized."
@@ -1655,6 +1660,76 @@
                         "description": "Report date in timestamp (milliseconds)"
                     }
                 }
+            },
+            "FilterConditionDto": {
+                "type": "object",
+                "properties": {
+                    "logicOperator": {
+                        "type": "string",
+                        "description": "The logic operator ID used to combine conditions",
+                        "example": "AND",
+                        "enum": [
+                            "AND",
+                            "OR"
+                        ]
+                    },
+                    "field": {
+                        "type": "string",
+                        "description": "The field to filter on",
+                        "example": "totalConfirmed"
+                    },
+                    "comparisonOperator": {
+                        "type": "string",
+                        "description": "The comparison operator to use",
+                        "example": "=",
+                        "enum": [
+                            "=",
+                            "!=",
+                            ">",
+                            "<",
+                            ">=",
+                            "<=",
+                            "LIKE",
+                            "NOT LIKE"
+                        ]
+                    },
+                    "value": {
+                        "type": "object",
+                        "description": "The value to compare against",
+                        "example": 100
+                    }
+                },
+                "required": [
+                    "logicOperator",
+                    "field",
+                    "comparisonOperator",
+                    "value"
+                ]
+            },
+            "FilterConditionGroupDto": {
+                "type": "object",
+                "properties": {
+                    "logicOperator": {
+                        "type": "string",
+                        "description": "The logic operator ID used to combine conditions",
+                        "example": "AND",
+                        "enum": [
+                            "AND",
+                            "OR"
+                        ]
+                    },
+                    "conditions": {
+                        "description": "An array of conditions which can be either FilterConditionDto or nested FilterConditionGroupDto",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FilterConditionDto"
+                        }
+                    }
+                },
+                "required": [
+                    "logicOperator",
+                    "conditions"
+                ]
             },
             "CreateLocalizationDto": {
                 "type": "object",
