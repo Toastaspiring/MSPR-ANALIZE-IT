@@ -1,8 +1,18 @@
 import os
 import pandas as pd
+import numpy as np
 import re
 import mysql.connector
 from datetime import datetime
+
+def to_python_type(value):
+    if pd.isna(value):
+        return None
+    if isinstance(value, (pd.Timestamp, datetime)):
+        return value.date()
+    if isinstance(value, (np.generic,)):
+        return value.item()
+    return value
 
 # Configs de connexion
 archive_conn = mysql.connector.connect(
@@ -73,7 +83,7 @@ def insert_archive():
         insert_query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
 
         for _, row in df.iterrows():
-            cursor_archive.execute(insert_query, tuple(row))
+            cursor_archive.execute(insert_query, tuple(map(to_python_type, row)))
         archive_conn.commit()
         print(f"✅ {table}")
 
@@ -130,7 +140,12 @@ def insert_mspr():
             INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
             VALUES (%s, %s, %s, %s)
             """,
-            (int(localizationId), inhabitants, vaccinationRate, row['date'])
+    (
+                int(localizationId),
+                to_python_type(inhabitants),
+                to_python_type(vaccinationRate),
+                to_python_type(row['date'])
+            )
         )
     mspr_conn.commit()
     print("✅ LocalizationData")
@@ -160,7 +175,9 @@ def insert_mspr():
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
             VALUES (%s, 1, %s, %s, %s, %s)
             """,
-            (localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date'])
+            tuple(to_python_type(x) for x in (
+                localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
+            ))
         )
     mspr_conn.commit()
     print("✅ ReportCase (Covid-19)")
@@ -185,7 +202,9 @@ def insert_mspr():
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
             VALUES (%s, 2, %s, %s, %s, %s)
             """,
-            (localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date'])
+            tuple(to_python_type(x) for x in (
+                localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
+            ))
         )
     mspr_conn.commit()
     print("✅ ReportCase (Monkeypox)")
