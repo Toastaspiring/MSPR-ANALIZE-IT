@@ -72,7 +72,7 @@ CREATE TABLE millions_population_country (
     year_2020 DECIMAL(10, 3),
     year_2021 DECIMAL(10, 3),
     year_2022 DECIMAL(10, 3),
-    year_2023 DECIMAL(10, 3),
+    year_2023 DECIMAL(10, 3)
 );
 
 CREATE TABLE countries_and_continents (
