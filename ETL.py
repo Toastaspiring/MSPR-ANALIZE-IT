@@ -43,7 +43,6 @@ def smooth_population(pop_df):
     pop_long["date"] = pd.to_datetime(pop_long["year"].astype(str) + "-01-01")
     pop_long.drop(columns=["year"], inplace=True)
 
-    # Détection dynamique de l'année maximale
     max_year = pop_long["date"].dt.year.max()
     full_date_range = pd.date_range(start="2000-01-01", end=f"{max_year}-12-31", freq="D")
 
@@ -58,8 +57,6 @@ def smooth_population(pop_df):
 
     return pd.concat(interpolated, ignore_index=True)
 
-
-### PARTIE ARCHIVE ###
 def insert_archive():
     print("\nInsertion brute dans la base archive...")
 
@@ -93,11 +90,9 @@ def insert_archive():
     load_and_insert("./files/vaccinations.csv", "vaccinations")
     load_and_insert("./files/worldometer_coronavirus_daily_data.csv", "worldometer_coronavirus_daily_data")
 
-### PARTIE MSPR ###
 def insert_mspr():
     print("\nInsertion transformée dans la base principale...")
 
-    ### 1. Localization
     loc_df = pd.read_csv("./files/countries_and_continents.csv")
     loc_df['country'] = loc_df['country'].apply(rename_country)
     loc_df = loc_df.drop_duplicates()
@@ -110,7 +105,6 @@ def insert_mspr():
     mspr_conn.commit()
     print("✅ Localization")
 
-    ### 2. LocalizationData
     pop_df = pd.read_csv("./files/millions_population_country.csv")
     pop_df = pop_df.rename(columns=lambda col: col if col == "country" else f"year_{col}")
     interpolated_pop = smooth_population(pop_df)
@@ -129,18 +123,23 @@ def insert_mspr():
         if not localizationId:
             continue
 
-        match = interpolated_pop[(interpolated_pop['country'] == row['country']) & (interpolated_pop['date'] == pd.to_datetime(row['date']))]
+        match = interpolated_pop[
+            (interpolated_pop['country'] == row['country']) &
+            (interpolated_pop['date'] == pd.to_datetime(row['date']))
+        ]
         if match.empty:
             continue
+
         inhabitants = match.iloc[0]['population']
-        vaccinationRate = (row['people_vaccinated'] / (inhabitants * 1_000_000)) * 100
+        inhabitants = 0 if pd.isna(inhabitants) else inhabitants
+        vaccinationRate = (row['people_vaccinated'] / (inhabitants * 1_000_000)) * 100 if inhabitants else 0
 
         cursor_mspr.execute(
             """
             INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
             VALUES (%s, %s, %s, %s)
             """,
-    (
+            (
                 int(localizationId),
                 to_python_type(inhabitants),
                 to_python_type(vaccinationRate),
@@ -150,13 +149,11 @@ def insert_mspr():
     mspr_conn.commit()
     print("✅ LocalizationData")
 
-    ### 3. Disease
     cursor_mspr.execute("INSERT IGNORE INTO Disease (name) VALUES ('Covid-19')")
     cursor_mspr.execute("INSERT IGNORE INTO Disease (name) VALUES ('Monkeypox')")
     mspr_conn.commit()
     print("✅ Disease")
 
-    ### 4. ReportCase - COVID
     corona = pd.read_csv("./files/worldometer_coronavirus_daily_data.csv")
     corona['country'] = corona['country'].apply(rename_country)
     corona['date'] = pd.to_datetime(corona['date'], errors='coerce').dt.date
@@ -182,7 +179,6 @@ def insert_mspr():
     mspr_conn.commit()
     print("✅ ReportCase (Covid-19)")
 
-    ### 5. ReportCase - Monkeypox
     monkeypox = pd.read_csv("./files/owid_monkeypox_data.csv")
     monkeypox['location'] = monkeypox['location'].apply(rename_country)
     monkeypox['date'] = pd.to_datetime(monkeypox['date'], errors='coerce').dt.date
