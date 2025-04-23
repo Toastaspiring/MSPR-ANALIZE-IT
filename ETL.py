@@ -165,15 +165,18 @@ def insert_mspr():
 
     for _, row in corona.iterrows():
         localizationId = country_to_id.get(row['country'])
-        if not localizationId or pd.isna(row['totalConfirmed']):
+        if not localizationId:
             continue
+        totalConfirmed = 0 if pd.isna(row['totalConfirmed']) else row['totalConfirmed']
+        totalDeath = 0 if pd.isna(row['totalDeath']) else row['totalDeath']
+        totalActive = 0 if pd.isna(row['totalActive']) else row['totalActive']
         cursor_mspr.execute(
             """
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
             VALUES (%s, 1, %s, %s, %s, %s)
             """,
             tuple(to_python_type(x) for x in (
-                localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
+                localizationId, totalConfirmed, totalDeath, totalActive, row['date']
             ))
         )
     mspr_conn.commit()
@@ -191,15 +194,18 @@ def insert_mspr():
 
     for _, row in monkeypox.iterrows():
         localizationId = country_to_id.get(row['country'])
-        if not localizationId or pd.isna(row['totalConfirmed']):
+        if not localizationId:
             continue
+        totalConfirmed = 0 if pd.isna(row['totalConfirmed']) else row['totalConfirmed']
+        totalDeath = 0 if pd.isna(row['totalDeath']) else row['totalDeath']
+        totalActive = 0 if pd.isna(row['totalActive']) else row['totalActive']
         cursor_mspr.execute(
             """
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
             VALUES (%s, 2, %s, %s, %s, %s)
             """,
             tuple(to_python_type(x) for x in (
-                localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
+                localizationId, totalConfirmed, totalDeath, totalActive, row['date']
             ))
         )
     mspr_conn.commit()
