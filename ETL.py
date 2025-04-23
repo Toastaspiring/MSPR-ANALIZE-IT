@@ -4,6 +4,7 @@ import numpy as np
 import re
 import mysql.connector
 from datetime import datetime
+import time
 
 def to_python_type(value):
     if pd.isna(value):
@@ -165,18 +166,15 @@ def insert_mspr():
 
     for _, row in corona.iterrows():
         localizationId = country_to_id.get(row['country'])
-        if not localizationId:
+        if not localizationId or pd.isna(row['totalConfirmed']):
             continue
-        totalConfirmed = 0 if pd.isna(row['totalConfirmed']) else row['totalConfirmed']
-        totalDeath = 0 if pd.isna(row['totalDeath']) else row['totalDeath']
-        totalActive = 0 if pd.isna(row['totalActive']) else row['totalActive']
         cursor_mspr.execute(
             """
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
             VALUES (%s, 1, %s, %s, %s, %s)
             """,
             tuple(to_python_type(x) for x in (
-                localizationId, totalConfirmed, totalDeath, totalActive, row['date']
+                localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
             ))
         )
     mspr_conn.commit()
@@ -194,28 +192,28 @@ def insert_mspr():
 
     for _, row in monkeypox.iterrows():
         localizationId = country_to_id.get(row['country'])
-        if not localizationId:
+        if not localizationId or pd.isna(row['totalConfirmed']):
             continue
-        totalConfirmed = 0 if pd.isna(row['totalConfirmed']) else row['totalConfirmed']
-        totalDeath = 0 if pd.isna(row['totalDeath']) else row['totalDeath']
-        totalActive = 0 if pd.isna(row['totalActive']) else row['totalActive']
         cursor_mspr.execute(
             """
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
             VALUES (%s, 2, %s, %s, %s, %s)
             """,
             tuple(to_python_type(x) for x in (
-                localizationId, totalConfirmed, totalDeath, totalActive, row['date']
+                localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
             ))
         )
     mspr_conn.commit()
     print("✅ ReportCase (Monkeypox)")
 
+
 if __name__ == "__main__":
+    start = time.time()
     insert_archive()
     insert_mspr()
     cursor_archive.close()
     archive_conn.close()
     cursor_mspr.close()
     mspr_conn.close()
-    print("\n🎉 Traitement terminé.")
+    print("🎉 Traitement terminé.")
+    print(f"⏱️ Durée totale : {time.time() - start:.2f} secondes")
