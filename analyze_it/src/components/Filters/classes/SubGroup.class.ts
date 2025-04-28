@@ -1,16 +1,12 @@
-import { subGroupEnum } from "../enums/subGroupEnum";
 import Compare from "./Compare.class";
 import Logic from "./Logic.class";
 
 export default class SubGroup {
-    prop: (Compare|Logic|SubGroup)[];
-    type: subGroupEnum
+    prop: (Compare|Logic)[];
 
     constructor(
-        prop:(Compare|Logic|SubGroup)[] = [], 
-        type:subGroupEnum = subGroupEnum.PARENTHESIS
+        prop:(Compare|Logic)[] = [], 
     ) {
         this.prop = prop;
-        this.type = type;
     }
 }

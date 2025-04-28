@@ -1,42 +1,30 @@
 // import Table from './components/Table'
 
 import SubGroup from "./components/Filters/classes/SubGroup.class"
+import { useEffect, useState } from "react"
 import SubGroupOperator from "./components/Filters/components/SubGroupOperator";
-import { subGroupEnum } from "./components/Filters/enums/subGroupEnum"
-import { useState } from "react"
 
-// function App() {
-//   return (<Table/>)
-// }
-
-// import WhiteBoard from './components/WhiteBoard'
-
-// function App(){
-//   return <WhiteBoard/>
-
-const defaultSubGroup = new SubGroup([], subGroupEnum.WHERE)
+const defaultSubGroup = new SubGroup([])
 
 function App(){
   const [thisSubGroup, setThisSubGroup] = useState<SubGroup>(defaultSubGroup);
+  
 
-  const handleSubGroupChange = (idx: number,  subGroup?: SubGroup) => {
+  const handleSubGroupChange = (subGroup?: SubGroup) => {
       const tempProps = [...thisSubGroup.prop]; // Copie le tableau
   
       if (!subGroup) {
-          tempProps.splice(idx, 1); // Supprime l'élément à l'index idx
-      } else {
-          tempProps[idx] = new SubGroup(subGroup.prop, subGroup.type);
+          tempProps.splice(1); // Supprime l'élément à l'index idx
       }
   
-      const updatedSubGroup = new SubGroup(tempProps, thisSubGroup.type); // Crée un nouvel objet Logic
-  
+      const updatedSubGroup = new SubGroup(tempProps); // Crée un nouvel objet Logic
       setThisSubGroup(updatedSubGroup);
   };
 
   return (
-      <div className="p-4">
-        <SubGroupOperator subGroup={defaultSubGroup} updateParent={handleSubGroupChange}/>
-      </div>
+      
+        <SubGroupOperator subGroup={thisSubGroup} updateParent={handleSubGroupChange}/>
+      
   )
 }
 
