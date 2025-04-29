@@ -84,3 +84,14 @@ services:
       /bin/sh -c "npm run dev"
     ports:
       - 3001:3001
+  
+
+  ia:
+    container_name: ia_mspr
+    build:
+      context: .
+      dockerfile: Dockerfile-IA
+    command: >
+      /bin/sh -c "python app.py"
+    ports:
+      - 5000:5000

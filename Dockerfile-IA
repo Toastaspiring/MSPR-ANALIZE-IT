@@ -1,0 +1,8 @@
+FROM python:3.13
+RUN apt update
+RUN apt-get install git
+
+RUN git clone https://github.com/Toastaspiring/MSPR-ANALIZE-IT.git
+WORKDIR /MSPR-ANALIZE-IT
+RUN git checkout IA-dev
+RUN pip install -r requirements.txt
