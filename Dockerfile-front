@@ -4,6 +4,9 @@ RUN apk add --no-cache git
 
 RUN git clone https://github.com/Toastaspiring/MSPR-ANALIZE-IT.git
 WORKDIR /MSPR-ANALIZE-IT
-RUN git checkout front-dev
-WORKDIR /MSPR-ANALIZE-IT/analyze_it
+RUN git checkout front-end-desktop
+# WORKDIR /MSPR-ANALIZE-IT/analyze_it
+WORKDIR /MSPR-ANALIZE-IT/frontend
 RUN npm i 
+WORKDIR /MSPR-ANALIZE-IT/backend
+RUN npm i

@@ -56,13 +56,31 @@ services:
       - 3000:3000
     
     
+  # front:
+  #   container_name: front_mspr
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-front
+  #   command: >
+  #     /bin/sh -c "git pull;npm i; npm run dev"
+  #   ports:
+  #     - 5173:5173
+    
   front:
     container_name: front_mspr
     build:
       context: .
       dockerfile: Dockerfile-front
     command: >
-      /bin/sh -c "git pull;npm i; npm run dev"
+      /bin/sh -c "cd ../frontend;npm run dev"
     ports:
-      - 5173:5173
-    
+    - 3010:3000
+  front_back:
+    container_name: front_back_mspr
+    build:
+      context: .
+      dockerfile: Dockerfile-front
+    command: >
+      /bin/sh -c "npm run dev"
+    ports:
+      - 3001:3001
