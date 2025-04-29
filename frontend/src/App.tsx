@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Container, Button, Box, CircularProgress, Typography, Paper, AppBar, Toolbar, IconButton, useTheme } from '@mui/material';
+import { Container, Button, Box, CircularProgress, Typography, Paper, AppBar, Toolbar, IconButton, useTheme, Grid, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import FilterPopup, { FilterData } from './components/FilterPopup';
 import Graph from './components/Graph';
 import DataTable from './components/DataTable';
 import MetricsSummary from './components/MetricsSummary';
-import { getFilteredReportCases } from './services/api';
+import { getFilteredReportCases, getPredictions, PredictionResult } from './services/api';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
@@ -28,12 +28,22 @@ interface GraphProps {
   title: string;
 }
 
+interface AppState {
+  isFilterOpen: boolean;
+  loading: boolean;
+  data: DataPoint[];
+  error: string | null;
+  currentFilters: FilterData | null;
+  predictions: PredictionResult[];
+}
+
 function App() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DataPoint[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentFilters, setCurrentFilters] = useState<FilterData | null>(null);
+  const [predictions, setPredictions] = useState<PredictionResult[]>([]);
   const theme = useTheme();
 
   const colors = [
@@ -96,9 +106,31 @@ function App() {
         }
       });
       setData(transformedData);
+
+      // Récupération des prédictions
+      const singleCountry = filters.countries && filters.countries.length === 1;
+      const singleDisease = filters.diseases && filters.diseases.length === 1;
+      const hasActiveMetric = filters.metrics.includes('Cas actifs');
+
+      if (singleCountry && singleDisease && hasActiveMetric) {
+        const predictionData = {
+          inhabitantsNumber: 1000000,
+          vaccinationRate: 0.7,
+          diseaseId: filters.diseases[0] === 'Covid19' ? 1 : 2,
+          localizationId: 1,
+          day_of_week: new Date().getDay(),
+          month: new Date().getMonth() + 1
+        };
+
+        const predictionResults = getPredictions(predictionData);
+        setPredictions(predictionResults);
+      } else {
+        setPredictions([]);
+      }
     } catch (err) {
       console.error('Erreur lors de la récupération des données:', err);
       setError('Une erreur est survenue lors de la récupération des données.');
+      setPredictions([]);
     } finally {
       setLoading(false);
     }
@@ -218,12 +250,189 @@ function App() {
 
                 {getMetricsForGraphs().length > 0 && (
                   <Box sx={{ mt: 4 }}>
-                    <Graph 
-                      data={getMetricsForGraphs()}
-                      title="Évolution des métriques"
-                      timeGrouping={currentFilters?.timeGrouping || 'day'}
-                      colorMap={seriesColorMap}
-                    />
+                    <Typography 
+                      variant="h5" 
+                      component="h2" 
+                      gutterBottom
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontWeight: 700,
+                        mb: 3,
+                        borderBottom: `2px solid ${theme.palette.primary.main}`,
+                        pb: 1
+                      }}
+                    >
+                      Graphique
+                    </Typography>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={predictions.length > 0 ? 8 : 9}>
+                        <Graph 
+                          data={getMetricsForGraphs()}
+                          title="Évolution des métriques"
+                          timeGrouping={currentFilters?.timeGrouping || 'day'}
+                          colorMap={seriesColorMap}
+                        />
+                      </Grid>
+                      {predictions && predictions.length > 0 ? (
+                        <Grid item xs={12} md={4}>
+                          <Paper 
+                            elevation={3} 
+                            sx={{ 
+                              p: 3,
+                              backgroundColor: theme.palette.background.paper,
+                              border: `1px solid ${theme.palette.divider}`,
+                              borderRadius: 2,
+                              height: '100%',
+                              minHeight: '400px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                            }}
+                          >
+                            <Typography 
+                              variant="h6" 
+                              component="h3" 
+                              gutterBottom
+                              sx={{
+                                color: theme.palette.text.primary,
+                                fontWeight: 500,
+                                mb: 3,
+                                pb: 2,
+                                borderBottom: `1px solid ${theme.palette.divider}`
+                              }}
+                            >
+                              Prévisions des cas
+                            </Typography>
+                            <Box sx={{ flex: 1, overflow: 'auto' }}>
+                              <Table size="medium">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell 
+                                      sx={{ 
+                                        fontWeight: 'bold',
+                                        backgroundColor: theme.palette.background.default,
+                                        color: theme.palette.text.secondary
+                                      }}
+                                    >
+                                      Échéance
+                                    </TableCell>
+                                    <TableCell 
+                                      align="right"
+                                      sx={{ 
+                                        fontWeight: 'bold',
+                                        backgroundColor: theme.palette.background.default,
+                                        color: theme.palette.text.secondary
+                                      }}
+                                    >
+                                      Prévision
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {predictions.map((prediction) => (
+                                    <TableRow 
+                                      key={prediction.day}
+                                      sx={{
+                                        '&:nth-of-type(odd)': {
+                                          backgroundColor: theme.palette.action.hover
+                                        },
+                                        '&:last-child td, &:last-child th': { 
+                                          border: 0 
+                                        },
+                                        transition: 'background-color 0.2s',
+                                        '&:hover': {
+                                          backgroundColor: theme.palette.action.selected
+                                        }
+                                      }}
+                                    >
+                                      <TableCell 
+                                        sx={{ 
+                                          py: 2,
+                                          color: theme.palette.text.primary
+                                        }}
+                                      >
+                                        Dans {prediction.day} jour{prediction.day > 1 ? 's' : ''}
+                                      </TableCell>
+                                      <TableCell 
+                                        align="right"
+                                        sx={{ 
+                                          py: 2,
+                                          color: theme.palette.primary.main,
+                                          fontWeight: 500
+                                        }}
+                                      >
+                                        {prediction.predicted_totalConfirmed.toLocaleString('fr-FR')}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </Box>
+                            <Typography 
+                              variant="caption" 
+                              sx={{ 
+                                mt: 3,
+                                pt: 2,
+                                borderTop: `1px solid ${theme.palette.divider}`,
+                                color: theme.palette.text.secondary,
+                                textAlign: 'center'
+                              }}
+                            >
+                              Prévisions basées sur les données historiques
+                            </Typography>
+                          </Paper>
+                        </Grid>
+                      ) : currentFilters && (
+                        <Grid item xs={12} md={3}>
+                          <Paper 
+                            elevation={3} 
+                            sx={{ 
+                              p: 3,
+                              backgroundColor: theme.palette.background.paper,
+                              border: `1px solid ${theme.palette.divider}`,
+                              borderRadius: 2,
+                              height: 'fit-content',
+                              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                            }}
+                          >
+                            <Typography 
+                              variant="h6" 
+                              component="h3" 
+                              gutterBottom
+                              sx={{
+                                color: theme.palette.text.primary,
+                                fontWeight: 500,
+                                mb: 2,
+                                pb: 2,
+                                borderBottom: `1px solid ${theme.palette.divider}`
+                              }}
+                            >
+                              Prédictions non disponibles
+                            </Typography>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: theme.palette.text.secondary,
+                                mb: 2
+                              }}
+                            >
+                              Pour afficher les prédictions, veuillez :
+                            </Typography>
+                            <Box component="ul" sx={{ pl: 2, mb: 0 }}>
+                              <Typography component="li" variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1 }}>
+                                Sélectionner un seul pays
+                              </Typography>
+                              <Typography component="li" variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1 }}>
+                                Sélectionner une seule maladie
+                              </Typography>
+                              <Typography component="li" variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                                Inclure la métrique "Cas actifs"
+                              </Typography>
+                            </Box>
+                          </Paper>
+                        </Grid>
+                      )}
+                    </Grid>
                   </Box>
                 )}
 
