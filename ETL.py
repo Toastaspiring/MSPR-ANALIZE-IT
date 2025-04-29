@@ -181,19 +181,27 @@ def insert_mspr():
     print("✅ ReportCase (Covid-19)")
 
     monkeypox = pd.read_csv("./files/owid_monkeypox_data.csv")
+
+    # Normalize country names
     monkeypox['location'] = monkeypox['location'].apply(rename_country)
-    monkeypox['date'] = pd.to_datetime(monkeypox['date'], errors='coerce').dt.date
+
+    # Rename and convert relevant columns
     monkeypox = monkeypox.rename(columns={
         'location': 'country',
         'total_cases': 'totalConfirmed',
-        'total_deaths': 'totalDeath',
-        'new_cases': 'totalActive'
+        'total_deaths': 'totalDeath'
     })
+    monkeypox['date'] = pd.to_datetime(monkeypox['date'], errors='coerce').dt.date
+    monkeypox['totalActive'] = None  # Placeholder; actual active case data not available
 
+    # Insert into ReportCase
+    inserted, skipped = 0, 0
     for _, row in monkeypox.iterrows():
         localizationId = country_to_id.get(row['country'])
         if not localizationId or pd.isna(row['totalConfirmed']):
+            skipped += 1
             continue
+
         cursor_mspr.execute(
             """
             INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
@@ -203,8 +211,10 @@ def insert_mspr():
                 localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
             ))
         )
+        inserted += 1
+
     mspr_conn.commit()
-    print("✅ ReportCase (Monkeypox)")
+    print(f"✅ ReportCase (Monkeypox) — Inserted: {inserted}, Skipped: {skipped}")
 
 
 if __name__ == "__main__":
