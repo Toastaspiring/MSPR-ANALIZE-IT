@@ -1,6 +1,6 @@
 import { get } from "axios";
 
-const API_BASE_PATH = "http://localhost:3000/"
+const API_BASE_PATH = "http://host.docker.internal:3000/"
 
 // Get all filtered report cases from api
 export async function getFilteredReportCases(data: any) {

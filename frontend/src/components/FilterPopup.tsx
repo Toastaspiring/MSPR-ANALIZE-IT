@@ -121,7 +121,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
 
   const handleCountryChange = (event: SelectChangeEvent<string[]>) => {
     const selectedCountryNames = event.target.value as string[];
-    const selectedCountryObjects = countries.filter(country => 
+    const selectedCountryObjects = countries.filter(country =>
       selectedCountryNames.includes(country.name)
     );
     setSelectedCountries(selectedCountryObjects);
@@ -132,10 +132,10 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
@@ -145,12 +145,16 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
       }}
       aria-labelledby="filter-dialog-title"
     >
-      <DialogTitle id="filter-dialog-title" component="h2" sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        pb: 1
-      }}>
+      <DialogTitle 
+        id="filter-dialog-title" 
+        component="h2" 
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pb: 1
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <FilterAltIcon color="primary" aria-hidden="true" />
           <Typography variant="h6" component="span">Filtres</Typography>
@@ -243,19 +247,23 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
                   />
                 )}
                 renderTags={(value, getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={option.name}
-                      {...getTagProps({ index })}
-                      sx={{ 
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        '& .MuiChip-deleteIcon': {
-                          color: 'white'
-                        }
-                      }}
-                    />
-                  ))
+                  value.map((option, index) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        key={key}
+                        label={option.name}
+                        {...tagProps}
+                        sx={{
+                          backgroundColor: theme.palette.primary.main,
+                          color: 'white',
+                          '& .MuiChip-deleteIcon': {
+                            color: 'white'
+                          }
+                        }}
+                      />
+                    );
+                  })
                 }
               />
             </Box>
@@ -304,7 +312,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
       </DialogContent>
       <Divider />
       <DialogActions sx={{ p: 2, gap: 1 }}>
-        <Button 
+        <Button
           onClick={onClose}
           variant="outlined"
           sx={{ borderRadius: 2, textTransform: 'none' }}
@@ -312,7 +320,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
         >
           Annuler
         </Button>
-        <Button 
+        <Button
           onClick={handleApplyFilters}
           variant="contained"
           sx={{ borderRadius: 2, textTransform: 'none' }}
@@ -325,4 +333,4 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
   );
 };
 
-export default FilterPopup; 
+export default FilterPopup;
