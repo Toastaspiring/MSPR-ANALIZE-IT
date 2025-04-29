@@ -1,39 +1,6 @@
 {
     "openapi": "3.0.0",
     "paths": {
-        "/auth/login": {
-            "post": {
-                "operationId": "AuthController_signIn",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserLoginDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "User logged in successfully."
-                    },
-                    "400": {
-                        "description": "Invalid body parameters."
-                    },
-                    "401": {
-                        "description": "Unauthorized."
-                    },
-                    "500": {
-                        "description": "Internal server error occurred while logging in."
-                    }
-                },
-                "tags": [
-                    "Auth"
-                ]
-            }
-        },
         "/users": {
             "post": {
                 "operationId": "UsersController_create",
@@ -72,11 +39,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Create a new user",
                 "tags": [
                     "Users"
@@ -99,11 +61,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve all users",
                 "tags": [
                     "Users"
@@ -148,11 +105,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update a user's password",
                 "tags": [
                     "Users"
@@ -205,11 +157,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update a user's username",
                 "tags": [
                     "Users"
@@ -262,11 +209,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update a user's role",
                 "tags": [
                     "Users"
@@ -305,11 +247,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Delete a user by id",
                 "tags": [
                     "Users"
@@ -348,11 +285,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a user by id",
                 "tags": [
                     "Users"
@@ -390,11 +322,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Create a new role",
                 "tags": [
                     "Roles"
@@ -446,11 +373,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update an existing role",
                 "tags": [
                     "Roles"
@@ -487,11 +409,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Delete a role by id",
                 "tags": [
                     "Roles"
@@ -530,11 +447,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a role by id",
                 "tags": [
                     "Roles"
@@ -559,11 +471,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve all roles",
                 "tags": [
                     "Roles"
@@ -601,11 +508,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Create a new report case",
                 "tags": [
                     "ReportCase"
@@ -657,11 +559,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update an existing report case",
                 "tags": [
                     "ReportCase"
@@ -701,11 +598,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Delete a report case by id",
                 "tags": [
                     "ReportCase"
@@ -742,11 +634,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a case by id",
                 "tags": [
                     "ReportCase"
@@ -758,12 +645,22 @@
                 "operationId": "ReportCaseController_getFilteredReportCases",
                 "parameters": [
                     {
-                        "name": "count",
+                        "name": "page",
                         "required": false,
                         "in": "query",
-                        "description": "The number of cases to retrieve",
+                        "description": "Page id to retrieve",
                         "schema": {
-                            "example": 1000,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of elements in a page",
+                        "schema": {
+                            "example": 100,
                             "type": "number"
                         }
                     }
@@ -796,11 +693,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve filtered report cases",
                 "tags": [
                     "ReportCase"
@@ -812,12 +704,22 @@
                 "operationId": "ReportCaseController_getAll",
                 "parameters": [
                     {
-                        "name": "count",
+                        "name": "page",
                         "required": false,
                         "in": "query",
-                        "description": "The number of cases to retrieve",
+                        "description": "Page id to retrieve",
                         "schema": {
-                            "example": 1000,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of elements in a page",
+                        "schema": {
+                            "example": 100,
                             "type": "number"
                         }
                     }
@@ -836,11 +738,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve all cases with a limit",
                 "tags": [
                     "ReportCase"
@@ -878,11 +775,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Create a new localization",
                 "tags": [
                     "Localization"
@@ -934,11 +826,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update an existing localization",
                 "tags": [
                     "Localization"
@@ -975,11 +862,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Delete a localization by id",
                 "tags": [
                     "Localization"
@@ -1018,11 +900,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a localization by id",
                 "tags": [
                     "Localization"
@@ -1047,11 +924,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve all localizations",
                 "tags": [
                     "Localization"
@@ -1089,11 +961,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Create a new localization data",
                 "tags": [
                     "LocalizationData"
@@ -1145,11 +1012,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update an existing localization data",
                 "tags": [
                     "LocalizationData"
@@ -1186,11 +1048,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Delete a localization data by id",
                 "tags": [
                     "LocalizationData"
@@ -1229,11 +1086,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a localization data by id",
                 "tags": [
                     "LocalizationData"
@@ -1258,11 +1110,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve all localization data",
                 "tags": [
                     "LocalizationData"
@@ -1300,11 +1147,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Create a new disease",
                 "tags": [
                     "Diseases"
@@ -1356,11 +1198,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Update an existing disease",
                 "tags": [
                     "Diseases"
@@ -1397,11 +1234,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Delete a disease by id",
                 "tags": [
                     "Diseases"
@@ -1440,11 +1272,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a disease by id",
                 "tags": [
                     "Diseases"
@@ -1483,11 +1310,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve a disease by name",
                 "tags": [
                     "Diseases"
@@ -1512,11 +1334,6 @@
                         "description": "Internal server error."
                     }
                 },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "summary": "Retrieve all diseases",
                 "tags": [
                     "Diseases"
@@ -1541,25 +1358,6 @@
             }
         },
         "schemas": {
-            "UserLoginDto": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string",
-                        "example": "user",
-                        "description": "User name"
-                    },
-                    "password": {
-                        "type": "string",
-                        "example": "password",
-                        "description": "User's password"
-                    }
-                },
-                "required": [
-                    "username",
-                    "password"
-                ]
-            },
             "CreateRoleDto": {
                 "type": "object",
                 "properties": {
