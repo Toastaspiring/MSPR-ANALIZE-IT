@@ -20,7 +20,7 @@ async function readCSVFile(filename: string): Promise<any[]> {
     
     return new Promise((resolve, reject) => {
       parse(fileContent, {
-        columns: true,
+        columns: (header: any[]) => header.map((col: any) => col.toString()),
         skip_empty_lines: true,
         cast: true
       }, (err, data) => {
@@ -173,7 +173,7 @@ async function getMonkeypoxData(metrics: string[], countries: string[], startDat
     filteredData = filteredData.filter((row: any) => row.date <= endDate);
   }
 
-  return processData(filteredData, metrics, countries[0]);
+  return processMonkeypoxData(filteredData, metrics, countries[0]);
 }
 
 async function getPopulationData(countries: string[]) {
@@ -203,7 +203,7 @@ async function getVaccinationData(countries: string[], startDate: string, endDat
   let filteredData = data;
   
   if (countries.length > 0) {
-    filteredData = filteredData.filter((row: any) => countries.includes(row.country));
+    filteredData = filteredData.filter((row: any) => countries.includes(row.location));
   }
   
   if (startDate) {
@@ -215,12 +215,19 @@ async function getVaccinationData(countries: string[], startDate: string, endDat
   }
 
   return filteredData.map(row => ({
-    country: row.country,
+    country: row.location,
     date: row.date,
     total_vaccinations: row.total_vaccinations,
     people_vaccinated: row.people_vaccinated,
     people_fully_vaccinated: row.people_fully_vaccinated,
-    daily_vaccinations: row.daily_vaccinations
+    total_boosters: row.total_boosters,
+    daily_vaccinations: row.daily_vaccinations,
+    people_vaccinated_per_hundred: row.people_vaccinated_per_hundred,
+    people_fully_vaccinated_per_hundred: row.people_fully_vaccinated_per_hundred,
+    total_boosters_per_hundred: row.total_boosters_per_hundred,
+    daily_vaccinations_per_million: row.daily_vaccinations_per_million,
+    daily_people_vaccinated: row.daily_people_vaccinated,
+    daily_people_vaccinated_per_hundred: row.daily_people_vaccinated_per_hundred
   }));
 }
 
@@ -238,15 +245,15 @@ function processData(rows: any[], metrics: string[], country: string) {
       if (!row) return 0;
       switch (metric) {
         case 'Cas actifs':
-          return row.active_cases || (row.total_cases - row.total_deaths) || 0;
+          return row.active_cases || 0;
         case 'Décès':
-          return row.daily_new_deaths || row.new_deaths || 0;
+          return row.daily_new_deaths || 0;
         case 'Total des cas':
-          return row.cumulative_total_cases || row.total_cases || 0;
+          return row.cumulative_total_cases || 0;
         case 'Total des morts':
-          return row.cumulative_total_deaths || row.total_deaths || 0;
+          return row.cumulative_total_deaths || 0;
         case 'Nouveaux cas':
-          return row.daily_new_cases || row.new_cases || 0;
+          return row.daily_new_cases || 0;
         case 'Population':
           return row.population || 0;
         case 'Vaccinations':
@@ -257,6 +264,33 @@ function processData(rows: any[], metrics: string[], country: string) {
     });
   });
 
+  return data;
+}
+
+function processMonkeypoxData(rows: any[], metrics: string[], country: string) {
+  const countryData = rows.filter(row => row.location === country);
+  const dates = [...new Set(countryData.map(row => row.date))].sort();
+  const data: any = {
+    dates,
+  };
+  metrics.forEach(metric => {
+    data[metric] = dates.map(date => {
+      const row = countryData.find(r => r.date === date);
+      if (!row) return 0;
+      switch (metric) {
+        case 'Total des cas':
+          return row.total_cases || 0;
+        case 'Total des morts':
+          return row.total_deaths || 0;
+        case 'Nouveaux cas':
+          return row.new_cases || 0;
+        case 'Décès':
+          return row.new_deaths || 0;
+        default:
+          return 0;
+      }
+    });
+  });
   return data;
 }
 

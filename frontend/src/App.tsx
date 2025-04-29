@@ -6,7 +6,7 @@ import FilterPopup, { FilterData } from './components/FilterPopup';
 import Graph from './components/Graph';
 import DataTable from './components/DataTable';
 import MetricsSummary from './components/MetricsSummary';
-import axios from 'axios';
+import { getFilteredReportCases } from './services/api';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
@@ -59,11 +59,9 @@ function App() {
     setError(null);
     setCurrentFilters(filters);
     try {
-      const response = await axios.post('http://localhost:3001/api/data', filters);
-
+      const response = await getFilteredReportCases(filters);
       const transformedData: DataPoint[] = [];
-
-      Object.entries(response.data).forEach(([country, countryData]: [string, any]) => {
+      Object.entries(response).forEach(([country, countryData]: [string, any]) => {
         // Données COVID
         if (countryData.covid) {
           Object.entries(countryData.covid).forEach(([metric, data]: [string, any]) => {
@@ -97,7 +95,6 @@ function App() {
           });
         }
       });
-
       setData(transformedData);
     } catch (err) {
       console.error('Erreur lors de la récupération des données:', err);

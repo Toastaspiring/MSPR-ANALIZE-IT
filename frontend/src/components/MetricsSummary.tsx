@@ -98,42 +98,40 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
           </Typography>
         )}
       </Box>
-      <Grid container spacing={1}>
-        {Object.values(groupedMetrics).map(({ country, disease, metrics }) => (
-          <Grid item xs={12} key={`${country}-${disease}`}>
-            <Paper sx={{ p: 1 }}>
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="subtitle1" fontWeight="bold" component="h3">
-                  {country} - {disease}
-                </Typography>
-              </Box>
-              <Grid container spacing={1}>
-                {metrics.map(({ metric, total, colorKey, country, disease }) => (
-                  <Grid item xs={12} sm={6} md={4} key={metric}>
-                    <Box 
-                      sx={{ 
-                        p: 1,
-                        borderLeft: `4px solid ${colorMap[`${country}-${disease}-${metric}`] || '#888'}`,
-                        backgroundColor: `${(colorMap[`${country}-${disease}-${metric}`] || '#888')}10`
-                      }}
-                      aria-label={`Métrique ${metric} pour ${country} - ${disease}`}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        {metric}
-                      </Typography>
-                      <Typography 
-                        variant="h6" 
-                        sx={{ 
-                          color: colorMap[`${country}-${disease}-${metric}`] || '#888',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        {new Intl.NumberFormat('fr-FR').format(total)}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
+      <Grid container spacing={2}>
+        {Object.values(metricsTotals).map(({ country, disease, metric, total, colorKey }) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={`${country}-${disease}-${metric}`}>
+            <Paper
+              sx={{
+                p: 2,
+                borderLeft: `6px solid ${colorMap[colorKey] || '#888'}`,
+                borderRadius: 2,
+                boxShadow: 2,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+                minHeight: 120
+              }}
+              aria-label={`Métrique ${metric} pour ${country} - ${disease}`}
+            >
+              <Typography variant="subtitle2" fontWeight="bold" color="text.secondary" sx={{ mb: 0.5 }}>
+                {country} - {disease}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {metric}
+              </Typography>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: colorMap[colorKey] || '#888',
+                  fontWeight: 'bold',
+                  letterSpacing: 1
+                }}
+              >
+                {new Intl.NumberFormat('fr-FR').format(total)}
+              </Typography>
             </Paper>
           </Grid>
         ))}

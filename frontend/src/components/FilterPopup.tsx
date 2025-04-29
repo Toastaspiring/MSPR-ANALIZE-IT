@@ -28,7 +28,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import axios from 'axios';
+import { getCountries } from '../services/api';
 import dayjs from 'dayjs';
 
 interface FilterPopupProps {
@@ -76,8 +76,8 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/countries');
-        setCountries(response.data);
+        const response = await getCountries();
+        setCountries(response);
       } catch (error) {
         console.error('Erreur lors du chargement des pays:', error);
       }
