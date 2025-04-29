@@ -91,18 +91,22 @@ export class ReportCaseService {
         return await this.repo.findOneBy({ id });
     }
 
-    async getAll(count: number) {
-        if (!count || count <= 0) {
-            count = 1000;
+    async getAll(page: number, pageSize: number) {
+        if (!pageSize || pageSize <= 0) {
+            pageSize = 100;
         }
 
-        return await this.repo.find({ take: count });
+        const offset = (page - 1) * pageSize;
+
+        return await this.repo.find({ skip: offset, take: pageSize });
     }
 
-    async getFilteredReportCases(filter: FilterConditionGroupDto, count: number) {
-        if (!count || count <= 0) {
-            count = 1000;
+    async getFilteredReportCases(filter: FilterConditionGroupDto, page: number, pageSize: number) {
+        if (!pageSize || pageSize <= 0) {
+            pageSize = 10;
         }
+
+        const offset = (page - 1) * pageSize;
 
         // Build the query
         const queryBuilder = this.repo.createQueryBuilder('ReportCase')
@@ -160,7 +164,7 @@ export class ReportCaseService {
             queryBuilder.where(parsedFilter.expression, parsedFilter.parameters);
         }
 
-        queryBuilder.limit(count);
+        queryBuilder.skip(offset).take(pageSize);
 
         console.log("Generated SQL Query: ", queryBuilder.getSql());
         try {

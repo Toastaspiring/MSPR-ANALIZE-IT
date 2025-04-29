@@ -65,13 +65,15 @@ export class ReportCaseController {
     // @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve filtered report cases' })
     @ApiBody({ type: FilterConditionGroupDto, description: 'The filter as a JSON object', required: false })
-    @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
+    @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page id to retrieve', example: 1 })
+    @ApiQuery({ name: 'pageSize', required: false, type: Number, description: 'Number of elements in a page', example: 100 })
     @ApiResponse({ status: 201, description: 'The list of filtered report cases has been retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid query parameters.' })
     @CommonApiResponses()
-    async getFilteredReportCases(@Body() filter?: FilterConditionGroupDto, @Query('count') count?: string) {
-        const parsedCount = count ? parseInt(count) : undefined;
-        return await this.caseService.getFilteredReportCases(filter, parsedCount);
+    async getFilteredReportCases(@Body() filter?: FilterConditionGroupDto, @Query('page') page?: string, @Query('pageSize') pageSize?: string) {
+        const parsedPage = page ? parseInt(page) : 1;
+        const parsedPageSize = pageSize ? parseInt(pageSize) : 100;
+        return await this.caseService.getFilteredReportCases(filter, parsedPage, parsedPageSize);
     }
 
     @Public()
@@ -79,12 +81,14 @@ export class ReportCaseController {
     // @ApiBearerAuth()
     // @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve all cases with a limit' })
-    @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
+    @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page id to retrieve', example: 1 })
+    @ApiQuery({ name: 'pageSize', required: false, type: Number, description: 'Number of elements in a page', example: 100 })
     @ApiResponse({ status: 200, description: 'The list of report cases has been retrieved successfully.' })
     @CommonApiResponses()
-    async getAll(@Query('count') count?: string) {
-        const parsedCount = count ? parseInt(count) : undefined;
-        return await this.caseService.getAll(parsedCount);
+    async getAll(@Query('page') page?: string, @Query('pageSize') pageSize?: string) {
+        const parsedPage = page ? parseInt(page) : 1;
+        const parsedPageSize = pageSize ? parseInt(pageSize) : 100;
+        return await this.caseService.getAll(parsedPage, parsedPageSize);
     }
 
     @Public()
