@@ -68,7 +68,7 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
   }>);
 
   return (
-    <Box sx={{ mt: 2, mb: 4 }}>
+    <Box sx={{ mt: 2, mb: 4 }} role="region" aria-labelledby="metrics-summary-title">
       <Box sx={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -78,7 +78,9 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
         pb: 1
       }}>
         <Typography 
-          variant="h5" 
+          id="metrics-summary-title"
+          variant="h5"
+          component="h2"
           sx={{ 
             color: theme.palette.primary.main,
             fontWeight: 'bold'
@@ -101,7 +103,7 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
           <Grid item xs={12} key={`${country}-${disease}`}>
             <Paper sx={{ p: 1 }}>
               <Box sx={{ mb: 1 }}>
-                <Typography variant="subtitle1" fontWeight="bold">
+                <Typography variant="subtitle1" fontWeight="bold" component="h3">
                   {country} - {disease}
                 </Typography>
               </Box>
@@ -114,6 +116,7 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
                         borderLeft: `4px solid ${colorMap[`${country}-${disease}-${metric}`] || '#888'}`,
                         backgroundColor: `${(colorMap[`${country}-${disease}-${metric}`] || '#888')}10`
                       }}
+                      aria-label={`Métrique ${metric} pour ${country} - ${disease}`}
                     >
                       <Typography variant="body2" color="text.secondary">
                         {metric}

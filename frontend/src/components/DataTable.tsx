@@ -45,7 +45,10 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns }) => {
   return (
     <Box>
       <TableContainer>
-        <Table>
+        <Table aria-label="Tableau des données filtrées affichant les résultats selon les filtres sélectionnés">
+          <caption style={{ textAlign: 'left', fontWeight: 'bold', color: theme.palette.primary.main, paddingBottom: 8 }}>
+            Tableau des données filtrées
+          </caption>
           <TableHead>
             <TableRow>
               {columns.map((column) => (

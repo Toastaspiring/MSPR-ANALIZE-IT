@@ -163,21 +163,21 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
   };
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper sx={{ p: 2 }} role="region" aria-labelledby="graph-title" aria-label="Graphique d'évolution des métriques sélectionnées">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">{title}</Typography>
+        <Typography id="graph-title" variant="h6" component="h2">{title}</Typography>
         <ToggleButtonGroup
           value={selectedTimeGrouping}
           exclusive
           onChange={handleTimeGroupingChange}
-          aria-label="regroupement temporel"
+          aria-label="Sélection du regroupement temporel du graphique"
         >
           <ToggleButton value="day">Par jour</ToggleButton>
           <ToggleButton value="week">Par semaine</ToggleButton>
           <ToggleButton value="month">Par mois</ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ height: chartHeight }}>
+      <Box sx={{ height: chartHeight }} aria-label="Zone de rendu du graphique">
         <Line options={chartOptions} data={chartData} />
       </Box>
     </Paper>
