@@ -1,7 +1,3 @@
-Compris, sans emoji, direct au but. Voici un **README.md** propre, sérieux et entièrement en français, **sans aucune décoration inutile** :
-
----
-
 # Flask API - Prédiction de cas de maladies avec IA
 
 Ce projet propose une API Flask permettant de prédire le **nombre total de cas à 14 jours** pour des maladies comme le **Covid** ou **Monkeypox**, à l'aide de modèles **Random Forest** ou **XGBoost**.
