@@ -114,13 +114,25 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,
+        display: true,
+        labels: {
+          boxWidth: 20,
+          padding: 10,
+          font: {
+            size: window.innerWidth < 600 ? 10 : 12
+          }
+        }
       },
       title: {
         display: true,
-        text: title
+        text: title,
+        font: {
+          size: window.innerWidth < 600 ? 14 : 16
+        }
       }
     },
     scales: {
@@ -129,6 +141,13 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
         title: {
           display: true,
           text: 'Date'
+        },
+        ticks: {
+          maxRotation: 45,
+          minRotation: 45,
+          font: {
+            size: window.innerWidth < 600 ? 10 : 12
+          }
         }
       },
       y: {
@@ -136,6 +155,11 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
         title: {
           display: true,
           text: 'Valeur'
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 600 ? 10 : 12
+          }
         }
       }
     }
@@ -163,21 +187,63 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
   };
 
   return (
-    <Paper sx={{ p: 2 }} role="region" aria-labelledby="graph-title" aria-label="Graphique d'évolution des métriques sélectionnées">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography id="graph-title" variant="h6" component="h2">{title}</Typography>
+    <Paper 
+      sx={{ 
+        p: { xs: 1, sm: 2 }, 
+        width: '100%' 
+      }} 
+      role="region" 
+      aria-labelledby="graph-title" 
+      aria-label="Graphique d'évolution des métriques sélectionnées"
+    >
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 2, sm: 0 },
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'stretch', sm: 'center' }, 
+          mb: 2 
+        }}
+      >
+        <Typography 
+          id="graph-title" 
+          variant="h6" 
+          component="h2"
+          sx={{
+            fontSize: { xs: '1rem', sm: '1.25rem' },
+            textAlign: { xs: 'center', sm: 'left' }
+          }}
+        >
+          {title}
+        </Typography>
         <ToggleButtonGroup
           value={selectedTimeGrouping}
           exclusive
           onChange={handleTimeGroupingChange}
           aria-label="Sélection du regroupement temporel du graphique"
+          size={window.innerWidth < 600 ? "small" : "medium"}
+          sx={{
+            flexWrap: 'wrap',
+            justifyContent: 'center'
+          }}
         >
           <ToggleButton value="day">Par jour</ToggleButton>
           <ToggleButton value="week">Par semaine</ToggleButton>
           <ToggleButton value="month">Par mois</ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ height: chartHeight }} aria-label="Zone de rendu du graphique">
+      <Box 
+        sx={{ 
+          height: { 
+            xs: 300, 
+            sm: 400, 
+            md: chartHeight 
+          },
+          width: '100%'
+        }} 
+        aria-label="Zone de rendu du graphique"
+      >
         <Line options={chartOptions} data={chartData} />
       </Box>
     </Paper>

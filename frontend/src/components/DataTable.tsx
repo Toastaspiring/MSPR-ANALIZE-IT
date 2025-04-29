@@ -62,7 +62,8 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
               fontWeight: 700,
               mb: 3,
               borderBottom: `2px solid ${theme.palette.primary.main}`,
-              pb: 1
+              pb: 1,
+              fontSize: { xs: '1.2rem', sm: '1.5rem' }
             }}
           >
             Données actuelles
@@ -72,10 +73,35 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
             sx={{
               borderRadius: 2,
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden'
+              overflow: 'auto',
+              maxHeight: { xs: '60vh', sm: '70vh' },
+              '&::-webkit-scrollbar': {
+                width: '8px',
+                height: '8px'
+              },
+              '&::-webkit-scrollbar-track': {
+                backgroundColor: 'rgba(0,0,0,0.1)'
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                borderRadius: '4px',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.3)'
+                }
+              }
             }}
           >
-            <Table sx={{ minWidth: 650 }} aria-label="tableau des données filtrées">
+            <Table 
+              sx={{ 
+                minWidth: { xs: 400, sm: 650 },
+                '& .MuiTableCell-root': {
+                  px: { xs: 1, sm: 2 },
+                  py: { xs: 1, sm: 2 },
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' }
+                }
+              }} 
+              aria-label="tableau des données filtrées"
+            >
               <TableHead>
                 <TableRow>
                   <TableCell 
@@ -204,17 +230,21 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
               </TableBody>
             </Table>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, 50]}
               component="div"
               count={data.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage="Lignes par page"
+              labelRowsPerPage="Lignes par page :"
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} sur ${count}`}
               sx={{
-                borderTop: `1px solid ${theme.palette.divider}`,
-                backgroundColor: theme.palette.background.default
+                '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                },
+                '.MuiTablePagination-select': {
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                }
               }}
             />
           </TableContainer>

@@ -135,15 +135,16 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      aria-labelledby="filter-dialog-title"
+      maxWidth="sm"
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 2,
-          maxHeight: '90vh'
+          m: { xs: 1, sm: 2 },
+          width: { xs: 'calc(100% - 16px)', sm: '600px' },
+          maxHeight: { xs: '90vh', sm: '80vh' }
         }
       }}
-      aria-labelledby="filter-dialog-title"
     >
       <DialogTitle 
         id="filter-dialog-title" 
@@ -164,12 +165,18 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
         </IconButton>
       </DialogTitle>
       <Divider />
-      <DialogContent sx={{ py: 3 }}>
+      <DialogContent 
+        sx={{ 
+          pt: { xs: 1, sm: 2 },
+          px: { xs: 2, sm: 3 },
+          pb: { xs: 2, sm: 3 }
+        }}
+      >
         {errorMsg && (
           <Box role="alert" sx={{ mb: 2, color: theme.palette.error.main, fontWeight: 'bold' }}>{errorMsg}</Box>
         )}
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
+          <Grid item xs={12} sm={6}>
             <Box sx={{ mb: 3 }}>
               <InputLabel id="diseases-label" htmlFor="diseases-select">Maladies</InputLabel>
               <FormControl fullWidth>
@@ -225,7 +232,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={6}>
             <Box sx={{ mb: 3 }}>
               <InputLabel id="countries-label" htmlFor="countries-autocomplete">Pays</InputLabel>
               <Autocomplete
@@ -311,22 +318,25 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
         </Grid>
       </DialogContent>
       <Divider />
-      <DialogActions sx={{ p: 2, gap: 1 }}>
-        <Button
+      <DialogActions 
+        sx={{ 
+          px: { xs: 2, sm: 3 }, 
+          pb: { xs: 2, sm: 3 },
+          gap: 1 
+        }}
+      >
+        <Button 
           onClick={onClose}
-          variant="outlined"
-          sx={{ borderRadius: 2, textTransform: 'none' }}
-          aria-label="Annuler et fermer la fenêtre des filtres"
+          size={window.innerWidth < 600 ? "small" : "medium"}
         >
           Annuler
         </Button>
-        <Button
-          onClick={handleApplyFilters}
+        <Button 
+          onClick={handleApplyFilters} 
           variant="contained"
-          sx={{ borderRadius: 2, textTransform: 'none' }}
-          aria-label="Appliquer les filtres et générer le tableau"
+          size={window.innerWidth < 600 ? "small" : "medium"}
         >
-          Générer le tableau
+          Appliquer
         </Button>
       </DialogActions>
     </Dialog>
