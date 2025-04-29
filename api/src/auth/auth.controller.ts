@@ -11,14 +11,14 @@ export class AuthController {
     private authService: AuthService,
   ) { }
 
-  @Public()
-  @Post('login')
-  @ApiBody({ type: UserLoginDto })
-  @ApiResponse({ status: 201, description: 'User logged in successfully.' })
-  @ApiResponse({ status: 400, description: 'Invalid body parameters.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 500, description: 'Internal server error occurred while logging in.' })
-  async signIn(@Body() createUserDto: UserLoginDto) {
-    return await this.authService.signIn(createUserDto);
-  }
+  // @Public()
+  // @Post('login')
+  // @ApiBody({ type: UserLoginDto })
+  // @ApiResponse({ status: 201, description: 'User logged in successfully.' })
+  // @ApiResponse({ status: 400, description: 'Invalid body parameters.' })
+  // @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  // @ApiResponse({ status: 500, description: 'Internal server error occurred while logging in.' })
+  // async signIn(@Body() createUserDto: UserLoginDto) {
+  //   return await this.authService.signIn(createUserDto);
+  // }
 }

@@ -3,7 +3,7 @@ import { DiseasesService } from './diseases.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CreateDiseaseDto } from './dto/CreateDiseaseDto.dto';
 import { UpdateDiseaseDto } from './dto/UpdateDiseaseDto.dto';
-import { Roles } from '../auth/decorator';
+import { Public, Roles } from '../auth/decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { CommonApiResponses } from '../common/api-response.decorator';
 import { UserRole } from '../roles/userRole.enum';
@@ -15,9 +15,10 @@ export class DiseasesController {
         private diseasesService: DiseasesService,
     ) { }
 
+    @Public()
     @Post('create')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Create a new disease' })
     @ApiBody({ type: CreateDiseaseDto })
     @ApiResponse({ status: 201, description: 'The disease have been created successfully.' })
@@ -27,9 +28,10 @@ export class DiseasesController {
         return await this.diseasesService.create(createDiseaseDto);
     }
 
+    @Public()
     @Patch(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Update an existing disease' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the disease to update', example: 1 })
     @ApiBody({ type: UpdateDiseaseDto })
@@ -41,9 +43,10 @@ export class DiseasesController {
         return await this.diseasesService.update(id, updateDiseaseDto);
     }
 
+    @Public()
     @Delete(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Delete a disease by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of disease to delete', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted disease have been deleted successfully.' })
@@ -54,9 +57,10 @@ export class DiseasesController {
         return await this.diseasesService.delete(id);
     }
 
+    @Public()
     @Get('id/:id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a disease by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted disease', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted disease have been retrieved successfully.' })
@@ -66,9 +70,10 @@ export class DiseasesController {
         return await this.diseasesService.getById(id);
     }
 
+    @Public()
     @Get('name/:name')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a disease by name' })
     @ApiParam({ name: 'name', required: true, type: String, description: 'The name of the wanted disease', example: "Covid19" })
     @ApiResponse({ status: 200, description: 'The wanted disease have been retrieved successfully.' })
@@ -78,9 +83,10 @@ export class DiseasesController {
         return await this.diseasesService.getByName(name);
     }
 
+    @Public()
     @Get()
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve all diseases' })
     @ApiResponse({ status: 200, description: 'The list of sorted diseases has been retrieved successfully.' })
     @CommonApiResponses()

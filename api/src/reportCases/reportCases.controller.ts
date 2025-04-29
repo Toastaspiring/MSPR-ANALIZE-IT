@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse }
 import { CreateReportCaseDto } from './dto/CreateReportCase.dto';
 import { UpdateReportCaseDto } from './dto/UpdateReportCase.dto';
 import { RolesGuard } from '../auth/roles.guard';
-import { Roles } from '../auth/decorator';
+import { Public, Roles } from '../auth/decorator';
 import { CommonApiResponses } from '../common/api-response.decorator';
 import { UserRole } from '../roles/userRole.enum';
 import { FilterConditionDto } from './dto/FilterCondition.dto';
@@ -17,9 +17,10 @@ export class ReportCaseController {
         private caseService: ReportCaseService,
     ) { }
 
+    @Public()
     @Post('create')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Create a new report case' })
     @ApiBody({ type: CreateReportCaseDto })
     @ApiResponse({ status: 201, description: 'The report case have been created successfully.' })
@@ -29,9 +30,10 @@ export class ReportCaseController {
         return await this.caseService.create(createReportCaseDto);
     }
 
+    @Public()
     @Patch(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Update an existing report case' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the case to update', example: 1 })
     @ApiBody({ type: UpdateReportCaseDto })
@@ -43,9 +45,10 @@ export class ReportCaseController {
         return await this.caseService.update(id, updateReportCaseDto);
     }
 
+    @Public()
     @Delete(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Delete a report case by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of case to delete', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted report case have been deleted successfully.' })
@@ -56,9 +59,10 @@ export class ReportCaseController {
         return await this.caseService.delete(id);
     }
 
+    @Public()
     @Post('filtered')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve filtered report cases' })
     @ApiBody({ type: FilterConditionGroupDto, description: 'The filter as a JSON object', required: false })
     @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
@@ -70,9 +74,10 @@ export class ReportCaseController {
         return await this.caseService.getFilteredReportCases(filter, parsedCount);
     }
 
+    @Public()
     @Get()
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve all cases with a limit' })
     @ApiQuery({ name: 'count', required: false, type: Number, description: 'The number of cases to retrieve', example: 1000 })
     @ApiResponse({ status: 200, description: 'The list of report cases has been retrieved successfully.' })
@@ -82,9 +87,10 @@ export class ReportCaseController {
         return await this.caseService.getAll(parsedCount);
     }
 
+    @Public()
     @Get(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a case by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted case', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted report case have been retrieved successfully.' })

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { LocalizationDataService } from './localization-data.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { Roles } from '../auth/decorator';
+import { Public, Roles } from '../auth/decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { CommonApiResponses } from '../common/api-response.decorator';
 import { CreateLocalizationDataDto } from './dto/CreateLocalizationDataDto.dto';
@@ -15,9 +15,10 @@ export class LocalizationDataController {
         private localizationDataService: LocalizationDataService,
     ) { }
 
+    @Public()
     @Post('create')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Create a new localization data' })
     @ApiBody({ type: CreateLocalizationDataDto })
     @ApiResponse({ status: 201, description: 'The localization data has been created successfully.' })
@@ -27,9 +28,10 @@ export class LocalizationDataController {
         return await this.localizationDataService.create(createLocalizationDataDto);
     }
 
+    @Public()
     @Patch(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Update an existing localization data' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the localization data to update', example: 1 })
     @ApiBody({ type: UpdateLocalizationDataDto })
@@ -41,9 +43,10 @@ export class LocalizationDataController {
         return await this.localizationDataService.update(id, updateLocalizationDataDto);
     }
 
+    @Public()
     @Delete(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Delete a localization data by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of localization data to delete', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted localization data has been deleted successfully.' })
@@ -54,9 +57,10 @@ export class LocalizationDataController {
         return await this.localizationDataService.delete(id);
     }
 
+    @Public()
     @Get('id/:id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a localization data by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted localization data', example: 1 })
     @ApiResponse({ status: 200, description: 'The wanted localization data has been retrieved successfully.' })
@@ -66,9 +70,10 @@ export class LocalizationDataController {
         return await this.localizationDataService.getById(id);
     }
 
+    @Public()
     @Get()
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve all localization data' })
     @ApiResponse({ status: 200, description: 'The list of sorted localization data has been retrieved successfully.' })
     @CommonApiResponses()

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { Roles } from '../auth/decorator';
+import { Public, Roles } from '../auth/decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { CommonApiResponses } from '../common/api-response.decorator';
 import { CreateRoleDto } from './dto/CreateRoleDto.dto';
@@ -15,9 +15,10 @@ export class RolesController {
         private rolesService: RolesService,
     ) { }
 
+    @Public()
     @Post('create')
-    @ApiBearerAuth()
-    @Roles(UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Create a new role' })
     @ApiBody({ type: CreateRoleDto })
     @ApiResponse({ status: 201, description: 'The role has been created successfully.' })
@@ -27,9 +28,10 @@ export class RolesController {
         return await this.rolesService.create(createRoleDto);
     }
 
+    @Public()
     @Patch(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Update an existing role' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the role to update', example: 1 })
     @ApiBody({ type: UpdateRoleDto })
@@ -41,9 +43,10 @@ export class RolesController {
         return await this.rolesService.update(id, updateRoleDto);
     }
 
+    @Public()
     @Delete(':id')
-    @ApiBearerAuth()
-    @Roles(UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Delete a role by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the role to delete', example: 1 })
     @ApiResponse({ status: 200, description: 'The role has been deleted successfully.' })
@@ -54,9 +57,10 @@ export class RolesController {
         return await this.rolesService.delete(id);
     }
 
+    @Public()
     @Get('id/:id')
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a role by id' })
     @ApiParam({ name: 'id', required: true, type: Number, description: 'The id of the wanted role', example: 1 })
     @ApiResponse({ status: 200, description: 'The role has been retrieved successfully.' })
@@ -66,9 +70,10 @@ export class RolesController {
         return await this.rolesService.getById(id);
     }
 
+    @Public()
     @Get()
-    @ApiBearerAuth()
-    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+    // @ApiBearerAuth()
+    // @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve all roles' })
     @ApiResponse({ status: 200, description: 'The list of roles has been retrieved successfully.' })
     @CommonApiResponses()
