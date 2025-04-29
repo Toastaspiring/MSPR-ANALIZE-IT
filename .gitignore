@@ -1,0 +1,22 @@
+# Ignorer les fichiers de données volumineux et sensibles
+files/
+
+# Ignorer les logs globaux
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorer les dumps éventuels
+*.sql
+*.dump
+
+# Ignorer les fichiers système
+.DS_Store
+Thumbs.db
+
+# Ignorer les dossiers d'environnement ou de build globaux
+.env
+.env.*
+dist/
+build/ 
