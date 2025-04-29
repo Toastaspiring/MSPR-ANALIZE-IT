@@ -168,15 +168,16 @@ describe('ReportCaseController', () => {
     });
 
     it('should retrieve filtered report cases', async () => {
-        const count = 10;
+        const page = 1;
+        const pageSize = 10;
         const filteredCases = [
             { id: 1, totalConfirmed: 100, totalDeath: 10, totalActive: 90 },
         ];
         mockReportCaseService.getFilteredReportCases.mockResolvedValue(filteredCases);
 
-        const result = await controller.getFilteredReportCases(testFilter, count.toString());
+        const result = await controller.getFilteredReportCases(testFilter, page.toString(), pageSize.toString());
         expect(result).toEqual(filteredCases);
-        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(testFilter, count);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(testFilter, page, pageSize);
     });
 
     it('should throw BadRequestException when filter is invalid', async () => {
@@ -184,31 +185,34 @@ describe('ReportCaseController', () => {
             logicOperator: 'INVALID_OPERATOR',
             conditions: [],
         };
-        const count = 10;
+        const page = 1;
+        const pageSize = 10;
         mockReportCaseService.getFilteredReportCases.mockRejectedValue(new BadRequestException('Invalid filter.'));
 
-        await expect(controller.getFilteredReportCases(invalidFilter, count.toString())).rejects.toThrow(BadRequestException);
-        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(invalidFilter, count);
+        await expect(controller.getFilteredReportCases(invalidFilter, page.toString(), pageSize.toString())).rejects.toThrow(BadRequestException);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(invalidFilter, page, pageSize);
     });
 
     it('should throw InternalServerErrorException on unexpected errors', async () => {
-        const count = 10;
+        const page = 1;
+        const pageSize = 10;
         mockReportCaseService.getFilteredReportCases.mockRejectedValue(new InternalServerErrorException('Unexpected error.'));
 
-        await expect(controller.getFilteredReportCases(testFilter, count.toString())).rejects.toThrow(InternalServerErrorException);
-        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(testFilter, count);
+        await expect(controller.getFilteredReportCases(testFilter, page.toString(), pageSize.toString())).rejects.toThrow(InternalServerErrorException);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(testFilter, page, pageSize);
     });
 
     it('should retrieve all cases when filter is null', async () => {
-        const count = 10;
+        const page = 1;
+        const pageSize = 10;
         const allCases = [
             { id: 1, totalConfirmed: 100, totalDeath: 10, totalActive: 90 },
             { id: 2, totalConfirmed: 200, totalDeath: 20, totalActive: 180 },
         ];
         mockReportCaseService.getFilteredReportCases.mockResolvedValue(allCases);
 
-        const result = await controller.getFilteredReportCases(null, count.toString());
+        const result = await controller.getFilteredReportCases(null, page.toString(), pageSize.toString());
         expect(result).toEqual(allCases);
-        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(null, count);
+        expect(mockReportCaseService.getFilteredReportCases).toHaveBeenCalledWith(null, page, pageSize);
     });
 });
