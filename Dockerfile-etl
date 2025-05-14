@@ -1,8 +1,0 @@
-FROM python:3.13.1-alpine3.20
-USER root
-RUN apk add git
-RUN git clone https://github.com/Toastaspiring/MSPR-ANALIZE-IT.git
-WORKDIR /MSPR-ANALIZE-IT
-RUN git checkout ETL-dev
-RUN pip install --upgrade pip
-RUN pip install -r ./requirement.txt
