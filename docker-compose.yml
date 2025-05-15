@@ -98,10 +98,10 @@ services:
   
 
   sonarqube:
-    image: sonarqube:latest
+    image: sonarqube:25.5.0.107428-community
     container_name: sonarqube
     depends_on:
-      - db
+      - db_sonar
     ports:
       - "9000:9000"
     environment:
