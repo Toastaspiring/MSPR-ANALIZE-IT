@@ -1,4 +1,4 @@
-name: SonarQube Scan
+name: SonarQube Analysis
 
 on:
   push:
@@ -6,21 +6,53 @@ on:
       - main
 
 jobs:
-  sonarQube:
-    name: SonarQube Scan
+  sonar:
     runs-on: ubuntu-latest
+    services:
+      sonarqube:
+        image: sonarqube:25.5.0.107428-community
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd="curl -f http://localhost:9000/api/system/health || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=30
+
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK
+
+      - name: Wait for SonarQube to be healthy
+        run: |
+          echo "Waiting for SonarQube to be ready..."
+          for i in {1..30}; do
+            STATUS=$(curl -s http://localhost:9000/api/system/health | jq -r .health)
+            echo "Status: $STATUS"
+            if [ "$STATUS" = "GREEN" ]; then
+              echo "SonarQube is ready."
+              break
+            fi
+            sleep 5
+          done
+
+      - name: Set up Java (required for sonar-scanner)
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
           distribution: 'temurin'
-      - name: SonarQube Scan
+          java-version: '17'
+
+      - name: Install SonarScanner
+        run: |
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner.zip -d $HOME
+          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
+
+      - name: Run SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./gradlew sonarqube \
-            -Dsonar.projectKey=my-github-repo \
-            -Dsonar.host.url=http://<your-sonarqube-domain>:9000 \
+          sonar-scanner \
+            -Dsonar.projectKey=my-project \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost:9000 \
             -Dsonar.login=$SONAR_TOKEN
