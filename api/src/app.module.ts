@@ -15,6 +15,7 @@ import { LocalizationData } from './localization-data/localization-data.entity';
 import { Role } from './roles/role.entity';
 import { RolesModule } from './roles/roles.module';
 import { User } from './users/user.entity';
+import { LanguagesModule } from './languages/languages.module';
 
 const sqliteParam = {
   type: 'sqlite',
@@ -51,6 +52,7 @@ const mysqlParam = {
     LocalizationModule,
     LocalizationDataModule,
     DiseasesModule,
+    LanguagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

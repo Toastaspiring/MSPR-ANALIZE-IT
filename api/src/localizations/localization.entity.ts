@@ -1,3 +1,4 @@
+import { User } from "../users/user.entity";
 import { LocalizationData } from "../localization-data/localization-data.entity";
 import { ReportCase } from "../reportCases/reportCases.entity";
 import { AfterInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
@@ -19,6 +20,9 @@ export class Localization {
 
     @OneToMany(() => LocalizationData, (localizationData) => localizationData.localization)
     localizationData: LocalizationData[];
+
+    @OneToMany(() => User, user => user.localization)
+    users: User[];
 
     @AfterInsert()
     logInsert() {
