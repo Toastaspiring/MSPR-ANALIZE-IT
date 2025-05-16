@@ -54,23 +54,23 @@ CREATE TABLE User(
     username varbinary(50) UNIQUE NOT NULL,
     password VARCHAR(500) NOT NULL,
     roleId INT(5) NOT NULL,
-    localizationId INT(5) NOT NULL,
+    localizationId INT(5),
     languageId INT(5) NOT NULL,
     FOREIGN KEY (roleId) REFERENCES Role(id),
     FOREIGN KEY (localizationId) REFERENCES Localization(id),
     FOREIGN KEY (languageId) REFERENCES Language(id)
 );
 
-INSERT INTO Role(roleName) VALUES('superadmin');
-INSERT INTO Role(roleName) VALUES('admin');
-INSERT INTO Role(roleName) VALUES('user');
-INSERT INTO User(username, password, roleId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1);
-
 INSERT INTO Language(lang) VALUES('en');
 INSERT INTO Language(lang) VALUES('fr');
 INSERT INTO Language(lang) VALUES('it');
 INSERT INTO Language(lang) VALUES('de');
 INSERT INTO Language(lang) VALUES('es');
+
+INSERT INTO Role(roleName) VALUES('superadmin');
+INSERT INTO Role(roleName) VALUES('admin');
+INSERT INTO Role(roleName) VALUES('user');
+INSERT INTO User(username, password, roleId,languageId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1,0);
 
 DROP DATABASE IF EXISTS mspr_database_archive;
 CREATE DATABASE mspr_database_archive;
