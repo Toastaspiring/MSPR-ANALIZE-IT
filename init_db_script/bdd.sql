@@ -72,6 +72,11 @@ INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
 INSERT INTO User(username, password, roleId,languageId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1,1);
 
+-- Creation of composite indexes to make queries on report cases easier
+CREATE INDEX idx_reportcase_date ON ReportCase (date);
+
+CREATE INDEX idx_localizationdata_date ON LocalizationData (date);
+
 DROP DATABASE IF EXISTS mspr_database_archive;
 CREATE DATABASE mspr_database_archive;
 
@@ -145,7 +150,3 @@ CREATE TABLE worldometer_coronavirus_daily_data(
     cumulative_total_deaths int(255),
     daily_new_deaths int(255)
 );
-
--- Creation of composite indexes to make queries on report cases easier
-CREATE INDEX idx_reportcase_date ON ReportCase(date);
-CREATE INDEX idx_localizationdata_date ON LocalizationData(date);
