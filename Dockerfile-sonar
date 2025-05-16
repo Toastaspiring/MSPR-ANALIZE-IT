@@ -1,0 +1,6 @@
+FROM sonarqube:25.5.0.107428-community
+
+COPY plugin_sonar/sonar-l10n-fr-plugin-10.0.0.jar /opt/sonarqube/extensions/plugins/
+COPY plugin_sonar/sonar-dependency-check-plugin-5.0.0.jar /opt/sonarqube/extensions/plugins/
+COPY init-sonar.sh /init-sonar.sh
+# RUN chmod +x /init-sonar.sh

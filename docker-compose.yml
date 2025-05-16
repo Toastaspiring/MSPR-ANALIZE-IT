@@ -15,9 +15,10 @@ services:
     ports:
       - 8095:80
     environment:
-      - PMA_HOST:db
-      - PMA_PORT:3306 
-      - PMA_ARBITRARY:1
+      - PMA_HOST: db
+      - PMA_PORT: 3306 
+      - PMA_ARBITRARY: 1
+      - UPLOAD_LIMIT: 512M
     depends_on:
       - db
 
@@ -98,8 +99,10 @@ services:
   
 
   sonarqube:
-    image: sonarqube:25.5.0.107428-community
-    container_name: sonarqube
+    build:
+      context: .
+      dockerfile: Dockerfile-sonar
+    container_name: sonarqube_mspr
     depends_on:
       - db_sonar
     ports:
