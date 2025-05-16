@@ -27,6 +27,11 @@ CREATE TABLE LocalizationData(
     FOREIGN KEY (localizationId) REFERENCES Localization(id)
 );
 
+CREATE TABLE Language(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    lang varchar(5) NOT NULL
+);
+
 CREATE TABLE ReportCase(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     totalConfirmed INT(10) DEFAULT 0 NOT NULL,
@@ -49,13 +54,28 @@ CREATE TABLE User(
     username varbinary(50) UNIQUE NOT NULL,
     password VARCHAR(500) NOT NULL,
     roleId INT(5) NOT NULL,
-    FOREIGN KEY (roleId) REFERENCES Role(id)
+    localizationId INT(5),
+    languageId INT(5) NOT NULL,
+    FOREIGN KEY (roleId) REFERENCES Role(id),
+    FOREIGN KEY (localizationId) REFERENCES Localization(id),
+    FOREIGN KEY (languageId) REFERENCES Language(id)
 );
+
+INSERT INTO Language(lang) VALUES('en');
+INSERT INTO Language(lang) VALUES('fr');
+INSERT INTO Language(lang) VALUES('it');
+INSERT INTO Language(lang) VALUES('de');
+INSERT INTO Language(lang) VALUES('es');
 
 INSERT INTO Role(roleName) VALUES('superadmin');
 INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
-INSERT INTO User(username, password, roleId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1);
+INSERT INTO User(username, password, roleId,languageId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1,1);
+
+-- Creation of composite indexes to make queries on report cases easier
+CREATE INDEX idx_reportcase_date ON ReportCase (date);
+
+CREATE INDEX idx_localizationdata_date ON LocalizationData (date);
 
 DROP DATABASE IF EXISTS mspr_database_archive;
 CREATE DATABASE mspr_database_archive;
