@@ -103,7 +103,7 @@ export class ReportCaseService {
 
     async getFilteredReportCases(filter: FilterConditionGroupDto, page: number, pageSize: number) {
         if (!pageSize || pageSize <= 0) {
-            pageSize = 10;
+            pageSize = 100;
         }
 
         const offset = (page - 1) * pageSize;
@@ -111,7 +111,20 @@ export class ReportCaseService {
         // Build the query
         const queryBuilder = this.repo.createQueryBuilder('ReportCase')
             .leftJoinAndSelect('ReportCase.localization', 'localization')
-            .leftJoinAndSelect('ReportCase.disease', 'disease');
+            .leftJoinAndSelect('ReportCase.disease', 'disease')
+        /* 
+        TODO : Add filter to localizationData but in this state it will make the query very slow and idk how to optimize it rn
+        Solution : Create a composite index on localizationData.date and ReportCase.date
+
+        To create an index try this : 
+        CREATE INDEX idx_reportcase_date ON ReportCase(date);
+        CREATE INDEX idx_localizationdata_date ON LocalizationData(date);
+        */
+        // .leftJoinAndSelect(
+        //     'localization.localizationData',
+        //     'localizationData',
+        //     'localizationData.date = ReportCase.date'
+        // )
 
         if (filter && !isEmpty(filter)) {
             // Parse the condition recursively
