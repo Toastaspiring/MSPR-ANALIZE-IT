@@ -58,7 +58,7 @@ CREATE TABLE User(
     languageId INT(5) NOT NULL,
     FOREIGN KEY (roleId) REFERENCES Role(id),
     FOREIGN KEY (localizationId) REFERENCES Localization(id),
-    FOREIGN KEY (language) REFERENCES Language(id)
+    FOREIGN KEY (languageId) REFERENCES Language(id)
 );
 
 INSERT INTO Role(roleName) VALUES('superadmin');
