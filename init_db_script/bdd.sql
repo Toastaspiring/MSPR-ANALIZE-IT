@@ -27,6 +27,11 @@ CREATE TABLE LocalizationData(
     FOREIGN KEY (localizationId) REFERENCES Localization(id)
 );
 
+CREATE TABLE Language(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    lang varchar(5) NOT NULL
+)
+
 CREATE TABLE ReportCase(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     totalConfirmed INT(10) DEFAULT 0 NOT NULL,
@@ -49,7 +54,11 @@ CREATE TABLE User(
     username varbinary(50) UNIQUE NOT NULL,
     password VARCHAR(500) NOT NULL,
     roleId INT(5) NOT NULL,
-    FOREIGN KEY (roleId) REFERENCES Role(id)
+    localizationId INT(5) NOT NULL,
+    languageId INT(5) NOT NULL,
+    FOREIGN KEY (roleId) REFERENCES Role(id),
+    FOREIGN KEY (localizationId) REFERENCES Localization(id),
+    FOREIGN KEY (language) REFERENCES Language(id)
 );
 
 INSERT INTO Role(roleName) VALUES('superadmin');
