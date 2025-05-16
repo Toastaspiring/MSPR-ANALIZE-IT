@@ -66,6 +66,12 @@ INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
 INSERT INTO User(username, password, roleId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1);
 
+INSERT INTO Language(lang) VALUES('en');
+INSERT INTO Language(lang) VALUES('fr');
+INSERT INTO Language(lang) VALUES('it');
+INSERT INTO Language(lang) VALUES('de');
+INSERT INTO Language(lang) VALUES('es');
+
 DROP DATABASE IF EXISTS mspr_database_archive;
 CREATE DATABASE mspr_database_archive;
 
