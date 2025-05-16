@@ -139,3 +139,7 @@ CREATE TABLE worldometer_coronavirus_daily_data(
     cumulative_total_deaths int(255),
     daily_new_deaths int(255)
 );
+
+-- Creation of composite indexes to make queries on report cases easier
+CREATE INDEX idx_reportcase_date ON ReportCase(date);
+CREATE INDEX idx_localizationdata_date ON LocalizationData(date);
