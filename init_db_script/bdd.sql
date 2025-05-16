@@ -30,7 +30,7 @@ CREATE TABLE LocalizationData(
 CREATE TABLE Language(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     lang varchar(5) NOT NULL
-)
+);
 
 CREATE TABLE ReportCase(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
