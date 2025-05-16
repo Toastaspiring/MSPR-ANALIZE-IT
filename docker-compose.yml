@@ -18,8 +18,8 @@ services:
       - PMA_HOST:db
       - PMA_PORT:3306 
       - PMA_ARBITRARY:1
-      - UPLOAD_LIMIT:512M
-      - upload_max_filesize:512M
+      - UPLOAD_LIMIT:50M
+      - upload_max_filesize:50M
     depends_on:
       - db
 
