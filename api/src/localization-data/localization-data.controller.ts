@@ -58,7 +58,7 @@ export class LocalizationDataController {
     }
 
     @Public()
-    @Get('id/:id')
+    @Get(':id')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a localization data by id' })

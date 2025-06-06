@@ -55,7 +55,7 @@ export class LanguageController {
     }
 
     @Public()
-    @Get('id/:id')
+    @Get(':id')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Get a language by id' })

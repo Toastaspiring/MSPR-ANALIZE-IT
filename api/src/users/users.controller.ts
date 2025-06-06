@@ -66,6 +66,34 @@ export class UsersController {
     }
 
     @Public()
+    @Patch('localization/:id')
+    @ApiBearerAuth()
+    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN, UserRole.USER)
+    @ApiOperation({ summary: 'Update a user\'s localization' })
+    @ApiParam({ name: 'id', required: true, description: 'The id of the user', example: 1 })
+    @ApiBody({ schema: { properties: { localizationId: { example: '1' } } } })
+    @ApiResponse({ status: 200, description: 'The user\'s localization has been updated successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid input data.' })
+    @CommonApiResponses()
+    async updateLocalization(@Param('id', ParseIntPipe) id: number, @Body() body: { localizationId: number }) {
+        return await this.usersService.updateLocalization(id, body.localizationId);
+    }
+
+    @Public()
+    @Patch('language/:id')
+    @ApiBearerAuth()
+    @Roles(UserRole.ADMIN, UserRole.SUPERADMIN, UserRole.USER)
+    @ApiOperation({ summary: 'Update a user\'s language' })
+    @ApiParam({ name: 'id', required: true, description: 'The id of the user', example: 1 })
+    @ApiBody({ schema: { properties: { languageId: { example: '1' } } } })
+    @ApiResponse({ status: 200, description: 'The user\'s language has been updated successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid input data.' })
+    @CommonApiResponses()
+    async updateLanguage(@Param('id', ParseIntPipe) id: number, @Body() body: { languageId: number }) {
+        return await this.usersService.updateLanguage(id, body.languageId);
+    }
+
+    @Public()
     @Delete(':id')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
@@ -80,7 +108,7 @@ export class UsersController {
     }
 
     @Public()
-    @Get('id/:id')
+    @Get(':id')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a user by id' })

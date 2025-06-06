@@ -58,7 +58,7 @@ export class DiseasesController {
     }
 
     @Public()
-    @Get('id/:id')
+    @Get(':id')
     @ApiBearerAuth()
     @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
     @ApiOperation({ summary: 'Retrieve a disease by id' })

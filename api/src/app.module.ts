@@ -15,35 +15,27 @@ import { LocalizationData } from './localization-data/localization-data.entity';
 import { Role } from './roles/role.entity';
 import { RolesModule } from './roles/roles.module';
 import { User } from './users/user.entity';
-import { LanguagesModule } from './languages/languages.module';
-
-const sqliteParam = {
-  type: 'sqlite',
-  entities: [Localization, ReportCase, Disease, LocalizationData, User, Role],
-  database: 'database.sqlite',
-  synchronize: true,
-}
-
-const mysqlParam = {
-  type: 'mysql',
-  host: 'host.docker.internal',
-  port: 3306,
-  username: 'mspr_user',
-  password: 'mspr_user',
-  database: 'mspr_database',
-  entities: [Localization, ReportCase, Disease, LocalizationData, User, Role],
-}
+import { LanguageModule } from './languages/languages.module';
+import { Language } from './languages/language.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'localhost', // should use 'host.docker.internal'
       port: 3306,
       username: 'mspr_user',
       password: 'mspr_user',
       database: 'mspr_database',
-      entities: [Localization, LocalizationData, ReportCase, Disease, User, Role],
+      entities: [
+        Localization,
+        LocalizationData,
+        Language,
+        ReportCase,
+        Disease,
+        User,
+        Role
+      ],
     }),
     AuthModule,
     UsersModule,
@@ -51,8 +43,9 @@ const mysqlParam = {
     ReportCaseModule,
     LocalizationModule,
     LocalizationDataModule,
+    LanguageModule,
     DiseasesModule,
-    LanguagesModule,
+    LanguageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

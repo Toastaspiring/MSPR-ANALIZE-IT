@@ -5,12 +5,16 @@ import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { UserRole } from '../roles/userRole.enum';
 import Utils from '../utils';
+import { Localization } from '../localizations/localization.entity';
+import { Language } from '../languages/language.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private repo: Repository<User>,
     @InjectRepository(Role) private roleRepo: Repository<Role>,
+    @InjectRepository(Localization) private localizationRepo: Repository<Localization>,
+    @InjectRepository(Language) private languageRepo: Repository<Language>,
   ) { }
 
   async create(username: string, password: string) {
@@ -121,7 +125,7 @@ export class UsersService {
       throw new NotFoundException(`User not found with id: ${id}`);
     }
 
-    const role = await this.roleRepo.findOneBy({ id: roleId }); // Vérification de l'existence du rôle
+    const role = await this.roleRepo.findOneBy({ id: roleId });
     if (!role) {
       throw new NotFoundException(`Role not found with id: ${roleId}`);
     }
@@ -132,6 +136,62 @@ export class UsersService {
     } catch (error) {
       console.error('Error updating role:', error);
       throw new InternalServerErrorException('Failed to update role.');
+    }
+  }
+
+  async updateLocalization(id: number, localizationId: number) { 
+    if (!id || id <= 0) {
+      throw new BadRequestException('Invalid id.');
+    }
+
+    if (!localizationId || localizationId <= 0) {
+      throw new BadRequestException('Invalid localization id.');
+    }
+
+    const user = await this.repo.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    const localization = await this.localizationRepo.findOneBy({ id: localizationId });
+    if (!localization) { 
+      throw new NotFoundException(`Localization not found with id: ${localizationId}`);
+    }
+
+    try {
+      await this.repo.update(user.id, { localization: localization });
+      return await this.repo.findOneBy({ id });
+    } catch (error) {
+      console.error('Error updating localization:', error);
+      throw new InternalServerErrorException('Failed to update localization.');
+    }
+  }
+
+  async updateLanguage(id: number, languageId: number) {
+    if (!id || id <= 0) {
+      throw new BadRequestException('Invalid id.');
+    }
+
+    if (!languageId || languageId <= 0) {
+      throw new BadRequestException('Invalid language id.');
+    }
+
+    const user = await this.repo.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    const language = await this.languageRepo.findOneBy({ id: languageId });
+    if (!language) {
+      throw new NotFoundException(`Language not found with id: ${languageId}`);
+    }
+
+    try {
+      await this.repo.update(user.id, { language: language });
+      return await this.repo.findOneBy({ id });
+    } catch (error) {
+      console.error('Error updating language:', error);
+      throw new InternalServerErrorException('Failed to update language.');
     }
   }
 
