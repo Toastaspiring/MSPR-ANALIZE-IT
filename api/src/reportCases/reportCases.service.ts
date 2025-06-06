@@ -112,11 +112,11 @@ export class ReportCaseService {
         const queryBuilder = this.repo.createQueryBuilder('ReportCase')
             .leftJoinAndSelect('ReportCase.localization', 'localization')
             .leftJoinAndSelect('ReportCase.disease', 'disease')
-            // .leftJoinAndSelect(
-            //     'localization.localizationData',
-            //     'localizationData',
-            //     'localizationData.date = ReportCase.date'
-            // )
+            .leftJoinAndSelect(
+                'localization.localizationData',
+                'localizationData',
+                'localizationData.date = ReportCase.date'
+            )
 
         if (filter && !isEmpty(filter)) {
             // Parse the condition recursively
