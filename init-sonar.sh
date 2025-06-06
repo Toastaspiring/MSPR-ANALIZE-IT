@@ -12,7 +12,7 @@ echo "SonarQube is up. Configuring..."
 curl -s -u admin:admin -X POST "http://localhost:9000/api/users/change_password?login=admin&previousPassword=admin&password=P75:5,0_I7lh"
 
 # Créer un token pour l’analyse
-curl -s -u admin:P75:5,0_I7lh -X POST "http://localhost:9000/api/user_tokens/generate?name=ci-token"
+# curl -s -u admin:P75:5,0_I7lh -X POST "http://localhost:9000/api/user_tokens/generate?name=ci-token"
 
 # Créer un projet (ex: `my-github-repo`)
 curl -s -u admin:P75:5,0_I7lh -X POST "http://localhost:9000/api/projects/create?name=my-github-repo&project=my-github-repo"

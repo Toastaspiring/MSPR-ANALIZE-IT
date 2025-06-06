@@ -11,7 +11,7 @@ services:
 
   phpmyadmin:
     container_name: phpmyadmin_mspr
-    image: phpmyadmin:5.2.1-apache
+    image: phpmyadmin:5.2.2
     ports:
       - 8095:80
     environment:
