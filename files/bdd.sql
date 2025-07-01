@@ -22,15 +22,19 @@ CREATE TABLE LocalizationData(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
     localizationId INT(5) NOT NULL,
     inhabitantsNumber FLOAT(10) NOT NULL,
-    populationConcentration FLOAT(10) NOT NULL,
     vaccinationRate FLOAT(10) NOT NULL,
     date Date,
     FOREIGN KEY (localizationId) REFERENCES Localization(id)
 );
 
+CREATE TABLE Language(
+    id INT(5) AUTO_INCREMENT PRIMARY KEY,
+    lang varchar(5) NOT NULL
+);
+
 CREATE TABLE ReportCase(
     id INT(5) AUTO_INCREMENT PRIMARY KEY,
-    totalConfirmed INT(10) NOT NULL,
+    totalConfirmed INT(10) DEFAULT 0 NOT NULL,
     totalDeath INT(10) DEFAULT 0 NOT NULL,
     totalActive INT(10) DEFAULT 0 NOT NULL,
     localizationId INT(5) NOT NULL,
@@ -50,13 +54,28 @@ CREATE TABLE User(
     username varbinary(50) UNIQUE NOT NULL,
     password VARCHAR(500) NOT NULL,
     roleId INT(5) NOT NULL,
-    FOREIGN KEY (roleId) REFERENCES Role(id)
+    localizationId INT(5),
+    languageId INT(5) NOT NULL,
+    FOREIGN KEY (roleId) REFERENCES Role(id),
+    FOREIGN KEY (localizationId) REFERENCES Localization(id),
+    FOREIGN KEY (languageId) REFERENCES Language(id)
 );
+
+INSERT INTO Language(lang) VALUES('en');
+INSERT INTO Language(lang) VALUES('fr');
+INSERT INTO Language(lang) VALUES('it');
+INSERT INTO Language(lang) VALUES('de');
+INSERT INTO Language(lang) VALUES('es');
 
 INSERT INTO Role(roleName) VALUES('superadmin');
 INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
-INSERT INTO User(username, password, roleId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1);
+
+INSERT INTO User(username, password, roleId, localizationId, languageId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1,1,1);
+
+-- Creation of composite indexes to make queries on report cases easier
+CREATE INDEX idx_reportcase_localization_date ON ReportCase (localizationId, date);
+CREATE INDEX idx_localizationdata_localization_date ON LocalizationData (localizationId, date);
 
 DROP DATABASE IF EXISTS mspr_database_archive;
 CREATE DATABASE mspr_database_archive;
@@ -72,7 +91,8 @@ CREATE TABLE millions_population_country (
     year_2019 DECIMAL(10, 3),
     year_2020 DECIMAL(10, 3),
     year_2021 DECIMAL(10, 3),
-    year_2022 DECIMAL(10, 3)
+    year_2022 DECIMAL(10, 3),
+    year_2023 DECIMAL(10, 3)
 );
 
 CREATE TABLE countries_and_continents (
@@ -106,17 +126,17 @@ CREATE TABLE vaccinations(
     iso_code varchar(255),
     date date,
     total_vaccinations BIGINT,
-    people_vaccinated int(255),
-    people_fully_vaccinated int(255),
-    total_boosters int(255),
-    daily_vaccinations_raw int(255),
-    daily_vaccinations int(255),
+    people_vaccinated BIGINT,
+    people_fully_vaccinated BIGINT,
+    total_boosters BIGINT,
+    daily_vaccinations_raw BIGINT,
+    daily_vaccinations BIGINT,
     total_vaccinations_per_hundred decimal(50,5),
     people_vaccinated_per_hundred decimal(50,5),
     people_fully_vaccinated_per_hundred decimal(50,5),
     total_boosters_per_hundred  decimal(50,5),
     daily_vaccinations_per_million decimal(50,5),
-    daily_people_vaccinated int(255),
+    daily_people_vaccinated BIGINT,
     daily_people_vaccinated_per_hundred decimal(50,5)
 );
 
