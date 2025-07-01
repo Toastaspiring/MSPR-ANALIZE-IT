@@ -1,6 +1,6 @@
 # Pipeline ETL
 
-Ce projet fournit un script ETL (Extract, Transform, Load) en Python pour importer des données de santé publique dans deux bases de données MySQL : une base d'archives pour les données brutes, et une base principale avec des données transformées et structurées.
+Ce projet fournit un script ETL (Extract, Transform, Load) en Python pour importer des données de santé publique dans une base MySQL unique contenant les données nettoyées et structurées.
 
 ## Fonctionnalités
 
@@ -29,21 +29,20 @@ pip install pandas numpy mysql-connector-python
 ## Structure des fichiers
 
 - `ETL.py` : Script principal.
-- `ETL_timed.py` : Version avec mesure du temps d'exécution.
-- `ETL_doc.md` : Documentation technique.
+- `ETL_doc.md` : Documentation technique (optionnel).
 - `files/` : Dossier contenant les fichiers CSV à traiter.
 
 ## Utilisation
 
 ```bash
-python ETL_timed.py
+python ETL.py
 ```
 
 Le script :
 
-1. Charge les CSV bruts dans `mspr_database_archive`.
+1. Charge les différents CSV.
 2. Nettoie et transforme les données.
-3. Insère les données prêtes à l’emploi dans `mspr_database`.
+3. Insère les résultats dans `mspr_database`.
 4. Affiche la durée totale de l’opération.
 
 ## Résultat

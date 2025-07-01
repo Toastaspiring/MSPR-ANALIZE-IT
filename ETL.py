@@ -137,55 +137,6 @@ def smooth_population(pop_df):
     return result
 
 
-def insert_archive():
-    """
-    Insère les données brutes dans la base de données d'archive.
-    """
-    logger.info("\nInsertion brute dans la base archive...")
-
-    def load_and_insert(file, table):
-        logger.info(f"Traitement du fichier {file} pour la table {table}...")
-        try:
-            df = pd.read_csv(file, dtype=str)
-            df = df.applymap(lambda x: 0 if isinstance(x, str) and x.strip().lower() in ['no data', 'n/a'] else x)
-            df.fillna(0, inplace=True)
-            df.replace(to_replace=r"(?i)^\s*(no[\s_-]?data|n/?a)\s*$", value=0, regex=True, inplace=True)
-            df.fillna(0, inplace=True)
-
-            if table == "millions_population_country":
-                def is_integer_str(val):
-                    try:
-                        return float(val).is_integer()
-                    except:
-                        return False
-
-                df.columns = [f"year_{int(float(col))}" if is_integer_str(col) else col for col in df.columns]
-
-            columns = ", ".join(df.columns)
-            values = ", ".join(["%s"] * len(df.columns))
-            insert_query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
-
-            batch_size = 1000
-            total_rows = len(df)
-            for i in range(0, total_rows, batch_size):
-                batch = df.iloc[i:min(i + batch_size, total_rows)]
-                batch_data = [tuple(map(to_python_type, row)) for _, row in batch.iterrows()]
-                cursor_archive.executemany(insert_query, batch_data)
-                archive_conn.commit()
-                logger.info(f"Inséré {min(i + batch_size, total_rows)}/{total_rows} lignes dans {table}")
-
-            logger.info(f"✅ {table} - {total_rows} lignes insérées")
-        except Exception as e:
-            logger.error(f"Erreur lors de l'insertion dans {table}: {str(e)}")
-            raise
-
-    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
-    load_and_insert("./files/millions_population_country.csv", "millions_population_country")
-    load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
-    load_and_insert("./files/vaccinations.csv", "vaccinations")
-    load_and_insert("./files/worldometer_coronavirus_daily_data.csv", "worldometer_coronavirus_daily_data")
-
-
 def insert_mspr():
     """
     Insère les données transformées dans la base de données principale.
@@ -379,28 +330,18 @@ if __name__ == "__main__":
         db_user = os.environ.get('DB_USER', 'mspr_user')
         db_password = os.environ.get('DB_PASSWORD', 'mspr_user')
 
-        archive_conn = connect_to_database(
-            host=db_host, port=db_port,
-            user=db_user, password=db_password,
-            database='mspr_database_archive'
-        )
-
         mspr_conn = connect_to_database(
             host=db_host, port=db_port,
             user=db_user, password=db_password,
             database='mspr_database'
         )
 
-        cursor_archive = archive_conn.cursor()
         cursor_mspr = mspr_conn.cursor()
 
         # Exécution du processus ETL
-        insert_archive()
         insert_mspr()
 
         # Fermeture des connexions
-        cursor_archive.close()
-        archive_conn.close()
         cursor_mspr.close()
         mspr_conn.close()
 
