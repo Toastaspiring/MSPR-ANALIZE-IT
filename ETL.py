@@ -150,11 +150,14 @@ def insert_mspr():
         loc_df['country'] = loc_df['country'].apply(rename_country)
         loc_df = loc_df.drop_duplicates()
 
-        for _, row in loc_df.iterrows():
-            cursor_mspr.execute(
-                "INSERT INTO Localization (country, continent) VALUES (%s, %s)",
-                (row['country'], row['continent'])
-            )
+        localization_data = [
+            (row['country'], row['continent'])
+            for _, row in loc_df.iterrows()
+        ]
+        cursor_mspr.executemany(
+            "INSERT INTO Localization (country, continent) VALUES (%s, %s)",
+            localization_data
+        )
         mspr_conn.commit()
         logger.info("✅ Localization")
 
@@ -184,6 +187,7 @@ def insert_mspr():
 
         for i in range(0, total_rows, batch_size):
             batch = vacc_df.iloc[i:min(i + batch_size, total_rows)]
+            batch_rows = []
             for _, row in batch.iterrows():
                 localizationId = country_to_id.get(row['country'])
                 if not localizationId:
@@ -193,20 +197,18 @@ def insert_mspr():
                 match = interpolated_pop[
                     (interpolated_pop['country'] == row['country']) &
                     (interpolated_pop['date'] == pd.to_datetime(row['date']))
-                    ]
+                ]
                 if match.empty:
                     skipped_count += 1
                     continue
 
                 inhabitants = match.iloc[0]['population']
                 inhabitants = 0 if pd.isna(inhabitants) else inhabitants
-                vaccinationRate = (row['people_vaccinated'] / (inhabitants * 1_000_000)) * 100 if inhabitants else 0
+                vaccinationRate = (
+                    row['people_vaccinated'] / (inhabitants * 1_000_000)
+                ) * 100 if inhabitants else 0
 
-                cursor_mspr.execute(
-                    """
-                    INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
-                    VALUES (%s, %s, %s, %s)
-                    """,
+                batch_rows.append(
                     (
                         int(localizationId),
                         to_python_type(inhabitants),
@@ -214,10 +216,21 @@ def insert_mspr():
                         to_python_type(row['date'])
                     )
                 )
-                inserted_count += 1
 
-            mspr_conn.commit()
-            logger.info(f"LocalizationData: {min(i + batch_size, total_rows)}/{total_rows} lignes traitées")
+            if batch_rows:
+                cursor_mspr.executemany(
+                    """
+                    INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    batch_rows
+                )
+                mspr_conn.commit()
+                inserted_count += len(batch_rows)
+
+            logger.info(
+                f"LocalizationData: {min(i + batch_size, total_rows)}/{total_rows} lignes traitées"
+            )
 
         logger.info(f"✅ LocalizationData - Insérées: {inserted_count}, Ignorées: {skipped_count}")
 
@@ -245,25 +258,40 @@ def insert_mspr():
 
         for i in range(0, total_rows, batch_size):
             batch = corona.iloc[i:min(i + batch_size, total_rows)]
+            batch_rows = []
             for _, row in batch.iterrows():
                 localizationId = country_to_id.get(row['country'])
                 if not localizationId or pd.isna(row['totalConfirmed']):
                     skipped_count += 1
                     continue
 
-                cursor_mspr.execute(
+                batch_rows.append(
+                    tuple(
+                        to_python_type(x)
+                        for x in (
+                            localizationId,
+                            row['totalConfirmed'],
+                            row['totalDeath'],
+                            row['totalActive'],
+                            row['date']
+                        )
+                    )
+                )
+
+            if batch_rows:
+                cursor_mspr.executemany(
                     """
                     INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
                     VALUES (%s, 1, %s, %s, %s, %s)
                     """,
-                    tuple(to_python_type(x) for x in (
-                        localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
-                    ))
+                    batch_rows
                 )
-                inserted_count += 1
+                mspr_conn.commit()
+                inserted_count += len(batch_rows)
 
-            mspr_conn.commit()
-            logger.info(f"ReportCase (Covid-19): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées")
+            logger.info(
+                f"ReportCase (Covid-19): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées"
+            )
 
         logger.info(f"✅ ReportCase (Covid-19) - Insérées: {inserted_count}, Ignorées: {skipped_count}")
 
@@ -290,25 +318,40 @@ def insert_mspr():
 
         for i in range(0, total_rows, batch_size):
             batch = monkeypox.iloc[i:min(i + batch_size, total_rows)]
+            batch_rows = []
             for _, row in batch.iterrows():
                 localizationId = country_to_id.get(row['country'])
                 if not localizationId or pd.isna(row['totalConfirmed']):
                     skipped_count += 1
                     continue
 
-                cursor_mspr.execute(
+                batch_rows.append(
+                    tuple(
+                        to_python_type(x)
+                        for x in (
+                            localizationId,
+                            row['totalConfirmed'],
+                            row['totalDeath'],
+                            row['totalActive'],
+                            row['date']
+                        )
+                    )
+                )
+
+            if batch_rows:
+                cursor_mspr.executemany(
                     """
                     INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
                     VALUES (%s, 2, %s, %s, %s, %s)
                     """,
-                    tuple(to_python_type(x) for x in (
-                        localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
-                    ))
+                    batch_rows
                 )
-                inserted_count += 1
+                mspr_conn.commit()
+                inserted_count += len(batch_rows)
 
-            mspr_conn.commit()
-            logger.info(f"ReportCase (Monkeypox): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées")
+            logger.info(
+                f"ReportCase (Monkeypox): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées"
+            )
 
         logger.info(f"✅ ReportCase (Monkeypox) - Insérées: {inserted_count}, Ignorées: {skipped_count}")
 

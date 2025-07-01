@@ -71,7 +71,6 @@ INSERT INTO Role(roleName) VALUES('superadmin');
 INSERT INTO Role(roleName) VALUES('admin');
 INSERT INTO Role(roleName) VALUES('user');
 
-INSERT INTO User(username, password, roleId, localizationId, languageId) VALUES("97de265f91ce69e70fdb551a61fb8a09", sha2('admin',256), 1,1,1);
 
 -- Creation of composite indexes to make queries on report cases easier
 CREATE INDEX idx_reportcase_localization_date ON ReportCase (localizationId, date);
