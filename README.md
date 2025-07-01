@@ -54,6 +54,18 @@ Le script affiche les étapes de progression, puis termine avec :
 ⏱️ Durée totale : X.XX secondes
 ```
 
+## Tests
+
+Pour vérifier automatiquement le bon déroulement de l'ETL sur une base MySQL de
+test :
+
+```bash
+python ETL_TEST.py
+```
+
+Ce script recharge le schéma depuis `files/bdd.sql`, exécute `ETL.py` et affiche
+le nombre de lignes insérées dans les principales tables.
+
 ## Licence
 
 Projet à usage interne et éducatif uniquement.
