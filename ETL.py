@@ -137,55 +137,6 @@ def smooth_population(pop_df):
     return result
 
 
-def insert_archive():
-    """
-    Insère les données brutes dans la base de données d'archive.
-    """
-    logger.info("\nInsertion brute dans la base archive...")
-
-    def load_and_insert(file, table):
-        logger.info(f"Traitement du fichier {file} pour la table {table}...")
-        try:
-            df = pd.read_csv(file, dtype=str)
-            df = df.applymap(lambda x: 0 if isinstance(x, str) and x.strip().lower() in ['no data', 'n/a'] else x)
-            df.fillna(0, inplace=True)
-            df.replace(to_replace=r"(?i)^\s*(no[\s_-]?data|n/?a)\s*$", value=0, regex=True, inplace=True)
-            df.fillna(0, inplace=True)
-
-            if table == "millions_population_country":
-                def is_integer_str(val):
-                    try:
-                        return float(val).is_integer()
-                    except:
-                        return False
-
-                df.columns = [f"year_{int(float(col))}" if is_integer_str(col) else col for col in df.columns]
-
-            columns = ", ".join(df.columns)
-            values = ", ".join(["%s"] * len(df.columns))
-            insert_query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
-
-            batch_size = 1000
-            total_rows = len(df)
-            for i in range(0, total_rows, batch_size):
-                batch = df.iloc[i:min(i + batch_size, total_rows)]
-                batch_data = [tuple(map(to_python_type, row)) for _, row in batch.iterrows()]
-                cursor_archive.executemany(insert_query, batch_data)
-                archive_conn.commit()
-                logger.info(f"Inséré {min(i + batch_size, total_rows)}/{total_rows} lignes dans {table}")
-
-            logger.info(f"✅ {table} - {total_rows} lignes insérées")
-        except Exception as e:
-            logger.error(f"Erreur lors de l'insertion dans {table}: {str(e)}")
-            raise
-
-    load_and_insert("./files/countries_and_continents.csv", "countries_and_continents")
-    load_and_insert("./files/millions_population_country.csv", "millions_population_country")
-    load_and_insert("./files/owid_monkeypox_data.csv", "owid_monkeypox_data")
-    load_and_insert("./files/vaccinations.csv", "vaccinations")
-    load_and_insert("./files/worldometer_coronavirus_daily_data.csv", "worldometer_coronavirus_daily_data")
-
-
 def insert_mspr():
     """
     Insère les données transformées dans la base de données principale.
@@ -199,11 +150,14 @@ def insert_mspr():
         loc_df['country'] = loc_df['country'].apply(rename_country)
         loc_df = loc_df.drop_duplicates()
 
-        for _, row in loc_df.iterrows():
-            cursor_mspr.execute(
-                "INSERT INTO Localization (country, continent) VALUES (%s, %s)",
-                (row['country'], row['continent'])
-            )
+        localization_data = [
+            (row['country'], row['continent'])
+            for _, row in loc_df.iterrows()
+        ]
+        cursor_mspr.executemany(
+            "INSERT INTO Localization (country, continent) VALUES (%s, %s)",
+            localization_data
+        )
         mspr_conn.commit()
         logger.info("✅ Localization")
 
@@ -233,6 +187,7 @@ def insert_mspr():
 
         for i in range(0, total_rows, batch_size):
             batch = vacc_df.iloc[i:min(i + batch_size, total_rows)]
+            batch_rows = []
             for _, row in batch.iterrows():
                 localizationId = country_to_id.get(row['country'])
                 if not localizationId:
@@ -242,20 +197,18 @@ def insert_mspr():
                 match = interpolated_pop[
                     (interpolated_pop['country'] == row['country']) &
                     (interpolated_pop['date'] == pd.to_datetime(row['date']))
-                    ]
+                ]
                 if match.empty:
                     skipped_count += 1
                     continue
 
                 inhabitants = match.iloc[0]['population']
                 inhabitants = 0 if pd.isna(inhabitants) else inhabitants
-                vaccinationRate = (row['people_vaccinated'] / (inhabitants * 1_000_000)) * 100 if inhabitants else 0
+                vaccinationRate = (
+                    row['people_vaccinated'] / (inhabitants * 1_000_000)
+                ) * 100 if inhabitants else 0
 
-                cursor_mspr.execute(
-                    """
-                    INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
-                    VALUES (%s, %s, %s, %s)
-                    """,
+                batch_rows.append(
                     (
                         int(localizationId),
                         to_python_type(inhabitants),
@@ -263,10 +216,21 @@ def insert_mspr():
                         to_python_type(row['date'])
                     )
                 )
-                inserted_count += 1
 
-            mspr_conn.commit()
-            logger.info(f"LocalizationData: {min(i + batch_size, total_rows)}/{total_rows} lignes traitées")
+            if batch_rows:
+                cursor_mspr.executemany(
+                    """
+                    INSERT INTO LocalizationData (localizationId, inhabitantsNumber, vaccinationRate, date)
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    batch_rows
+                )
+                mspr_conn.commit()
+                inserted_count += len(batch_rows)
+
+            logger.info(
+                f"LocalizationData: {min(i + batch_size, total_rows)}/{total_rows} lignes traitées"
+            )
 
         logger.info(f"✅ LocalizationData - Insérées: {inserted_count}, Ignorées: {skipped_count}")
 
@@ -294,25 +258,40 @@ def insert_mspr():
 
         for i in range(0, total_rows, batch_size):
             batch = corona.iloc[i:min(i + batch_size, total_rows)]
+            batch_rows = []
             for _, row in batch.iterrows():
                 localizationId = country_to_id.get(row['country'])
                 if not localizationId or pd.isna(row['totalConfirmed']):
                     skipped_count += 1
                     continue
 
-                cursor_mspr.execute(
+                batch_rows.append(
+                    tuple(
+                        to_python_type(x)
+                        for x in (
+                            localizationId,
+                            row['totalConfirmed'],
+                            row['totalDeath'],
+                            row['totalActive'],
+                            row['date']
+                        )
+                    )
+                )
+
+            if batch_rows:
+                cursor_mspr.executemany(
                     """
                     INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
                     VALUES (%s, 1, %s, %s, %s, %s)
                     """,
-                    tuple(to_python_type(x) for x in (
-                        localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
-                    ))
+                    batch_rows
                 )
-                inserted_count += 1
+                mspr_conn.commit()
+                inserted_count += len(batch_rows)
 
-            mspr_conn.commit()
-            logger.info(f"ReportCase (Covid-19): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées")
+            logger.info(
+                f"ReportCase (Covid-19): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées"
+            )
 
         logger.info(f"✅ ReportCase (Covid-19) - Insérées: {inserted_count}, Ignorées: {skipped_count}")
 
@@ -339,25 +318,40 @@ def insert_mspr():
 
         for i in range(0, total_rows, batch_size):
             batch = monkeypox.iloc[i:min(i + batch_size, total_rows)]
+            batch_rows = []
             for _, row in batch.iterrows():
                 localizationId = country_to_id.get(row['country'])
                 if not localizationId or pd.isna(row['totalConfirmed']):
                     skipped_count += 1
                     continue
 
-                cursor_mspr.execute(
+                batch_rows.append(
+                    tuple(
+                        to_python_type(x)
+                        for x in (
+                            localizationId,
+                            row['totalConfirmed'],
+                            row['totalDeath'],
+                            row['totalActive'],
+                            row['date']
+                        )
+                    )
+                )
+
+            if batch_rows:
+                cursor_mspr.executemany(
                     """
                     INSERT INTO ReportCase (localizationId, diseaseId, totalConfirmed, totalDeath, totalActive, date)
                     VALUES (%s, 2, %s, %s, %s, %s)
                     """,
-                    tuple(to_python_type(x) for x in (
-                        localizationId, row['totalConfirmed'], row['totalDeath'], row['totalActive'], row['date']
-                    ))
+                    batch_rows
                 )
-                inserted_count += 1
+                mspr_conn.commit()
+                inserted_count += len(batch_rows)
 
-            mspr_conn.commit()
-            logger.info(f"ReportCase (Monkeypox): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées")
+            logger.info(
+                f"ReportCase (Monkeypox): {min(i + batch_size, total_rows)}/{total_rows} lignes traitées"
+            )
 
         logger.info(f"✅ ReportCase (Monkeypox) - Insérées: {inserted_count}, Ignorées: {skipped_count}")
 
@@ -379,28 +373,18 @@ if __name__ == "__main__":
         db_user = os.environ.get('DB_USER', 'mspr_user')
         db_password = os.environ.get('DB_PASSWORD', 'mspr_user')
 
-        archive_conn = connect_to_database(
-            host=db_host, port=db_port,
-            user=db_user, password=db_password,
-            database='mspr_database_archive'
-        )
-
         mspr_conn = connect_to_database(
             host=db_host, port=db_port,
             user=db_user, password=db_password,
             database='mspr_database'
         )
 
-        cursor_archive = archive_conn.cursor()
         cursor_mspr = mspr_conn.cursor()
 
         # Exécution du processus ETL
-        insert_archive()
         insert_mspr()
 
         # Fermeture des connexions
-        cursor_archive.close()
-        archive_conn.close()
         cursor_mspr.close()
         mspr_conn.close()
 
