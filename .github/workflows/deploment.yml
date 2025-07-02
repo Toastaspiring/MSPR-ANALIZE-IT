@@ -1,0 +1,30 @@
+name: Deploy with Docker Compose
+
+
+on:
+  
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Déploiement direct via SSH et docker-compose
+      - name: Deploy to server via SSH and Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd ~/mspr-analyze-it || git clone https://github.com/${{ github.repository }} ~/mspr-analyze-it
+            cd ~/mspr-analyze-it
+            git fetch --all
+            git reset --hard origin/main
+            docker compose down || true
+            docker compose pull || true
+            docker compose up -d --build
