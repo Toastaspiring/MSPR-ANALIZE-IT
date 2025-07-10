@@ -223,10 +223,14 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                   fontSize: { xs: '0.8rem', sm: '0.875rem' }
                 }
               }} 
-              aria-label="tableau des données filtrées"
+              aria-label={t('datatable.currentData') + ' - ' + t('dashboard.title')}
+              role="table"
             >
+              <caption style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+                {t('datatable.currentData')} - {t('dashboard.title')}
+              </caption>
               <TableHead>
-                <TableRow>
+                <TableRow role="row">
                   <TableCell 
                     sx={{ 
                       backgroundColor: theme.palette.background.default,
@@ -235,6 +239,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                       borderBottom: `2px solid ${theme.palette.divider}`,
                       py: 2
                     }}
+                    role="columnheader"
                   >
                     {headerLabels.date}
                   </TableCell>
@@ -246,6 +251,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                       borderBottom: `2px solid ${theme.palette.divider}`,
                       py: 2
                     }}
+                    role="columnheader"
                   >
                     {headerLabels.country}
                   </TableCell>
@@ -257,6 +263,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                       borderBottom: `2px solid ${theme.palette.divider}`,
                       py: 2
                     }}
+                    role="columnheader"
                   >
                     {headerLabels.disease}
                   </TableCell>
@@ -268,6 +275,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                       borderBottom: `2px solid ${theme.palette.divider}`,
                       py: 2
                     }}
+                    role="columnheader"
                   >
                     {headerLabels.metric}
                   </TableCell>
@@ -280,6 +288,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                       borderBottom: `2px solid ${theme.palette.divider}`,
                       py: 2
                     }}
+                    role="columnheader"
                   >
                     {headerLabels.value}
                   </TableCell>
@@ -293,6 +302,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                       borderBottom: `2px solid ${theme.palette.divider}`,
                       py: 2
                     }}
+                    role="columnheader"
                   >
                     {t('datatable.prediction')}
                   </TableCell>
@@ -313,6 +323,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                         },
                         transition: 'background-color 0.2s'
                       }}
+                      role="row"
                     >
                       <TableCell 
                         sx={{ 
@@ -320,6 +331,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.divider}`
                         }}
+                        role="cell"
                       >
                         {row.date}
                       </TableCell>
@@ -329,6 +341,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.divider}`
                         }}
+                        role="cell"
                       >
                         {row.country}
                       </TableCell>
@@ -338,6 +351,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.divider}`
                         }}
+                        role="cell"
                       >
                         {translateDisease(row.disease)}
                       </TableCell>
@@ -347,6 +361,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.divider}`
                         }}
+                        role="cell"
                       >
                         {translateMetric(row.metric)}
                       </TableCell>
@@ -357,11 +372,12 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, predictions }) => 
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.divider}`
                         }}
+                        role="cell"
                       >
                         {formatValue(row.value)}
                       </TableCell>
                                           {/* Cellule Prédiction IA pour tous les pays */}
-                    <TableCell align="right">
+                    <TableCell align="right" role="cell">
                       {typeof row.value === 'number' ? formatValue(getPrediction(row.value, `${row.date}_${row.country}_${row.disease}_${row.metric}`)) : '-'}
                     </TableCell>
                     </TableRow>

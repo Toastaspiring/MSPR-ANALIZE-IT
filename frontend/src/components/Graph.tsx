@@ -194,9 +194,10 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
         p: { xs: 1, sm: 2 }, 
         width: '100%' 
       }} 
-      role="region" 
-      aria-labelledby="graph-title" 
-      aria-label={t('graph.evolutionChart')}
+      role="region"
+      aria-label={title}
+      aria-describedby="graph-desc"
+      aria-labelledby="graph-title"
     >
       <Box 
         sx={{ 
@@ -219,6 +220,9 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
         >
           {title}
         </Typography>
+        <span id="graph-desc" style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+          {t('graph.evolutionChart')}
+        </span>
         <ToggleButtonGroup
           value={selectedTimeGrouping}
           exclusive

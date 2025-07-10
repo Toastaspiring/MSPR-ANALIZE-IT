@@ -138,6 +138,8 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
       open={open}
       onClose={onClose}
       aria-labelledby="filter-dialog-title"
+      aria-describedby="filter-dialog-desc"
+      aria-modal="true"
       maxWidth="sm"
       fullWidth
       PaperProps={{
@@ -148,6 +150,9 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
         }
       }}
     >
+      <span id="filter-dialog-desc" style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+        {t('filters.title')} - {t('filters.diseases')}, {t('filters.metrics')}, {t('filters.countries')}, {t('filters.period')}
+      </span>
       <DialogTitle 
         id="filter-dialog-title" 
         component="h2" 

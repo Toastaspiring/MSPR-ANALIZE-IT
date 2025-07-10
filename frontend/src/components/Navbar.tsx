@@ -16,13 +16,13 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 24px', background: '#1976d2', color: 'white', marginBottom: 24 }}>
-      <div style={{ fontWeight: 'bold', fontSize: 20, cursor: 'pointer' }} onClick={() => navigate('/')}>ANALYZE IT</div>
+    <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 24px', background: '#1976d2', color: 'white', marginBottom: 24 }} role="navigation" aria-label="Navigation principale">
+      <div style={{ fontWeight: 'bold', fontSize: 20, cursor: 'pointer' }} onClick={() => navigate('/')} aria-label="Accueil ANALYZE IT">ANALYZE IT</div>
       {user && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <LanguageSelector />
           <span>{user.first_name} {user.last_name} ({user.role})</span>
-          <button onClick={handleLogout} style={{ background: 'white', color: '#1976d2', border: 'none', borderRadius: 4, padding: '6px 12px', cursor: 'pointer' }}>
+          <button onClick={handleLogout} aria-label={t('auth.logout')} style={{ background: 'white', color: '#1976d2', border: 'none', borderRadius: 4, padding: '6px 12px', cursor: 'pointer' }}>
             {t('auth.logout')}
           </button>
         </div>
