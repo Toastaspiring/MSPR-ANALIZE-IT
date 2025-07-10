@@ -6,6 +6,7 @@ import {
   Grid,
   useTheme
 } from '@mui/material';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface MetricsSummaryProps {
   data: {
@@ -22,6 +23,7 @@ interface MetricsSummaryProps {
 
 const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDate, colorMap }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // Calculer les totaux par pays, maladie et métrique
   const metricsTotals = data.reduce((acc, curr) => {
@@ -86,15 +88,15 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
             fontWeight: 'bold'
           }}
         >
-          Résumé des métriques
+          {t('metrics.summary')}
         </Typography>
         {startDate && endDate ? (
           <Typography component="span" variant="subtitle1" color="text.secondary">
-            du {formatDate(startDate)} au {formatDate(endDate)}
+            {t('metrics.from')} {formatDate(startDate)} {t('metrics.to')} {formatDate(endDate)}
           </Typography>
         ) : (
           <Typography component="span" variant="subtitle1" color="text.secondary">
-            (total)
+            ({t('metrics.total')})
           </Typography>
         )}
       </Box>
@@ -114,7 +116,7 @@ const MetricsSummary: React.FC<MetricsSummaryProps> = ({ data, startDate, endDat
                 backgroundColor: '#fff',
                 minHeight: 120
               }}
-              aria-label={`Métrique ${metric} pour ${country} - ${disease}`}
+              aria-label={`${t('metrics.metricFor')} ${metric} ${t('metrics.from')} ${country} - ${disease}`}
             >
               <Typography variant="subtitle2" fontWeight="bold" color="text.secondary" sx={{ mb: 0.5 }}>
                 {country} - {disease}

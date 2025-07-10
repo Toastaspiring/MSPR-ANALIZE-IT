@@ -1,15 +1,21 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { parse } from 'csv-parse';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import authRoutes from './authRoutes';
+import { validateFilterData } from './validation';
 
 const app = express();
 const port = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// Routes d'authentification
+app.use('/api/auth', authRoutes);
 
 const readFile = promisify(fs.readFile);
 
@@ -108,7 +114,17 @@ app.get('/api/vaccinations/:country', async (req, res) => {
 // Route pour récupérer les données filtrées
 app.post('/api/data', async (req, res) => {
   try {
-    const { diseases, metrics, countries, startDate, endDate } = req.body;
+    const { diseases, metrics, countries, startDate, endDate, timeGrouping } = req.body;
+    
+    // Validation des données de filtres
+    const validation = validateFilterData({ diseases, metrics, countries, startDate, endDate, timeGrouping });
+    if (!validation.isValid) {
+      return res.status(400).json({ 
+        error: 'Données de filtres invalides',
+        details: validation.errors 
+      });
+    }
+    
     const data: any = {};
 
     for (const country of countries) {

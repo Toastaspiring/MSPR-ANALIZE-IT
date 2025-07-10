@@ -29,6 +29,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { getCountries } from '../services/api';
+import { useTranslation } from '../hooks/useTranslation';
 import dayjs from 'dayjs';
 
 interface FilterPopupProps {
@@ -53,6 +54,7 @@ export interface FilterData {
 
 const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
@@ -62,15 +64,15 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
   const [timeGrouping, setTimeGrouping] = useState<'day' | 'week' | 'month'>('day');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const diseases = ['Covid19', 'Variole du Singe'];
+  const diseases = [t('diseases.covid19'), t('diseases.monkeypox')];
   const metrics = [
-    'Cas actifs',
-    'Décès',
-    'Total des cas',
-    'Total des morts',
-    'Nouveaux cas',
-    'Population',
-    'Vaccinations'
+    t('metrics.activeCases'),
+    t('metrics.deaths'),
+    t('metrics.totalCases'),
+    t('metrics.totalDeaths'),
+    t('metrics.newCases'),
+    t('metrics.population'),
+    t('metrics.vaccinations')
   ];
 
   useEffect(() => {
@@ -88,15 +90,15 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
 
   const handleApplyFilters = () => {
     if (selectedDiseases.length === 0) {
-      setErrorMsg('Veuillez sélectionner au moins une maladie');
+      setErrorMsg(t('filters.errors.selectDisease'));
       return;
     }
     if (selectedMetrics.length === 0) {
-      setErrorMsg('Veuillez sélectionner au moins une métrique');
+      setErrorMsg(t('filters.errors.selectMetric'));
       return;
     }
     if (selectedCountries.length === 0) {
-      setErrorMsg('Veuillez sélectionner au moins un pays');
+      setErrorMsg(t('filters.errors.selectCountry'));
       return;
     }
     setErrorMsg(null);
@@ -158,9 +160,9 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <FilterAltIcon color="primary" aria-hidden="true" />
-          <Typography variant="h6" component="span">Filtres</Typography>
+          <Typography variant="h6" component="span">{t('filters.title')}</Typography>
         </Box>
-        <IconButton onClick={onClose} size="small" aria-label="Fermer la fenêtre des filtres">
+        <IconButton onClick={onClose} size="small" aria-label={t('filters.closeFilters')}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -178,7 +180,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
         <Grid container spacing={{ xs: 2, sm: 3 }}>
           <Grid item xs={12} sm={6}>
             <Box sx={{ mb: 3 }}>
-              <InputLabel id="diseases-label" htmlFor="diseases-select">Maladies</InputLabel>
+              <InputLabel id="diseases-label" htmlFor="diseases-select">{t('filters.diseases')}</InputLabel>
               <FormControl fullWidth>
                 <Select
                   labelId="diseases-label"
@@ -193,7 +195,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
                       ))}
                     </Box>
                   )}
-                  inputProps={{ 'aria-label': 'Sélection des maladies' }}
+                  inputProps={{ 'aria-label': t('filters.selectDiseases') }}
                 >
                   {diseases.map((disease) => (
                     <MenuItem key={disease} value={disease}>
@@ -205,7 +207,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
             </Box>
 
             <Box sx={{ mb: 3 }}>
-              <InputLabel id="metrics-label" htmlFor="metrics-select">Métriques</InputLabel>
+              <InputLabel id="metrics-label" htmlFor="metrics-select">{t('filters.metrics')}</InputLabel>
               <FormControl fullWidth>
                 <Select
                   labelId="metrics-label"
@@ -220,7 +222,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
                       ))}
                     </Box>
                   )}
-                  inputProps={{ 'aria-label': 'Sélection des métriques' }}
+                  inputProps={{ 'aria-label': t('filters.selectMetrics') }}
                 >
                   {metrics.map((metric) => (
                     <MenuItem key={metric} value={metric}>
@@ -234,7 +236,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
 
           <Grid item xs={12} sm={6}>
             <Box sx={{ mb: 3 }}>
-              <InputLabel id="countries-label" htmlFor="countries-autocomplete">Pays</InputLabel>
+              <InputLabel id="countries-label" htmlFor="countries-autocomplete">{t('filters.countries')}</InputLabel>
               <Autocomplete
                 multiple
                 id="countries-autocomplete"
@@ -245,11 +247,11 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder="Sélectionnez un ou plusieurs pays"
+                    placeholder={t('filters.selectCountries')}
                     variant="outlined"
                     inputProps={{
                       ...params.inputProps,
-                      'aria-label': 'Sélection des pays',
+                      'aria-label': t('filters.selectCountries'),
                     }}
                   />
                 )}
@@ -277,40 +279,40 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
 
             <Box sx={{ mb: 3 }}>
               <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }} id="periode-label">
-                Période
+                {t('filters.period')}
               </Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <DatePicker
-                    label="Date de début"
+                    label={t('filters.startDate')}
                     value={startDate}
                     onChange={(newValue) => setStartDate(newValue)}
-                    slotProps={{ textField: { fullWidth: true, variant: 'outlined', inputProps: { 'aria-label': 'Date de début' } } }}
+                    slotProps={{ textField: { fullWidth: true, variant: 'outlined', inputProps: { 'aria-label': t('filters.startDate') } } }}
                   />
                   <DatePicker
-                    label="Date de fin"
+                    label={t('filters.endDate')}
                     value={endDate}
                     onChange={(newValue) => setEndDate(newValue)}
-                    slotProps={{ textField: { fullWidth: true, variant: 'outlined', inputProps: { 'aria-label': 'Date de fin' } } }}
+                    slotProps={{ textField: { fullWidth: true, variant: 'outlined', inputProps: { 'aria-label': t('filters.endDate') } } }}
                   />
                 </Box>
               </LocalizationProvider>
             </Box>
 
             <Box sx={{ mb: 3 }}>
-              <InputLabel id="time-grouping-label" htmlFor="time-grouping-select">Regroupement temporel</InputLabel>
+              <InputLabel id="time-grouping-label" htmlFor="time-grouping-select">{t('filters.timeGrouping')}</InputLabel>
               <FormControl fullWidth>
                 <Select
                   labelId="time-grouping-label"
                   id="time-grouping-select"
                   value={timeGrouping}
                   onChange={handleTimeGroupingChange}
-                  label="Regroupement temporel"
-                  inputProps={{ 'aria-label': 'Regroupement temporel' }}
+                  label={t('filters.timeGrouping')}
+                  inputProps={{ 'aria-label': t('filters.selectTimeGrouping') }}
                 >
-                  <MenuItem value="day">Par jour</MenuItem>
-                  <MenuItem value="week">Par semaine</MenuItem>
-                  <MenuItem value="month">Par mois</MenuItem>
+                  <MenuItem value="day">{t('filters.timeGroupingOptions.day')}</MenuItem>
+                  <MenuItem value="week">{t('filters.timeGroupingOptions.week')}</MenuItem>
+                  <MenuItem value="month">{t('filters.timeGroupingOptions.month')}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -329,14 +331,14 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ open, onClose, onApplyFilters
           onClick={onClose}
           size={window.innerWidth < 600 ? "small" : "medium"}
         >
-          Annuler
+          {t('filters.cancel')}
         </Button>
         <Button 
           onClick={handleApplyFilters} 
           variant="contained"
           size={window.innerWidth < 600 ? "small" : "medium"}
         >
-          Appliquer
+          {t('filters.apply')}
         </Button>
       </DialogActions>
     </Dialog>

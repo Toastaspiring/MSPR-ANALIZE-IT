@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Box, useTheme, Paper, Typography, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { useTranslation } from '../hooks/useTranslation';
 import dayjs from 'dayjs';
 
 ChartJS.register(
@@ -62,6 +63,7 @@ function getAllLabels(start: string, end: string, mode: 'day' | 'week' | 'month'
 
 const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [selectedTimeGrouping, setSelectedTimeGrouping] = useState<'day' | 'week' | 'month'>(timeGrouping);
 
   // Trouver la période sélectionnée
@@ -138,10 +140,10 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
     scales: {
       x: {
         type: 'category' as const,
-        title: {
-          display: true,
-          text: 'Date'
-        },
+              title: {
+        display: true,
+        text: t('graph.date')
+      },
         ticks: {
           maxRotation: 45,
           minRotation: 45,
@@ -154,7 +156,7 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Valeur'
+          text: t('graph.value')
         },
         ticks: {
           font: {
@@ -194,7 +196,7 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
       }} 
       role="region" 
       aria-labelledby="graph-title" 
-      aria-label="Graphique d'évolution des métriques sélectionnées"
+      aria-label={t('graph.evolutionChart')}
     >
       <Box 
         sx={{ 
@@ -221,29 +223,29 @@ const Graph: React.FC<GraphProps> = ({ data, title, timeGrouping, colorMap }) =>
           value={selectedTimeGrouping}
           exclusive
           onChange={handleTimeGroupingChange}
-          aria-label="Sélection du regroupement temporel du graphique"
+          aria-label={t('graph.timeGrouping')}
           size={window.innerWidth < 600 ? "small" : "medium"}
           sx={{
             flexWrap: 'wrap',
             justifyContent: 'center'
           }}
         >
-          <ToggleButton value="day">Par jour</ToggleButton>
-          <ToggleButton value="week">Par semaine</ToggleButton>
-          <ToggleButton value="month">Par mois</ToggleButton>
+          <ToggleButton value="day">{t('graph.timeGroupingOptions.day')}</ToggleButton>
+          <ToggleButton value="week">{t('graph.timeGroupingOptions.week')}</ToggleButton>
+          <ToggleButton value="month">{t('graph.timeGroupingOptions.month')}</ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box 
-        sx={{ 
-          height: { 
-            xs: 300, 
-            sm: 400, 
-            md: chartHeight 
-          },
-          width: '100%'
-        }} 
-        aria-label="Zone de rendu du graphique"
-      >
+              <Box 
+          sx={{ 
+            height: { 
+              xs: 300, 
+              sm: 400, 
+              md: chartHeight 
+            },
+            width: '100%'
+          }} 
+          aria-label={t('graph.graphArea')}
+        >
         <Line options={chartOptions} data={chartData} />
       </Box>
     </Paper>
